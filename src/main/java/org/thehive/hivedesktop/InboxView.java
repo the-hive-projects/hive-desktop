@@ -8,13 +8,13 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class SessionView extends Application {
+public class InboxView extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(SessionView.class.getResource("session-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        FXMLLoader fxmlLoader = new FXMLLoader(InboxView.class.getResource("inbox-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 500);
+        stage.setTitle("HIVE Inbox");
         stage.getIcons().add(new Image(InboxView.class.getResourceAsStream("/img/logo2.png")));
-        stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
     }

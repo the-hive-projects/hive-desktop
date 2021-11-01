@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXListCell?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<SplitPane dividerPositions="0.39471925133689834" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #373737;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+  <items>
+    <AnchorPane maxWidth="200.0" minHeight="0.0" minWidth="10.0" prefHeight="398.0" prefWidth="294.0" style="-fx-background-color: #373737;">
+         <children>
+            <TabPane prefHeight="398.4" prefWidth="200.0" style="-fx-background-color: #373737;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <tabs>
+                <Tab style="-fx-background-color: #F89C0E; -fx-background-radius: 50;" text="Katıldıklarım">
+                  <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #373737;">
+                           <children>
+                              <VBox style="-fx-background-color: #373737;">
+                                 <children>
+                                    <JFXListCell expanded="true" prefHeight="44.0" prefWidth="179.0" style="-fx-background-color: #F89C0E; -fx-background-radius: 15;">
+                                       <graphic>
+                                          <Label style="-fx-background-color: transparent; -fx-border-radius: 10;" text="HV0323" textAlignment="CENTER">
+                                             <graphic>
+                                                <ImageView fitHeight="28.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../img/logo1.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Label>
+                                       </graphic>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </JFXListCell>
+                                    <JFXListCell expanded="true" prefHeight="44.0" prefWidth="179.0" style="-fx-background-color: #F89C0E; -fx-background-radius: 15;">
+                                       <graphic>
+                                          <Label style="-fx-background-color: transparent; -fx-border-radius: 10;" text="HV9656" textAlignment="CENTER">
+                                             <graphic>
+                                                <ImageView fitHeight="28.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../img/logo1.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Label>
+                                       </graphic>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </JFXListCell>
+                                    <JFXListCell expanded="true" prefHeight="44.0" prefWidth="179.0" style="-fx-background-color: #F89C0E; -fx-background-radius: 15;">
+                                       <graphic>
+                                          <Label style="-fx-background-color: transparent; -fx-border-radius: 10;" text="HV2245" textAlignment="CENTER">
+                                             <graphic>
+                                                <ImageView fitHeight="28.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../img/logo1.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Label>
+                                       </graphic>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </JFXListCell>
+                                    <JFXListCell expanded="true" prefHeight="44.0" prefWidth="179.0" style="-fx-background-color: #F89C0E; -fx-background-radius: 15;">
+                                       <graphic>
+                                          <Label style="-fx-background-color: transparent; -fx-border-radius: 10;" text="HV3699" textAlignment="CENTER">
+                                             <graphic>
+                                                <ImageView fitHeight="28.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../img/logo1.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Label>
+                                       </graphic>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </JFXListCell>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab style="-fx-background-color: #F89C0E; -fx-background-radius: 50;" text="Oluşturduklarım">
+                     <content>
+                        <AnchorPane>
+                           <children>
+                              <VBox>
+                                 <children>
+                                    <JFXListCell expanded="true" prefHeight="44.0" prefWidth="179.0" style="-fx-background-color: #F89C0E; -fx-background-radius: 15;">
+                                       <graphic>
+                                          <Label style="-fx-background-color: transparent; -fx-border-radius: 10;" text="Ahmet Yıldız" textAlignment="CENTER">
+                                             <graphic>
+                                                <ImageView fitHeight="28.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../img/logo1.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Label>
+                                       </graphic>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </JFXListCell>
+                                    <JFXListCell expanded="true" prefHeight="44.0" prefWidth="179.0" style="-fx-background-color: #F89C0E; -fx-background-radius: 15;">
+                                       <graphic>
+                                          <Label style="-fx-background-color: transparent; -fx-border-radius: 10;" text="Kaan Cenk" textAlignment="CENTER">
+                                             <graphic>
+                                                <ImageView fitHeight="28.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../img/logo1.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Label>
+                                       </graphic>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </JFXListCell>
+                                    <JFXListCell expanded="true" prefHeight="44.0" prefWidth="179.0" style="-fx-background-color: #F89C0E; -fx-background-radius: 15;">
+                                       <graphic>
+                                          <Label style="-fx-background-color: transparent; -fx-border-radius: 10;" text="Mehmet Kurtulmuş" textAlignment="CENTER">
+                                             <graphic>
+                                                <ImageView fitHeight="28.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../img/logo1.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Label>
+                                       </graphic>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </JFXListCell>
+                                    <JFXListCell expanded="true" prefHeight="44.0" prefWidth="179.0" style="-fx-background-color: #F89C0E; -fx-background-radius: 15;">
+                                       <graphic>
+                                          <Label style="-fx-background-color: transparent; -fx-border-radius: 10;" text="Cem Tekin" textAlignment="CENTER">
+                                             <graphic>
+                                                <ImageView fitHeight="28.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../img/logo1.png" />
+                                                   </image>
+                                                </ImageView>
+                                             </graphic>
+                                          </Label>
+                                       </graphic>
+                                       <VBox.margin>
+                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                       </VBox.margin>
+                                    </JFXListCell>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+         </children></AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" />
+  </items>
+</SplitPane>
