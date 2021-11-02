@@ -1,5 +1,7 @@
 package org.thehive.hivedesktop;
 
+import io.github.palexdev.materialfx.controls.MFXPasswordField;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,10 +19,10 @@ public class Controller implements Initializable {
     private Button btnClose;
 
     @FXML
-    private TextField tfUsername;
+    private MFXTextField tfUsername;
 
     @FXML
-    private PasswordField pfPassword;
+    private MFXPasswordField pfPassword;
 
     @FXML
     private Button btnLogin;
@@ -32,7 +34,7 @@ public class Controller implements Initializable {
 
     private  boolean isFieldFilled(){
         boolean isFilled = true;
-        if(tfUsername.getText().isEmpty()){
+        if(tfUsername.getText() == null || tfUsername.getText().isEmpty()){
             isFilled = false;
             errorMessage = "Username is Empty";
         }

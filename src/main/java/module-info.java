@@ -9,6 +9,7 @@ module org.thehive.hivedesktop {
     requires java.datatransfer;
     requires java.desktop;
     requires java.compiler;
+    requires MaterialFX;
 
 
 

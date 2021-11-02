@@ -17,7 +17,7 @@
          <children>
             <TabPane prefHeight="398.4" prefWidth="200.0" style="-fx-background-color: #373737;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <tabs>
-                <Tab style="-fx-background-color: #F89C0E; -fx-background-radius: 50; -fx-border-width: 50;" text="Katıldıklarım">
+                <Tab style="-fx-background-color: #F89C0E; -fx-background-radius: 50;" text="Katıldıklarım">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #373737;">
                            <children>

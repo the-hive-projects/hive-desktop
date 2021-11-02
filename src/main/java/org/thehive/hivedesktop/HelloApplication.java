@@ -23,28 +23,28 @@ public class HelloApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         stage.initStyle(StageStyle.UNDECORATED);
 
-//        final double[] xOffset = {0};
-//        final double[] yOffset = {0};
-//        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent event) {
-//                xOffset[0] = event.getSceneX();
-//                yOffset[0] = event.getSceneY();
-//            }
-//        });
-//        scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent event) {
-//                stage.setX(event.getScreenX() - xOffset[0]);
-//                stage.setY(event.getScreenY() - yOffset[0]);
-//            }
-//        });
-//
-//        scene.setOnMouseEntered(new EventHandler<MouseEvent>()  {
-//            public void handle(MouseEvent me) {
-//                scene.setCursor(Cursor.DEFAULT); //Change cursor to hand
-//            }
-//        });
+        final double[] xOffset = {0};
+        final double[] yOffset = {0};
+        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                xOffset[0] = event.getSceneX();
+                yOffset[0] = event.getSceneY();
+            }
+        });
+        scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                stage.setX(event.getScreenX() - xOffset[0]);
+                stage.setY(event.getScreenY() - yOffset[0]);
+            }
+        });
+
+        scene.setOnMouseEntered(new EventHandler<MouseEvent>()  {
+            public void handle(MouseEvent me) {
+                scene.setCursor(Cursor.DEFAULT); //Change cursor to hand
+            }
+        });
 
         stage.setScene(scene);
         stage.show();
