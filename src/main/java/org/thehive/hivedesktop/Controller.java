@@ -1,7 +1,9 @@
 package org.thehive.hivedesktop;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -10,6 +12,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import org.apache.http.message.BasicHeader;
+import org.thehive.hiveserverclient.model.User;
+import org.thehive.hiveserverclient.net.http.DefaultUserClient;
+import org.thehive.hiveserverclient.net.http.RequestCallback;
+import org.thehive.hiveserverclient.util.HeaderUtil;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -85,8 +92,36 @@ public class Controller implements Initializable {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 errorMessage = "";
-                if(isFieldFilled() && isValid()){
-                    //do something
+                if(isFieldFilled()){
+                    var u = tfUsername.getText();
+                    var p = pfPassword.getPassword();
+
+
+                    DefaultUserClient defaultUserClient = new DefaultUserClient("http://localhost:8080", new ObjectMapper());
+
+                    var h = new BasicHeader(HeaderUtil.HTTP_BASIC_AUTHORIZATION_HEADER_NAME, HeaderUtil.httpBasicAuthorizationHeaderValue(u, p));
+                    defaultUserClient.get(new RequestCallback<User>() {
+                        @Override
+                        public void onRequest(User data) {
+                            System.out.println(data);
+                            
+                            Platform.runLater(()->{
+                                errorMessageLabel.setText("Successful");
+                                errorMessageLabel.setVisible(true);
+                                isValid();
+                            });
+                        }
+
+                        @Override
+                        public void onError(Error e) {
+                            System.out.println(e);
+                        }
+
+                        @Override
+                        public void onFail(Throwable t) {
+                            System.out.println(t);
+                        }
+                    }, h);
 
                 }
             }
