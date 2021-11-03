@@ -25,7 +25,7 @@ import org.thehive.hiveserverclient.model.User;
 import org.thehive.hiveserverclient.net.http.RequestCallback;
 import org.thehive.hiveserverclient.net.http.UserClientImpl;
 import org.thehive.hiveserverclient.service.UserServiceImpl;
-
+import org.thehive.hiveserverclient.service.SignInStatus;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -128,7 +128,7 @@ public class Controller implements Initializable {
                     var p = pfPassword.getPassword();
 
 
-                    var defaultUserClient = new UserClientImpl("http://localhost:8080", HttpClients.createSystem(), new ObjectMapper(), (ThreadPoolExecutor) Executors.newCachedThreadPool());
+                    var defaultUserClient = new UserClientImpl("http://localhost:8080/user", HttpClients.createSystem(), new ObjectMapper(), (ThreadPoolExecutor) Executors.newCachedThreadPool());
 
 
                     var service = new UserServiceImpl(defaultUserClient);
