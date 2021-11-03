@@ -18,7 +18,7 @@
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="880.0" style="-fx-background-color: #f89c0e;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.Controller">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="880.0" style="-fx-background-color: #f89c0e;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"  fx:controller="org.thehive.hivedesktop.Controller">
    <children>
       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="400.0" styleClass="left-side-background" stylesheets="@../../../values/style.css">
          <children>
@@ -102,7 +102,7 @@
                   <Font size="15.0" />
                </font>
             </MFXButton>
-            <Hyperlink alignment="CENTER" contentDisplay="CENTER" prefHeight="24.0" prefWidth="177.0" text="Not a member?" textFill="#373737">
+            <Hyperlink alignment="CENTER" contentDisplay="CENTER" onAction="#switchToRegister" prefHeight="24.0" prefWidth="177.0" text="Not a member?" textFill="#373737">
                <VBox.margin>
                   <Insets left="155.0" top="15.0" />
                </VBox.margin>

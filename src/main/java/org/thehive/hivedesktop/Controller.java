@@ -1,25 +1,36 @@
 package org.thehive.hivedesktop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.thehive.hiveserverclient.model.User;
-import org.thehive.hiveserverclient.net.http.DefaultUserClient;
 import org.thehive.hiveserverclient.net.http.RequestCallback;
-import org.thehive.hiveserverclient.util.HeaderUtil;
+import org.thehive.hiveserverclient.net.http.UserClientImpl;
+import org.thehive.hiveserverclient.service.UserServiceImpl;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 public class Controller implements Initializable {
     @FXML
@@ -32,51 +43,71 @@ public class Controller implements Initializable {
     private MFXPasswordField pfPassword;
 
     @FXML
-    private Button btnLogin;
+    private MFXButton btnLogin;
 
     @FXML
     private Label errorMessageLabel;
 
-    private  String errorMessage = "";
+    private String errorMessage = "";
 
-    private  boolean isFieldFilled(){
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
+
+    public void switchToRegister(ActionEvent event) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("register-view.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void switchToLogin(ActionEvent event) throws IOException {
+        root = FXMLLoader.load(getClass().getResource("HiveDesktopApplication.fxml"));
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private boolean isFieldFilled() {
         boolean isFilled = true;
-        if(tfUsername.getText() == null || tfUsername.getText().isEmpty()){
+        if (tfUsername.getText() == null || tfUsername.getText().isEmpty()) {
             isFilled = false;
             errorMessage = "Username is Empty";
         }
 
-        if(pfPassword.getText().isEmpty()){
+        if (pfPassword.getText().isEmpty()) {
             isFilled = false;
-            if(errorMessage.isEmpty()){
+            if (errorMessage.isEmpty()) {
                 errorMessage = "Password is Empty";
-            }else{
+            } else {
                 errorMessage += "\nPassword is Empty";
             }
         }
 
         errorMessageLabel.setText(errorMessage);
-        return  isFilled;
+        return isFilled;
     }
 
-    private boolean isValid(){
+    private boolean isValid() {
         boolean isValid = true;
-        if(!tfUsername.getText().equals(HelloApplication.USERNAME)){
+        if (!tfUsername.getText().equals(HelloApplication.USERNAME)) {
             isValid = false;
             errorMessage = "Invalid Username";
         }
 
-        if(!pfPassword.getText().equals(HelloApplication.PASSWORD)){
+        if (!pfPassword.getText().equals(HelloApplication.PASSWORD)) {
             isValid = false;
-            if(errorMessage.isEmpty()){
+            if (errorMessage.isEmpty()) {
                 errorMessage = "Invalid Password";
-            } else{
+            } else {
                 errorMessage += "\nInvalid Password";
             }
         }
 
         errorMessageLabel.setText(errorMessage);
-        return  isValid;
+        return isValid;
     }
 
     @Override
@@ -92,36 +123,21 @@ public class Controller implements Initializable {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 errorMessage = "";
-                if(isFieldFilled()){
+                if (isFieldFilled()) {
                     var u = tfUsername.getText();
                     var p = pfPassword.getPassword();
 
 
-                    DefaultUserClient defaultUserClient = new DefaultUserClient("http://localhost:8080", new ObjectMapper());
+                    var defaultUserClient = new UserClientImpl("http://localhost:8080", HttpClients.createSystem(), new ObjectMapper(), (ThreadPoolExecutor) Executors.newCachedThreadPool());
 
-                    var h = new BasicHeader(HeaderUtil.HTTP_BASIC_AUTHORIZATION_HEADER_NAME, HeaderUtil.httpBasicAuthorizationHeaderValue(u, p));
-                    defaultUserClient.get(new RequestCallback<User>() {
-                        @Override
-                        public void onRequest(User data) {
-                            System.out.println(data);
-                            
-                            Platform.runLater(()->{
-                                errorMessageLabel.setText("Successful");
-                                errorMessageLabel.setVisible(true);
-                                isValid();
-                            });
-                        }
 
-                        @Override
-                        public void onError(Error e) {
-                            System.out.println(e);
-                        }
+                    var service = new UserServiceImpl(defaultUserClient);
 
-                        @Override
-                        public void onFail(Throwable t) {
-                            System.out.println(t);
-                        }
-                    }, h);
+                    service.signIn(u, p, r -> {
+
+                        System.out.println(r.status.name());
+
+                    });
 
                 }
             }

@@ -107,14 +107,15 @@
                   <Font name="Arial" size="15.0" />
                </font>
             </MFXButton>
-                <Pane prefHeight="0.0" prefWidth="492.0" VBox.vgrow="ALWAYS">
-               <children>
-                  <Hyperlink alignment="CENTER" contentDisplay="CENTER" layoutX="158.0" layoutY="17.0" prefHeight="24.0" prefWidth="177.0" text="Not a member?" textFill="#373737">
-                     <font>
-                        <Font name="Arial" size="15.0" />
-                     </font>
-                  </Hyperlink>
-               </children></Pane>
+                <Pane prefHeight="0.0" prefWidth="492.0" VBox.vgrow="ALWAYS" />
+            <Hyperlink alignment="CENTER" contentDisplay="CENTER" onAction="#switchToLogin" prefHeight="25.0" prefWidth="388.0" text="Do you have account?" textFill="#373737">
+               <font>
+                  <Font name="Arial" size="15.0" />
+               </font>
+               <VBox.margin>
+                  <Insets bottom="30.0" left="50.0" />
+               </VBox.margin>
+            </Hyperlink>
             </children>
         </VBox>
     </children>
