@@ -12,12 +12,16 @@ module org.thehive.hivedesktop {
     requires MaterialFX;
     requires hiveserverclient;
     requires org.apache.httpcomponents.httpclient;
-
-
-
-
-    opens org.thehive.hivedesktop to javafx.fxml;
+    requires terminalfx;
+    requires pty4j;
+    requires org.apache.commons.lang3;
     requires com.fasterxml.jackson.databind;
+    requires javafx.web;
+    requires jdk.jsobject;
     requires org.apache.httpcomponents.httpcore;
-    exports org.thehive.hivedesktop;
+
+    exports org.thehive.hivedesktop to javafx.graphics;
+    exports org.thehive.hivedesktop.Terminal to javafx.fxml;
+
+
 }

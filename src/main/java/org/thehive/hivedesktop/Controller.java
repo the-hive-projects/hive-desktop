@@ -135,7 +135,7 @@ public class Controller implements Initializable {
 
                     service.signIn(u, p, r -> {
 
-                        System.out.println(r.status.name());
+                        System.out.println(r.status().name());
 
                     });
 
