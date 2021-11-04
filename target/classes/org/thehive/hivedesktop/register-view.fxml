@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="880.0" style="-fx-background-color: #f89c0e;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.Controller">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="880.0" style="-fx-background-color: #f89c0e;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.RegisterController">
     <children>
         <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="400.0" styleClass="left-side-background" stylesheets="@../../../values/style.css">
             <children>
@@ -95,7 +95,7 @@
                   <Font name="Arial" size="15.0" />
                </font>
                 </MFXPasswordField>
-            <MFXButton fx:id="btnLogin" prefHeight="41.0" prefWidth="392.0" style="-fx-background-color: #373737; -fx-background-radius: 16; -fx-border-radius: 10;" stylesheets="@../../../values/style.css" text="Register" textFill="#f29811">
+            <MFXButton fx:id="btnRegister" prefHeight="41.0" prefWidth="392.0" style="-fx-background-color: #373737; -fx-background-radius: 16; -fx-border-radius: 10;" stylesheets="@../../../values/style.css" text="Register" textFill="#f29811">
                <styleClass>
                   <String fx:value="left-side-background" />
                   <String fx:value="btnLogin" />
