@@ -13,4 +13,9 @@
       <module name="hive-desktop" target="11" />
     </bytecodeTargetLevel>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="hive-desktop" options="--add-exports com.jfoenix/com.jfoenix=org.thehive.hivedesktop" />
+    </option>
+  </component>
 </project>

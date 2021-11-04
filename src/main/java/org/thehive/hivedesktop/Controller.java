@@ -1,6 +1,10 @@
 package org.thehive.hivedesktop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jfoenix.controls.JFXListCell;
+import com.kodedu.terminalfx.TerminalBuilder;
+import com.kodedu.terminalfx.TerminalTab;
+import com.kodedu.terminalfx.config.TerminalConfig;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -13,11 +17,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
@@ -33,17 +35,24 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 public class Controller implements Initializable {
+    public TabPane tabPane = new TabPane();
     @FXML
-    private Button btnClose;
+    private Button btnClose = new Button();
 
     @FXML
     private MFXTextField tfUsername;
 
     @FXML
+    private SplitPane rightSplitPane;
+
+    @FXML
+    private JFXListCell btnAttendeeDetails = new JFXListCell();
+
+    @FXML
     private MFXPasswordField pfPassword;
 
     @FXML
-    private MFXButton btnLogin;
+    private MFXButton btnLogin =new MFXButton();
 
     @FXML
     private Label errorMessageLabel;
@@ -110,8 +119,21 @@ public class Controller implements Initializable {
         return isValid;
     }
 
+
+
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+
+        btnAttendeeDetails.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                rightSplitPane.setVisible(true);
+            }
+        });
+
         btnClose.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -142,5 +164,33 @@ public class Controller implements Initializable {
                 }
             }
         });
+
+
+//        Dark Config
+
+        TerminalConfig darkConfig = new TerminalConfig();
+        darkConfig.setBackgroundColor(Color.rgb(16, 16, 16));
+        darkConfig.setForegroundColor(Color.rgb(240, 240, 240));
+        darkConfig.setCursorColor(Color.rgb(255, 0, 0, 0.5));
+
+//        CygWin Config
+        TerminalConfig cygwinConfig = new TerminalConfig();
+        cygwinConfig.setWindowsTerminalStarter("C:\\cygwin64\\bin\\bash -i");
+        cygwinConfig.setFontSize(14);
+
+
+//        Default Config
+        TerminalConfig defaultConfig = new TerminalConfig();
+
+
+        TerminalBuilder terminalBuilder = new TerminalBuilder(defaultConfig);
+        TerminalTab terminal = terminalBuilder.newTerminal();
+//        terminal.onTerminalFxReady(() -> {
+//            terminal.getTerminal().command("java -version\r");
+//        });
+
+        tabPane.getTabs().add(terminal);
+
+
     }
 }

@@ -13,7 +13,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<SplitPane dividerPositions="0.5602409638554217, 0.7535140562248996" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="784.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.Terminal.FXMLController">
+<SplitPane dividerPositions="0.5602409638554217, 0.7535140562248996" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="600.0" prefWidth="784.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.Controller">
     <items>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="222.0" prefWidth="599.0">
             <children>
@@ -34,6 +34,7 @@
                 </ButtonBar>
             </children></AnchorPane>
 
+
         <AnchorPane id="AnchorPane" prefHeight="500.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" >
             <children>
 
@@ -44,5 +45,6 @@
 
             </children>
         </AnchorPane>
+
     </items>
 </SplitPane>

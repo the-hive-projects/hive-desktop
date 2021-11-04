@@ -11,7 +11,7 @@ import java.io.IOException;
 public class InboxView extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(InboxView.class.getResource("inbox-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(InboxView.class.getResource("inbox-terminal-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1000, 500);
         stage.setTitle("HIVE Inbox");
         stage.getIcons().add(new Image(InboxView.class.getResourceAsStream("/img/logo2.png")));

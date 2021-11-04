@@ -19,9 +19,10 @@ module org.thehive.hivedesktop {
     requires javafx.web;
     requires jdk.jsobject;
     requires org.apache.httpcomponents.httpcore;
+    requires com.jfoenix;
 
-    exports org.thehive.hivedesktop to javafx.graphics;
-    exports org.thehive.hivedesktop.Terminal to javafx.fxml;
+    exports org.thehive.hivedesktop to javafx.graphics, javafx.fxml;
+    opens org.thehive.hivedesktop to  javafx.fxml;
 
 
 }

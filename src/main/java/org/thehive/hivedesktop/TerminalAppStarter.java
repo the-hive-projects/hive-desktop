@@ -23,8 +23,6 @@ public class TerminalAppStarter extends Application {
 
         Scene scene = new Scene(root);
 
-
-        stage.setTitle("TerminalFX");
         stage.setScene(scene);
         stage.show();
     }
