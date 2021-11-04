@@ -18,7 +18,7 @@
 <?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 
-<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="880.0" style="-fx-background-color: #f89c0e;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"  fx:controller="org.thehive.hivedesktop.Controller">
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="880.0" style="-fx-background-color: #f89c0e;" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"  fx:controller="org.thehive.hivedesktop.Controllers.Controller">
    <children>
       <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="400.0" styleClass="left-side-background" stylesheets="@../../../values/style.css">
          <children>

@@ -1,4 +1,4 @@
-package org.thehive.hivedesktop;
+package org.thehive.hivedesktop.Controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.palexdev.materialfx.controls.MFXButton;

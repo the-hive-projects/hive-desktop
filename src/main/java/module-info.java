@@ -21,13 +21,11 @@ module org.thehive.hivedesktop {
     requires org.apache.httpcomponents.httpcore;
     requires com.jfoenix;
 
-    exports org.thehive.hivedesktop.Controllers to  javafx.fxml;
     opens org.thehive.hivedesktop.Controllers to  javafx.fxml;
 
     exports org.thehive.hivedesktop to javafx.graphics, javafx.fxml;
     opens org.thehive.hivedesktop to  javafx.fxml;
-
-
+    exports org.thehive.hivedesktop.Controllers to javafx.fxml, javafx.graphics;
 
 
 }

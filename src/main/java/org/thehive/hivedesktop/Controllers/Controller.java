@@ -1,4 +1,4 @@
-package org.thehive.hivedesktop;
+package org.thehive.hivedesktop.Controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jfoenix.controls.JFXListCell;
@@ -23,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
+import org.thehive.hivedesktop.HelloApplication;
 import org.thehive.hiveserverclient.model.User;
 import org.thehive.hiveserverclient.net.http.RequestCallback;
 import org.thehive.hiveserverclient.net.http.UserClientImpl;
@@ -65,13 +66,6 @@ public class Controller implements Initializable {
         stage.show();
     }
 
-    public void switchToLogin(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("HiveDesktopApplication.fxml"));
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
 
     private boolean isFieldFilled() {
         boolean isFilled = true;
