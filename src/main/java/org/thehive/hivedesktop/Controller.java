@@ -1,4 +1,4 @@
-package org.thehive.hivedesktop.Controllers;
+package org.thehive.hivedesktop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jfoenix.controls.JFXListCell;
@@ -21,12 +21,14 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicHeader;
 import org.thehive.hivedesktop.HelloApplication;
 import org.thehive.hiveserverclient.model.User;
 import org.thehive.hiveserverclient.net.http.RequestCallback;
 import org.thehive.hiveserverclient.net.http.UserClientImpl;
+import org.thehive.hiveserverclient.service.SignUpStatus;
 import org.thehive.hiveserverclient.service.UserServiceImpl;
 import org.thehive.hiveserverclient.service.SignInStatus;
 import java.io.IOException;
@@ -35,13 +37,13 @@ import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+@Slf4j
 public class Controller implements Initializable {
     @FXML
     private Button btnClose = new Button();
 
     @FXML
     private MFXTextField tfUsername;
-
 
     @FXML
     private MFXPasswordField pfPassword;
@@ -125,6 +127,7 @@ public class Controller implements Initializable {
         btnLogin.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
+                log.info("clicked");
                 errorMessage = "";
                 if (isFieldFilled()) {
                     var u = tfUsername.getText();
@@ -132,13 +135,20 @@ public class Controller implements Initializable {
 
 
                     var defaultUserClient = new UserClientImpl("http://localhost:8080/user", HttpClients.createSystem(), new ObjectMapper(), (ThreadPoolExecutor) Executors.newCachedThreadPool());
-
-
                     var service = new UserServiceImpl(defaultUserClient);
 
                     service.signIn(u, p, r -> {
+                        if(r.status() == SignInStatus.INCORRECT){
+                            Platform.runLater(()->{
+                                errorMessageLabel.setText("Incorret Credentials");
+                            });
+                        }
+                        else if(r.status() == SignInStatus.FAIL){
+                            Platform.runLater(()->{
+                                errorMessageLabel.setText("Connection Error");
+                            });
+                        }
 
-                        System.out.println(r.status().name());
 
                     });
 

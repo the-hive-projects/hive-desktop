@@ -10,7 +10,6 @@ module org.thehive.hivedesktop {
     requires java.desktop;
     requires java.compiler;
     requires MaterialFX;
-    requires hiveserverclient;
     requires org.apache.httpcomponents.httpclient;
     requires terminalfx;
     requires pty4j;
@@ -20,6 +19,9 @@ module org.thehive.hivedesktop {
     requires jdk.jsobject;
     requires org.apache.httpcomponents.httpcore;
     requires com.jfoenix;
+    requires hive.server.client;
+    requires lombok;
+    requires org.slf4j;
 
     opens org.thehive.hivedesktop.Controllers to  javafx.fxml;
 

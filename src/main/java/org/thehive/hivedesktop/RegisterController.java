@@ -1,9 +1,10 @@
-package org.thehive.hivedesktop.Controllers;
+package org.thehive.hivedesktop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,8 +18,12 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.apache.http.impl.client.HttpClients;
+import org.thehive.hiveserverclient.model.User;
+import org.thehive.hiveserverclient.model.UserInfo;
 import org.thehive.hiveserverclient.net.http.UserClientImpl;
+import org.thehive.hiveserverclient.service.SignUpStatus;
 import org.thehive.hiveserverclient.service.UserServiceImpl;
+import org.thehive.hiveserverclient.util.MessageUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -116,10 +121,42 @@ public class RegisterController implements Initializable {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 errorMessage = "";
-                if (isFieldFilled()) {
-                    System.out.println("Deneme");
 
-                }
+                    var name = tfName.getText();
+                    var surname = tfSurname.getText();
+                    var username = tfUsername.getText();
+                    var email = tfEmail.getText();
+                    var password = pfPassword.getPassword();
+
+                    var defaultUserClient = new UserClientImpl("http://localhost:8080/user", HttpClients.createSystem(), new ObjectMapper(), (ThreadPoolExecutor) Executors.newCachedThreadPool());
+                    var service = new UserServiceImpl(defaultUserClient);
+
+                    var user = new User(0,username,password,email,new UserInfo(name,surname,0));
+                    service.signUp(user,r->{
+                        if(r.status() == SignUpStatus.VALID){
+
+                        }
+                        else if(r.status() == SignUpStatus.INVALID){
+                            var messageList = MessageUtils.parsePairedMessageList(r.message().get(),",",":","[","]");
+                            System.out.println(messageList);
+                            var sb=new StringBuilder();
+                            messageList.stream().map(i->i.value).forEach(v->sb.append(v+"\n"));
+                            var msg=sb.toString();
+                            System.out.println(msg);
+                            Platform.runLater(()->{
+                                errorMessageLabel.setText(msg);
+                            });
+                        }
+                        else if(r.status() == SignUpStatus.FAIL){
+                            Platform.runLater(()->{
+                                errorMessageLabel.setText("Connection Error");
+                            });
+                        }
+
+                    });
+
+
+
             }
         });
     }
