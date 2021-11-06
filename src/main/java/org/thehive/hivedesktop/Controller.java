@@ -1,10 +1,6 @@
 package org.thehive.hivedesktop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jfoenix.controls.JFXListCell;
-import com.kodedu.terminalfx.TerminalBuilder;
-import com.kodedu.terminalfx.TerminalTab;
-import com.kodedu.terminalfx.config.TerminalConfig;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
@@ -19,18 +15,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicHeader;
 import org.thehive.hivedesktop.HelloApplication;
-import org.thehive.hiveserverclient.model.User;
-import org.thehive.hiveserverclient.net.http.RequestCallback;
 import org.thehive.hiveserverclient.net.http.UserClientImpl;
-import org.thehive.hiveserverclient.service.SignUpStatus;
 import org.thehive.hiveserverclient.service.UserServiceImpl;
-import org.thehive.hiveserverclient.service.SignInStatus;
+import org.thehive.hiveserverclient.service.status.SignInStatus;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;

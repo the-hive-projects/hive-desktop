@@ -23,11 +23,11 @@ module org.thehive.hivedesktop {
     requires lombok;
     requires org.slf4j;
 
-    opens org.thehive.hivedesktop.Controllers to  javafx.fxml;
+    opens org.thehive.hivedesktop.controllers to  javafx.fxml;
 
     exports org.thehive.hivedesktop to javafx.graphics, javafx.fxml;
     opens org.thehive.hivedesktop to  javafx.fxml;
-    exports org.thehive.hivedesktop.Controllers to javafx.fxml, javafx.graphics;
+    exports org.thehive.hivedesktop.controllers to javafx.fxml, javafx.graphics;
 
 
 }

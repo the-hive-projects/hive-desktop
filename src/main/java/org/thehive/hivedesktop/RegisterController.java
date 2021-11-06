@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import lombok.extern.slf4j.Slf4j;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
@@ -21,8 +22,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.thehive.hiveserverclient.model.User;
 import org.thehive.hiveserverclient.model.UserInfo;
 import org.thehive.hiveserverclient.net.http.UserClientImpl;
-import org.thehive.hiveserverclient.service.SignUpStatus;
 import org.thehive.hiveserverclient.service.UserServiceImpl;
+import org.thehive.hiveserverclient.service.status.SignUpStatus;
 import org.thehive.hiveserverclient.util.MessageUtils;
 
 import java.io.IOException;
@@ -31,6 +32,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+@Slf4j
 public class RegisterController implements Initializable {
     @FXML
     private Button btnClose;
@@ -118,22 +120,25 @@ public class RegisterController implements Initializable {
         });
 
         btnRegister.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
             @Override
             public void handle(MouseEvent mouseEvent) {
+                log.info("clicked");
                 errorMessage = "";
 
-                    var name = tfName.getText();
-                    var surname = tfSurname.getText();
-                    var username = tfUsername.getText();
-                    var email = tfEmail.getText();
-                    var password = pfPassword.getPassword();
+                    var name = tfName.getText().trim();
+                    var surname = tfSurname.getText().trim();
+                    var username = tfUsername.getText().trim();
+                    var email = tfEmail.getText().trim();
+                    var password = pfPassword.getPassword().trim();
 
                     var defaultUserClient = new UserClientImpl("http://localhost:8080/user", HttpClients.createSystem(), new ObjectMapper(), (ThreadPoolExecutor) Executors.newCachedThreadPool());
                     var service = new UserServiceImpl(defaultUserClient);
 
-                    var user = new User(0,username,password,email,new UserInfo(name,surname,0));
+                    var user = new User(0,username,email,password,new UserInfo(0,name,surname,0L));
                     service.signUp(user,r->{
                         if(r.status() == SignUpStatus.VALID){
+                            System.out.println("Successfully SignedUp");
 
                         }
                         else if(r.status() == SignUpStatus.INVALID){
