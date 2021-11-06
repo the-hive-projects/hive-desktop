@@ -35,3 +35,14 @@
     -fx-underline: true;
     -fx-color: #212121;
 }
+
+/*Session-View*/
+
+.profile-layout{
+    -fx-background-color: #f89c0e;
+    -fx-background-radius: 0 0 50 50;
+}
+
+.white-background{
+    -fx-background-color: #fff;
+}
