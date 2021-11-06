@@ -140,6 +140,19 @@ public class Controller implements Initializable {
                                 errorMessageLabel.setText("Connection Error");
                             });
                         }
+                        else if(r.status() == SignInStatus.CORRECT){
+                            Platform.runLater(()->{
+                                try {
+                                    root = FXMLLoader.load(getClass().getResource("session-view.fxml"));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                                scene = new Scene(root);
+                                stage.setScene(scene);
+                                stage.show();
+                            });
+                        }
 
 
                     });
