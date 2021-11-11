@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.impl.client.HttpClients;
 import org.thehive.hivedesktop.HelloApplication;
@@ -152,15 +153,18 @@ public class Controller implements Initializable {
                         else if(r.status() == SignInStatus.CORRECT){
                             Platform.runLater(()->{
                                 try {
-                                    root = FXMLLoader.load(getClass().getResource("session-view.fxml"));
+                                    Parent root = FXMLLoader.load(getClass().getResource("session-view.fxml"));
+                                    stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                                    scene = new Scene(root);
+                                    stage.hide(); //optional
+                                    stage.setScene(scene);
+                                    stage.setResizable(true);
+                                    stage.show();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-                                stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                                scene = new Scene(root);
-                                stage.hide(); //optional
-                                stage.setScene(scene);
-                                stage.show();
+
+
                             });
                         }
 

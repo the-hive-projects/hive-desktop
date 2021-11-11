@@ -4,8 +4,9 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.image.ImageView;
 
-import javax.swing.text.html.ImageView;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -24,6 +25,6 @@ public class SessionController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        System.out.println("Merhaba");
     }
 }
