@@ -61,6 +61,17 @@ public class Controller implements Initializable {
     }
 
 
+    public void handleButtonAction(ActionEvent event) throws IOException{
+        System.out.println("You clicked me!");
+        root = FXMLLoader.load(getClass().getResource("session-view.fxml"));
+        scene = new Scene(root);
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.hide(); //optional
+        stage.setScene(scene);
+        stage.show();
+    }
+
+
     private boolean isFieldFilled() {
         boolean isFilled = true;
         if (tfUsername.getText() == null || tfUsername.getText().isEmpty()) {
@@ -100,8 +111,6 @@ public class Controller implements Initializable {
         errorMessageLabel.setText(errorMessage);
         return isValid;
     }
-
-
 
 
 
@@ -149,6 +158,7 @@ public class Controller implements Initializable {
                                 }
                                 stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
                                 scene = new Scene(root);
+                                stage.hide(); //optional
                                 stage.setScene(scene);
                                 stage.show();
                             });

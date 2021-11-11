@@ -12,7 +12,7 @@ public class SessionView extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(SessionView.class.getResource("session-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        Scene scene = new Scene(fxmlLoader.load());
         stage.getIcons().add(new Image(InboxView.class.getResourceAsStream("/img/logo2.png")));
         stage.setTitle("Hello!");
         stage.setScene(scene);
