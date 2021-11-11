@@ -4,6 +4,7 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 
 
@@ -19,6 +20,15 @@ public class SessionController implements Initializable {
 
     @FXML
     private ImageView image;
+
+    @FXML
+    private Label lbEmail;
+
+    @FXML
+    private Label lbFullname;
+
+    @FXML
+    private Label lbUsername;
 
     @FXML
     private MFXTextField tfJoinSession;
