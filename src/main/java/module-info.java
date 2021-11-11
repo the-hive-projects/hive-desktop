@@ -22,6 +22,7 @@ module org.thehive.hivedesktop {
     requires hive.server.client;
     requires lombok;
     requires org.slf4j;
+    requires eu.mihosoft.monacofx;
 
     opens org.thehive.hivedesktop.controllers to  javafx.fxml;
 
