@@ -14,13 +14,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="876.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
    <left>
       <VBox prefHeight="600.0" prefWidth="320.0" styleClass="white-background" stylesheets="@../../../values/style.css" BorderPane.alignment="CENTER">
          <children>
             <VBox alignment="CENTER" prefHeight="261.0" prefWidth="320.0" styleClass="profile-layout" stylesheets="@../../../values/style.css">
                <children>
-                  <ImageView fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="image" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../../../img/44066965.png" />
                      </image>
@@ -93,7 +93,7 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <MFXButton fx:id="btCreateSession" layoutX="435.0" layoutY="148.0" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Create Session" textFill="WHITE">
+                  <MFXButton fx:id="btCreateSession" layoutX="385.0" layoutY="128.0" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Create Session" textFill="WHITE">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -103,8 +103,8 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <MFXTextField fx:id="tfJoinSession" layoutX="176.0" layoutY="136.0" prefHeight="25.0" prefWidth="236.0" />
-                  <MFXButton fx:id="btJoinSession" layoutX="428.0" layoutY="128.0" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Join Session" textFill="WHITE">
+                  <MFXTextField fx:id="tfJoinSession" layoutX="128.0" layoutY="136.0" prefHeight="25.0" prefWidth="236.0" />
+                  <MFXButton fx:id="btJoinSession" layoutX="383.0" layoutY="128.0" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Join Session" textFill="WHITE">
                      <font>
                         <Font size="15.0" />
                      </font>

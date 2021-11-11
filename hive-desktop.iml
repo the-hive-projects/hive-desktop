@@ -17,7 +17,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: io.github.palexdev:materialfx:11.12.0" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:win:16" level="project" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:16" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-controls:win:16" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.openjfx:javafx-swing:win:16" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-media:win:16" level="project" />
@@ -112,9 +111,11 @@
     <orderEntry type="library" name="Maven: org.ow2.asm:asm:6.2" level="project" />
     <orderEntry type="library" name="Maven: com.thoughtworks.qdox:qdox:2.0-M8" level="project" />
     <orderEntry type="library" name="Maven: com.kodedu.terminalfx:terminalfx:1.0.8" level="project" />
+    <orderEntry type="library" name="Maven: eu.mihosoft.monacofx:monacofx:0.0.7" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-base:12.0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.openjfx:javafx-media:12.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.8.1" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-web:16" level="project" />
-    <orderEntry type="library" name="Maven: org.openjfx:javafx-media:16" level="project" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.18.22" level="project" />
   </component>
 </module>

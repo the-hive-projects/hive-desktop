@@ -51,8 +51,7 @@ public class TerminalController implements Initializable {
 //        Default Config
         TerminalConfig defaultConfig = new TerminalConfig();
 
-
-        TerminalBuilder terminalBuilder = new TerminalBuilder(defaultConfig);
+        TerminalBuilder terminalBuilder = new TerminalBuilder(darkConfig);
         TerminalTab terminal = terminalBuilder.newTerminal();
 //        terminal.onTerminalFxReady(() -> {
 //            terminal.getTerminal().command("java -version\r");
