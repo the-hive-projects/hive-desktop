@@ -25,7 +25,7 @@
                         <Image url="@../../../img/44066965.png" />
                      </image>
                   </ImageView>
-                  <Label text="Mustafa Tufekci" textFill="#eeeeee">
+                  <Label fx:id="lbFullname" text="Mustafa Tufekci" textFill="#eeeeee">
                      <font>
                         <Font name="Arial Bold" size="18.0" />
                      </font>
@@ -43,7 +43,7 @@
                         <Font name="Arial Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label prefHeight="21.0" prefWidth="368.0" text="lazar" textFill="#9a9a9a">
+                  <Label fx:id="lbUsername" prefHeight="21.0" prefWidth="368.0" text="lazar" textFill="#9a9a9a">
                      <font>
                         <Font name="Arial Bold" size="18.0" />
                      </font>
@@ -56,7 +56,7 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <Label prefHeight="21.0" prefWidth="330.0" text="mustafa.tufekci@gmail.com" textFill="#9a9a9a">
+                  <Label fx:id="lbEmail" prefHeight="21.0" prefWidth="330.0" text="mustafa.tufekci@gmail.com" textFill="#9a9a9a">
                      <font>
                         <Font name="Arial Bold" size="18.0" />
                      </font>

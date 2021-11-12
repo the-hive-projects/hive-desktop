@@ -25,7 +25,7 @@
                            <children>
                               <ButtonBar prefHeight="40.0" prefWidth="200.0">
                                  <buttons>
-                                    <MFXButton fx:id="runCode" style="-fx-background-color: #373737; -fx-text-fill: #FFC107;" text="&gt; Run " />
+                                    <MFXButton fx:id="btnRunCode" style="-fx-background-color: #373737; -fx-text-fill: #FFC107;" text="&gt; Run " />
                                     <MFXButton style="-fx-background-color: #373737; -fx-text-fill: #FFC107;" text="Save" />
                                  </buttons>
                               </ButtonBar>
