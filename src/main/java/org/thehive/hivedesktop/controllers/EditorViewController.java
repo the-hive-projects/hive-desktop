@@ -1,5 +1,6 @@
 package org.thehive.hivedesktop.controllers;
 
+import com.jfoenix.controls.JFXListCell;
 import com.kodedu.terminalfx.TerminalBuilder;
 import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
@@ -9,18 +10,25 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 
-import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.URL;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.ResourceBundle;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class EditorViewController implements Initializable {
@@ -31,6 +39,9 @@ public class EditorViewController implements Initializable {
     @FXML
     MFXButton btnAddNewTab;
 
+    @FXML
+    MFXButton btnSendMessage;
+
 
     public TabPane terminalPane = new TabPane();
 
@@ -39,6 +50,16 @@ public class EditorViewController implements Initializable {
 
     @FXML
     Tab firstTab;
+
+    @FXML
+    ScrollPane chatScroll;
+    @FXML
+    VBox chatBox;
+
+    @FXML
+    TextArea messageArea;
+
+
 
 
 
@@ -140,6 +161,90 @@ public class EditorViewController implements Initializable {
 
     }
 
+    @FXML
+    private TextArea createLabel()
+    {
+
+
+        TextArea messageLabel = new TextArea();
+
+        messageLabel.setEditable(false);
+        messageLabel.setWrapText(true);
+        messageLabel.wrapTextProperty().set(true);
+
+        messageLabel.setPrefHeight(50);
+
+        Font font = Font.font("Helvetica", FontWeight.NORMAL,
+                FontPosture.REGULAR, 12);
+
+        messageLabel.setFont(font);
+        messageLabel.setPadding(new Insets(10, 10, 5, 10));
+        //messageLabel.setTextFill(Color.web("#ffc107"));
+        /*Border labelBorder = new Border(new BorderStroke(Color.web("#ffc107"),
+                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
+
+        messageLabel.setBorder(labelBorder);*/
+        messageLabel.setStyle("-fx-background-color:transparent; -fx-text-area-background:#373737; text-area-background:#373737; -fx-text-fill:#ffc107;  ");
+
+
+        return messageLabel;
+    }
+    @FXML
+    private Line createLine()
+    {
+        Line line = new Line();
+        line.setStartX(0);
+        line.setStartY(100);
+        line.setEndY(100);
+        line.setEndX(300);
+        line.setStyle("-fx-background-color:#ffc107; -fx-stroke: #ffc107; -fx-opacity: 0.5; ");
+
+        return line;
+    }
+
+    @FXML
+    private Hyperlink createUser()
+    {
+        //TODO Hyperlink for username who sent message
+        Hyperlink userName = new Hyperlink();
+        userName.setText("  Onur Sercan Yılmaz");
+
+        Font font = Font.font("Helvetica", FontWeight.BOLD,
+                FontPosture.REGULAR, 10);
+
+        userName.setFont(font);
+        userName.setPadding(new Insets(10, 10, 5, 10));
+        userName.setTextFill(Color.web("#ffc107"));
+
+        //TODO Hyperlink for image who sent message
+        Image img = new Image("https://p.kindpng.com/picc/s/78-786207_user-avatar-png-user-avatar-icon-png-transparent.png"); //image who sent the message form db
+        ImageView view = new ImageView(img);
+        view.setFitHeight(20);
+        view.setPreserveRatio(true);
+        userName.setGraphic(view);
+
+        return userName;
+    }
+
+    @FXML
+    private void addMessageToChatBox()
+    {
+
+        var userName = createUser();
+        var messageLabel = createLabel();
+        var line = createLine();
+
+        String message = messageArea.getText();
+        messageLabel.setText(message);
+        messageArea.setText(null);
+
+
+
+        chatBox.getChildren().addAll(userName,messageLabel,line);
+
+
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -154,6 +259,16 @@ public class EditorViewController implements Initializable {
                 }
             }
         });
+
+
+
+        btnSendMessage.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                addMessageToChatBox();
+            }
+        });
+
 
 
 
