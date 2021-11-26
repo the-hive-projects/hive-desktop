@@ -1,18 +1,21 @@
 package org.thehive.hivedesktop.controllers;
 
-import com.jfoenix.controls.JFXListCell;
 import com.kodedu.terminalfx.TerminalBuilder;
 import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
-import eu.mihosoft.monacofx.Document;
 import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import javafx.event.ActionEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
@@ -21,10 +24,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.stage.Stage;
+import org.thehive.hivedesktop.EditorView;
+import org.thehive.hivedesktop.InboxView;
+import org.thehive.hivedesktop.SessionView;
 
 import java.io.*;
 import java.net.URL;
@@ -41,6 +47,8 @@ public class EditorViewController implements Initializable {
 
     @FXML
     MFXButton btnSendMessage;
+    @FXML
+    MFXButton btnLeaveSession;
 
 
     public TabPane terminalPane = new TabPane();
@@ -162,11 +170,21 @@ public class EditorViewController implements Initializable {
     }
 
     @FXML
+    public void switchToPage(MouseEvent event, String fxml) throws IOException {
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxml)));
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    @FXML
     private TextArea createLabel()
     {
 
 
         TextArea messageLabel = new TextArea();
+
 
         messageLabel.setEditable(false);
         messageLabel.setWrapText(true);
@@ -184,7 +202,7 @@ public class EditorViewController implements Initializable {
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
 
         messageLabel.setBorder(labelBorder);*/
-        messageLabel.setStyle("-fx-background-color:transparent; -fx-text-area-background:#373737; text-area-background:#373737; -fx-text-fill:#ffc107;  ");
+        messageLabel.setStyle("-fx-background-color:transparent;  -fx-text-area-background:#373737; text-area-background:#373737; -fx-text-fill:#ffc107;  ");
 
 
         return messageLabel;
@@ -243,6 +261,8 @@ public class EditorViewController implements Initializable {
         chatBox.getChildren().addAll(userName,messageLabel,line);
 
 
+
+
     }
 
     @Override
@@ -268,6 +288,10 @@ public class EditorViewController implements Initializable {
                 addMessageToChatBox();
             }
         });
+
+
+
+
 
 
 
@@ -311,6 +335,24 @@ public class EditorViewController implements Initializable {
 
             }
         });
+
+        btnLeaveSession.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+                ScreenController screenController = new ScreenController();
+                SessionView sessionView = new SessionView();
+                try {
+                    screenController.switchToISessionView(event, sessionView);
+                    btnLeaveSession.getScene().getWindow().hide();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
         terminalPane.getTabs().add(terminal);
 
 

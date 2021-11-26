@@ -56,6 +56,15 @@
                                              </image>
                                           </ImageView>
                                        </graphic></MFXButton>
+                                    <MFXButton fx:id="btnLeaveSession" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Leave">
+                                       <graphic>
+                                          <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../../img/leaveSession.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                    </MFXButton>
                                  </buttons>
                               </ButtonBar>
                               <TabPane fx:id="editorPane" prefHeight="493.0" prefWidth="633.0" style="-fx-background-color: #373737; -fx-inner-border: #373737; -fx-border-color: #373737;" styleClass="tabselected" stylesheets="@../../../css/style.css" tabClosingPolicy="ALL_TABS">
@@ -114,19 +123,15 @@
                      <content>
                         <SplitPane dividerPositions="0.7842741935483871" orientation="VERTICAL" prefHeight="398.4" prefWidth="161.6" style="-fx-background-color: #373737; -fx-box-border: 0000;">
                           <items>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="237.0" style="-fx-background-color: #373737;">
-                                 <children>
-                                    <ScrollPane fx:id="chatScroll" maxWidth="300.0" prefHeight="303.0" prefWidth="236.0" style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                      <content>
-                                        <AnchorPane maxWidth="300.0" minHeight="0.0" minWidth="0.0" prefHeight="792.0" prefWidth="300.0" style="-fx-background-color: #373737;">
-                                             <children>
-                                                <VBox fx:id="chatBox" maxWidth="300.0" prefHeight="792.0" prefWidth="300.0" style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                             </children>
-                                          </AnchorPane>
-                                      </content>
-                                    </ScrollPane>
-                                 </children>
-                              </AnchorPane>
+                              <ScrollPane fx:id="chatScroll" style="-fx-background-color: #373737; -fx-box-border: 0000;">
+                                 <content>
+                                    <AnchorPane minHeight="700.0" minWidth="300.0" style="-fx-background-color: #373737;">
+                                       <children>
+                                          <VBox fx:id="chatBox" prefHeight="0.0" prefWidth="0.0" style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </content>
+                              </ScrollPane>
                             <AnchorPane maxHeight="225.0" minHeight="225.0" minWidth="0.0" prefHeight="225.0" prefWidth="160.0" style="-fx-background-color: #373737; -fx-border-color: #343434;">
                                  <children>
                                     <VBox layoutX="30.0" layoutY="-66.0" prefHeight="82.4" prefWidth="160.0" style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
