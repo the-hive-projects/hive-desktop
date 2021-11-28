@@ -6,28 +6,69 @@
 
     <groupId>org.thehive</groupId>
     <artifactId>hive-desktop</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>hive-desktop</name>
 
-
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>11</java.version>
+        <javafx.version>11.0.2</javafx.version>
+        <client.version>1.0.0</client.version>
         <junit.version>5.7.1</junit.version>
         <slf4j.version>1.7.30</slf4j.version>
+        <lombok.version>1.18.22</lombok.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <javafx-maven-plugin.version>0.0.6</javafx-maven-plugin.version>
     </properties>
 
     <repositories>
-
-
         <repository>
             <id>terminalfx-repo</id>
             <url>https://github.com/javaterminal/terminalfx/raw/master/releases</url>
         </repository>
     </repositories>
 
-
-
     <dependencies>
+        <dependency>
+            <groupId>org.thehive</groupId>
+            <artifactId>hive-server-client</artifactId>
+            <version>${client.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-web</artifactId>
+            <version>${javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.7</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>io.github.palexdev</groupId>
             <artifactId>materialfx</artifactId>
@@ -49,44 +90,19 @@
             <version>9.0.10</version>
         </dependency>
         <dependency>
-            <groupId>org.thehive</groupId>
-            <artifactId>hive-server-client</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.kodedu.pty4j</groupId>
-            <artifactId>pty4j</artifactId>
-            <version>0.7.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.12.5</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>11.0.2</version>
+            <groupId>com.kodedu.terminalfx</groupId>
+            <artifactId>terminalfx</artifactId>
+            <version>1.0.8</version>
         </dependency>
         <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>11.0.2</version>
+            <groupId>eu.mihosoft.monacofx</groupId>
+            <artifactId>monacofx</artifactId>
+            <version>0.0.7</version>
         </dependency>
 
         <dependency>
@@ -101,47 +117,6 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.12.5</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>maven-surefire-common</artifactId>
-            <version>2.22.2</version>
-        </dependency>
-        <!-- Add dependency for Java 8-->
-        <dependency>
-            <groupId>com.kodedu.terminalfx</groupId>
-            <artifactId>terminalfx</artifactId>
-            <version>1.0.8</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/eu.mihosoft.monacofx/monacofx -->
-        <dependency>
-            <groupId>eu.mihosoft.monacofx</groupId>
-            <artifactId>monacofx</artifactId>
-            <version>0.0.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.8.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-web</artifactId>
-            <version>16</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
-
-        </dependency>
-
     </dependencies>
 
     <build>
@@ -149,19 +124,25 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <annotationProcessorPath>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </annotationProcessorPath>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.6</version>
+                <version>${javafx-maven-plugin.version}</version>
                 <executions>
                     <execution>
-                        <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>org.thehive.hivedesktop/org.thehive.hivedesktop.HelloApplication</mainClass>

@@ -1,10 +1,8 @@
 package org.thehive.hivedesktop;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -13,22 +11,15 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.impl.client.HttpClients;
-import org.thehive.hivedesktop.HelloApplication;
-import org.thehive.hiveserverclient.net.http.UserClientImpl;
-import org.thehive.hiveserverclient.service.UserServiceImpl;
-import org.thehive.hiveserverclient.service.status.SignInStatus;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @Slf4j
 public class Controller implements Initializable {
@@ -42,7 +33,7 @@ public class Controller implements Initializable {
     private MFXPasswordField pfPassword;
 
     @FXML
-    private MFXButton btnLogin =new MFXButton();
+    private MFXButton btnLogin = new MFXButton();
 
     @FXML
     private Label errorMessageLabel;
@@ -62,7 +53,7 @@ public class Controller implements Initializable {
     }
 
 
-    public void handleButtonAction(ActionEvent event) throws IOException{
+    public void handleButtonAction(ActionEvent event) throws IOException {
         System.out.println("You clicked me!");
         root = FXMLLoader.load(getClass().getResource("session-view.fxml"));
         scene = new Scene(root);
@@ -114,7 +105,6 @@ public class Controller implements Initializable {
     }
 
 
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -134,47 +124,9 @@ public class Controller implements Initializable {
                 if (isFieldFilled()) {
                     var u = tfUsername.getText();
                     var p = pfPassword.getPassword();
-
-
-                    var defaultUserClient = new UserClientImpl("http://localhost:8080/user", HttpClients.createSystem(), new ObjectMapper(), (ThreadPoolExecutor) Executors.newCachedThreadPool());
-                    var service = new UserServiceImpl(defaultUserClient);
-
-                    service.signIn(u, p, r -> {
-                        if(r.status() == SignInStatus.INCORRECT){
-                            Platform.runLater(()->{
-                                errorMessageLabel.setText("Incorret Credentials");
-                            });
-                        }
-                        else if(r.status() == SignInStatus.FAIL){
-                            Platform.runLater(()->{
-                                errorMessageLabel.setText("Connection Error");
-                            });
-                        }
-                        else if(r.status() == SignInStatus.CORRECT){
-                            Platform.runLater(()->{
-                                try {
-                                    Parent root = FXMLLoader.load(getClass().getResource("session-view.fxml"));
-                                    stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                                    scene = new Scene(root);
-                                    stage.hide(); //optional
-                                    stage.setScene(scene);
-                                    stage.setResizable(true);
-                                    stage.show();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-
-                            });
-                        }
-
-
-                    });
-
                 }
             }
         });
-
 
 
     }
