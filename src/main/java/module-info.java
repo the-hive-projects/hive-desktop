@@ -22,12 +22,12 @@ module org.thehive.hivedesktop {
     requires eu.mihosoft.monacofx;
     requires lombok;
 
-    opens org.thehive.hivedesktop.controllers to  javafx.fxml;
-    opens org.thehive.hivedesktop to  javafx.fxml;
+    opens org.thehive.hivedesktop to javafx.fxml;
     opens org.thehive.hivedesktop.scene to javafx.fxml;
+    opens org.thehive.hivedesktop.controllers to javafx.fxml;
 
-    exports org.thehive.hivedesktop to javafx.fxml,javafx.graphics;
-    exports org.thehive.hivedesktop.scene to javafx.fxml,javafx.graphics;
-    exports org.thehive.hivedesktop.controllers to javafx.fxml,javafx.graphics;
+    exports org.thehive.hivedesktop to javafx.fxml, javafx.graphics;
+    exports org.thehive.hivedesktop.scene to javafx.fxml, javafx.graphics;
+    exports org.thehive.hivedesktop.controllers to javafx.fxml, javafx.graphics;
 
 }

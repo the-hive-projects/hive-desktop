@@ -6,8 +6,6 @@ import java.io.IOException;
 
 public interface AppScene {
 
-    String getName();
-
     void load(Stage stage) throws IOException;
 
 }
