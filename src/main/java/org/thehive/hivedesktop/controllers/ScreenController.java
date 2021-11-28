@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import org.thehive.hivedesktop.EditorView;
 import org.thehive.hivedesktop.InboxView;
+import org.thehive.hivedesktop.ProfileDialogView;
 import org.thehive.hivedesktop.SessionView;
 
 import javax.swing.*;
@@ -28,5 +29,9 @@ public class ScreenController {
     public void switchToISessionView(MouseEvent event, SessionView sessionView) throws IOException {
         sessionView.start(new Stage());
     }
+    public void showProfileDialogView(ProfileDialogView profileDialogView) throws IOException {
+        profileDialogView.start(new Stage());
+    }
+
 
 }
