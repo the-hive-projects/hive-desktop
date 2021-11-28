@@ -145,7 +145,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.thehive.hivedesktop/org.thehive.hivedesktop.HelloApplication</mainClass>
+                            <mainClass>org.thehive.hivedesktop/org.thehive.hivedesktop.App</mainClass>
                         </configuration>
                     </execution>
                 </executions>
