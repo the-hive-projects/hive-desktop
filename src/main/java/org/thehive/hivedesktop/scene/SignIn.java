@@ -5,6 +5,7 @@ import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import org.thehive.hivedesktop.Ctx;
 
 import java.io.IOException;
 import java.net.URL;
@@ -20,23 +21,17 @@ public class SignIn extends SingleInstanceScene {
 
     public static class Controller implements Initializable {
 
-
         private MFXTextField tfUsername;
-
-
         private MFXPasswordField pfPassword;
-
-
         private MFXButton btnLogin;
-
 
         @Override
         public void initialize(URL location, ResourceBundle resources) {
 
         }
 
-        public void switchToRegister(ActionEvent event) throws IOException {
-
+        public void loadSignUp(ActionEvent event) {
+            Ctx.getInstance().sceneManager.load(SignUp.class);
         }
 
     }

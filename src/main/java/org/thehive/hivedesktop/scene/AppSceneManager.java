@@ -6,11 +6,11 @@ public interface AppSceneManager {
 
     boolean addIfNotExists(AppScene scene);
 
-    void remove(String name);
+    void remove(Class<? extends AppScene> type);
 
-    boolean contains(String name);
+    boolean contains(Class<? extends AppScene> type);
 
-    void load(String name);
+    void load(Class<? extends AppScene> type);
 
     AppScene currentScene();
 

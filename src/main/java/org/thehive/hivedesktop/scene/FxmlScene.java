@@ -17,6 +17,8 @@ public abstract class FxmlScene implements AppScene {
     @Override
     public final void load(Stage stage) throws IOException {
         stage.setScene(createScene(stage));
+        if (!stage.isShowing())
+            stage.show();
     }
 
     public String getFxmlFilename() {
