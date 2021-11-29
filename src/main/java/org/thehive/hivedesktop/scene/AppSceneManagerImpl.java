@@ -5,21 +5,34 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 public class AppSceneManagerImpl implements AppSceneManager {
 
-    private final Stage stage;
     private final Map<Class<? extends AppScene>, AppScene> nameSceneMap;
+    private Stage stage;
     private AppScene currentScene;
 
-    public AppSceneManagerImpl(@NonNull Stage stage) {
+    public AppSceneManagerImpl() {
+        this(null);
+    }
+
+    public AppSceneManagerImpl(Stage stage) {
         this.stage = stage;
         this.nameSceneMap = new HashMap<>();
         this.currentScene = null;
+    }
+
+    @Override
+    public Stage getStage() {
+        return stage;
+    }
+
+    @Override
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     @Override
@@ -55,13 +68,16 @@ public class AppSceneManagerImpl implements AppSceneManager {
     @SneakyThrows
     @Override
     public void load(@NonNull Class<? extends AppScene> type) {
-        if (contains(type)) {
-            var scene = nameSceneMap.get(type);
-            scene.load(stage);
-            this.currentScene = scene;
-            log.info("Scene was loaded successfully, name: {}", type.getName());
+        if (stage != null) {
+            if (contains(type)) {
+                var scene = nameSceneMap.get(type);
+                scene.load(stage);
+                this.currentScene = scene;
+                log.info("Scene was loaded successfully, name: {}", type.getName());
+            } else
+                log.warn("AppScene is not found, name: {}", type.getName());
         } else
-            log.warn("AppScene is not found, name: {}", type.getName());
+            log.warn("Stage in manager is null");
     }
 
     @Override

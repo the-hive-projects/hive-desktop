@@ -16,6 +16,7 @@ public class App extends Application {
     @Override
     public void init() throws Exception {
         log.info("Application started");
+        Ctx.initialize();
     }
 
     @Override
@@ -25,13 +26,9 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        stage.setMaxWidth(500);
-        stage.setMaxHeight(500);
-        Ctx.initialize(stage);
-        var signIn = new SignIn();
-        Ctx.getInstance().sceneManager.add(signIn);
-        var signUp = new SignUp();
-        Ctx.getInstance().sceneManager.add(signUp);
+        Ctx.getInstance().sceneManager.setStage(stage);
+        Ctx.getInstance().sceneManager.add(new SignIn());
+        Ctx.getInstance().sceneManager.add(new SignUp());
         Ctx.getInstance().sceneManager.load(SignIn.class);
     }
 

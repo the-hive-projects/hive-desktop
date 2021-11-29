@@ -1,6 +1,12 @@
 package org.thehive.hivedesktop.scene;
 
+import javafx.stage.Stage;
+
 public interface AppSceneManager {
+
+    Stage getStage();
+
+    void setStage(Stage stage);
 
     void add(AppScene scene);
 

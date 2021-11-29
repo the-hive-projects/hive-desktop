@@ -23,4 +23,5 @@ public class EditorView extends Application {
     public static void main(String[] args) {
         launch();
     }
+
 }
