@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="430.0" prefWidth="408.0" styleClass="VBox" stylesheets="@../../../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.controllers.ProfileDialogViewController">
+   <children>
+      <ButtonBar buttonMinWidth="75.0" prefHeight="16.0" prefWidth="300.0">
+        <buttons>
+            <Button fx:id="btnClose" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" stylesheets="@../../../values/style.css">
+                <graphic>
+                    <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 50; -fx-background-radius: 50;">
+                        <image>
+                            <Image url="@../../../img/close.png" />
+                        </image>
+                    </ImageView>
+                </graphic>
+                <styleClass>
+                    <String fx:value="transparent" />
+
+                </styleClass>
+            </Button>
+        </buttons>
+      </ButtonBar>
+      <ImageView fx:id="image" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../../img/44066965.png" />
+         </image>
+      </ImageView>
+      <Pane prefHeight="12.0" prefWidth="442.0" />
+      <Label fx:id="lbFullname" alignment="CENTER" prefHeight="27.0" prefWidth="239.0" text="Mustafa Tüfekçi" textFill="#373737">
+         <font>
+            <Font name="Arial Bold" size="30.0" />
+         </font>
+      </Label>
+      <Label fx:id="lbFullname1" alignment="CENTER" prefHeight="11.0" prefWidth="239.0" text="Yazılım Mühendisliği" textFill="#373737">
+         <font>
+            <Font name="Arial Bold" size="17.0" />
+         </font>
+      </Label>
+      <Label fx:id="lbFullname11" alignment="CENTER" prefHeight="11.0" prefWidth="239.0" text="3.Sınıf" textFill="#373737">
+         <font>
+            <Font name="Arial Bold" size="17.0" />
+         </font>
+      </Label>
+      <Pane prefHeight="10.0" prefWidth="378.0" />
+      <Label prefHeight="22.0" prefWidth="263.0" text="Username" textFill="#b49300">
+         <font>
+            <Font name="Arial Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="lbUsername" prefHeight="22.0" prefWidth="266.0" text="mustafatufekci" textFill="#373737">
+         <font>
+            <Font name="Arial Bold" size="18.0" />
+         </font>
+      </Label>
+      <Pane prefHeight="10.0" prefWidth="378.0" />
+      <Label prefHeight="22.0" prefWidth="265.0" text="Email" textFill="#b49300">
+         <font>
+            <Font name="Arial Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="lbEmail" prefHeight="22.0" prefWidth="266.0" text="mustafa.tufekci@gmail.com" textFill="#373737">
+         <font>
+            <Font name="Arial Bold" size="18.0" />
+         </font>
+      </Label>
+   </children>
+</VBox>

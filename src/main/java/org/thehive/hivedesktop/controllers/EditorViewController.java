@@ -30,6 +30,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import org.thehive.hivedesktop.EditorView;
 import org.thehive.hivedesktop.InboxView;
+import org.thehive.hivedesktop.ProfileDialogView;
 import org.thehive.hivedesktop.SessionView;
 
 import java.io.*;
@@ -40,15 +41,15 @@ import java.util.*;
 public class EditorViewController implements Initializable {
 
     @FXML
-    MFXButton btnRunCode;
+    private MFXButton btnRunCode;
 
     @FXML
-    MFXButton btnAddNewTab;
+    private MFXButton btnAddNewTab;
 
     @FXML
-    MFXButton btnSendMessage;
+    private MFXButton btnSendMessage;
     @FXML
-    MFXButton btnLeaveSession;
+    private MFXButton btnLeaveSession;
 
 
     public TabPane terminalPane = new TabPane();
@@ -241,6 +242,24 @@ public class EditorViewController implements Initializable {
         view.setPreserveRatio(true);
         userName.setGraphic(view);
 
+        userName.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                ScreenController screenController = new ScreenController();
+                ProfileDialogView profileDialogView = new ProfileDialogView();
+                try {
+                    screenController.showProfileDialogView(profileDialogView);
+                    //userName.setDisable(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
+
+
         return userName;
     }
 
@@ -256,13 +275,7 @@ public class EditorViewController implements Initializable {
         messageLabel.setText(message);
         messageArea.setText(null);
 
-
-
         chatBox.getChildren().addAll(userName,messageLabel,line);
-
-
-
-
     }
 
     @Override
@@ -349,9 +362,10 @@ public class EditorViewController implements Initializable {
                     e.printStackTrace();
                 }
 
-
             }
         });
+
+
 
         terminalPane.getTabs().add(terminal);
 
