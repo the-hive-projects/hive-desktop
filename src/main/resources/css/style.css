@@ -49,7 +49,7 @@
 }
 
 
-VBox {
+.VBoxes {
     -fx-border-radius: 50 50 50 50;
        -fx-background-radius: 60 60 60 60;
        -fx-background-color: #ffc107;

@@ -10,15 +10,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="430.0" prefWidth="408.0" styleClass="VBox" stylesheets="@../../../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.controllers.ProfileDialogViewController">
+<VBox alignment="CENTER" prefHeight="430.0" prefWidth="408.0" styleClass="VBoxes" stylesheets="@../../../../css/style.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.controllers.ProfileDialogViewController">
    <children>
       <ButtonBar buttonMinWidth="75.0" prefHeight="16.0" prefWidth="300.0">
         <buttons>
-            <Button fx:id="btnClose" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" stylesheets="@../../../values/style.css">
+            <Button fx:id="btnClose" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" stylesheets="@../../../../values/style.css">
                 <graphic>
                     <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 50; -fx-background-radius: 50;">
                         <image>
-                            <Image url="@../../../img/close.png" />
+                            <Image url="@../../../../img/close.png" />
                         </image>
                     </ImageView>
                 </graphic>
@@ -31,7 +31,7 @@
       </ButtonBar>
       <ImageView fx:id="image" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../img/44066965.png" />
+            <Image url="@../../../../img/44066965.png" />
          </image>
       </ImageView>
       <Pane prefHeight="12.0" prefWidth="442.0" />

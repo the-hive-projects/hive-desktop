@@ -3,9 +3,7 @@ package org.thehive.hivedesktop;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
-import org.thehive.hivedesktop.scene.MainScene;
-import org.thehive.hivedesktop.scene.SignInScene;
-import org.thehive.hivedesktop.scene.SignUpScene;
+import org.thehive.hivedesktop.scene.*;
 
 @Slf4j
 public class App extends Application {
@@ -31,7 +29,11 @@ public class App extends Application {
         Ctx.getInstance().sceneManager.add(new SignInScene());
         Ctx.getInstance().sceneManager.add(new SignUpScene());
         Ctx.getInstance().sceneManager.add(new MainScene());
-        Ctx.getInstance().sceneManager.load(SignInScene.class);
+        Ctx.getInstance().sceneManager.add(new EditorScene());
+        Ctx.getInstance().sceneManager.add(new InboxScene());
+
+
+        Ctx.getInstance().sceneManager.load(EditorScene.class);
     }
 
 }
