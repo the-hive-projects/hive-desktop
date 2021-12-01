@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -27,7 +28,9 @@ public class ProfileDialogViewController implements Initializable {
         btnClose.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                btnClose.getScene().getWindow().hide();
+                //TODO Close DialogBox
+                Stage stage = (Stage) btnClose.getScene().getWindow();
+                stage.close();
             }
         });
 
