@@ -63,7 +63,7 @@ public class SignInScene extends FxmlSingleLoadedScene {
 
         @FXML
         void onSignInButtonClick(MouseEvent event) {
-            log.info("Button clicked, id: onSignInButtonClick");
+            log.info("Button clicked, #onSignInButtonClick");
             warningMessageLabel.setText("");
             var username = usernameTextField.getText();
             var password = passwordTextField.getPassword();
@@ -92,7 +92,7 @@ public class SignInScene extends FxmlSingleLoadedScene {
 
         @FXML
         void onSignUpLinkClick(MouseEvent event) {
-            log.info("Link clicked, id: onSignUpLinkClick");
+            log.info("Link clicked, #onSignUpLinkClick");
             Ctx.getInstance().sceneManager.load(SignUpScene.class);
         }
 

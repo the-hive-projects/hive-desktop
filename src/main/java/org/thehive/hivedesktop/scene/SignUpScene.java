@@ -51,17 +51,6 @@ public class SignUpScene extends FxmlSingleLoadedScene {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
         }
 
-        @FXML
-        void onSignUpButtonClick(MouseEvent event) {
-            log.info("Button clicked, id: onSignUpButtonClick");
-        }
-
-        @FXML
-        void onSignInLinkClick(MouseEvent event) {
-            log.info("Link clicked, id: onSignInLinkClick");
-            Ctx.getInstance().sceneManager.load(SignInScene.class);
-        }
-
         @Override
         public void onStart() {
             log.info("SignUpScene#onStart");
@@ -76,6 +65,18 @@ public class SignUpScene extends FxmlSingleLoadedScene {
         public void onUnload() {
             log.info("SignUpScene#onUnload");
         }
+
+        @FXML
+        void onSignUpButtonClick(MouseEvent event) {
+            log.info("Button clicked, #onSignUpButtonClick");
+        }
+
+        @FXML
+        void onSignInLinkClick(MouseEvent event) {
+            log.info("Link clicked, #onSignInLinkClick");
+            Ctx.getInstance().sceneManager.load(SignInScene.class);
+        }
+
 
     }
 

@@ -8,7 +8,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.String?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+      minWidth="-Infinity"
       prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #f89c0e;"
       xmlns="http://javafx.com/javafx/17" fx:controller="org.thehive.hivedesktop.scene.SignUpScene$Controller">
     <VBox alignment="CENTER" prefWidth="300.0" styleClass="left-side-background"

@@ -13,27 +13,26 @@ public class App extends Application {
     }
 
     @Override
-    public void init() throws Exception {
+    public void init() {
         log.info("Application started");
         Ctx.initialize();
     }
 
     @Override
-    public void stop() throws Exception {
+    public void stop() {
         log.info("Application stopped");
+        System.exit(0);
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         Ctx.getInstance().sceneManager.setStage(stage);
         Ctx.getInstance().sceneManager.add(new SignInScene());
         Ctx.getInstance().sceneManager.add(new SignUpScene());
         Ctx.getInstance().sceneManager.add(new MainScene());
         Ctx.getInstance().sceneManager.add(new EditorScene());
         Ctx.getInstance().sceneManager.add(new InboxScene());
-
-
-        Ctx.getInstance().sceneManager.load(EditorScene.class);
+        Ctx.getInstance().sceneManager.load(SignInScene.class);
     }
 
 }
