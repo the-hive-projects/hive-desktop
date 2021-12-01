@@ -14,11 +14,11 @@ import org.thehive.hivedesktop.Ctx;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class SignUp extends SingleInstanceScene {
+public class SignUpScene extends FxmlSingleLoadedScene {
 
     static final String FXML_FILENAME = "sign-up.fxml";
 
-    public SignUp() {
+    public SignUpScene() {
         super(FXML_FILENAME);
     }
 
@@ -62,7 +62,7 @@ public class SignUp extends SingleInstanceScene {
         @FXML
         void onSignInLinkClick(MouseEvent event) {
             log.info("Link clicked, id: onSignInLinkClick");
-            Ctx.getInstance().sceneManager.load(SignIn.class);
+            Ctx.getInstance().sceneManager.load(SignInScene.class);
         }
 
     }

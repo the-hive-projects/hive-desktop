@@ -8,13 +8,14 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import org.thehive.hivedesktop.scene.MainScene;
 
 import java.io.IOException;
 
 public class RegisterView extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(SessionView.class.getResource("register-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(MainScene.class.getResource("register-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.getIcons().add(new Image(InboxView.class.getResourceAsStream("/img/logo2.png")));
         stage.setTitle("Hello!");

@@ -7,11 +7,11 @@ import lombok.NonNull;
 
 import java.io.IOException;
 
-public class SingleInstanceScene extends FxmlScene {
+public class FxmlSingleLoadedScene extends FxmlScene {
 
     private Scene scene;
 
-    protected SingleInstanceScene(@NonNull String fxmlFilename) {
+    protected FxmlSingleLoadedScene(@NonNull String fxmlFilename) {
         super(fxmlFilename);
     }
 

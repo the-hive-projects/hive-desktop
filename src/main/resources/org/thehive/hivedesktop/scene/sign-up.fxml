@@ -10,7 +10,7 @@
 <?import java.lang.String?>
 <HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
       prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #f89c0e;"
-      xmlns="http://javafx.com/javafx/17" fx:controller="org.thehive.hivedesktop.scene.SignUp$Controller">
+      xmlns="http://javafx.com/javafx/17" fx:controller="org.thehive.hivedesktop.scene.SignUpScene$Controller">
     <VBox alignment="CENTER" prefWidth="300.0" styleClass="left-side-background"
           stylesheets="@../../../../values/style.css">
         <ImageView fitHeight="393.0" fitWidth="267.0" pickOnBounds="true" preserveRatio="true">

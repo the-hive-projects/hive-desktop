@@ -17,11 +17,11 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.StringJoiner;
 
-public class SignIn extends SingleInstanceScene {
+public class SignInScene extends FxmlSingleLoadedScene {
 
     static final String FXML_FILENAME = "sign-in.fxml";
 
-    public SignIn() {
+    public SignInScene() {
         super(FXML_FILENAME);
     }
 
@@ -57,14 +57,14 @@ public class SignIn extends SingleInstanceScene {
             signInButton.setDisable(true);
             Ctx.getInstance().userService.signIn(username, password, result -> {
                 if (result.status().isSuccess()) {
-                    Platform.runLater(() -> warningMessageLabel.setText("Success"));
+                    Platform.runLater(() -> Ctx.getInstance().sceneManager.load(MainScene.class));
                 } else if (result.status().isError()) {
                     result.message().ifPresent(message -> {
-                        var errorMessageSJ = new StringJoiner(".\n");
+                        var errorMessageStringJoiner = new StringJoiner(".\n");
                         MessageUtils.parseMessageList(message, ",")
-                                .forEach(errorMessageSJ::add);
+                                .forEach(errorMessageStringJoiner::add);
                         Platform.runLater(() -> {
-                            warningMessageLabel.setText(errorMessageSJ.toString());
+                            warningMessageLabel.setText(errorMessageStringJoiner.toString());
                             signInButton.setDisable(false);
                         });
                     });
@@ -80,7 +80,7 @@ public class SignIn extends SingleInstanceScene {
         @FXML
         void onSignUpLinkClick(MouseEvent event) {
             log.info("Link clicked, id: onSignUpLinkClick");
-            Ctx.getInstance().sceneManager.load(SignUp.class);
+            Ctx.getInstance().sceneManager.load(SignUpScene.class);
         }
 
     }

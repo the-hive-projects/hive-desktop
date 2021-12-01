@@ -7,9 +7,9 @@ import lombok.NonNull;
 
 import java.io.IOException;
 
-public class MultipleInstanceScene extends FxmlScene {
+public class FxmlMultipleLoadedScene extends FxmlScene {
 
-    protected MultipleInstanceScene(@NonNull String fxmlFilename) {
+    protected FxmlMultipleLoadedScene(@NonNull String fxmlFilename) {
         super(fxmlFilename);
     }
 

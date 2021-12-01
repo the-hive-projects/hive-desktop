@@ -25,6 +25,11 @@ public abstract class FxmlScene implements AppScene {
         return fxmlFilename;
     }
 
+    @Override
+    public void onLoad() {
+
+    }
+
     protected abstract Scene createScene(@NonNull Stage stage) throws IOException;
 
 }

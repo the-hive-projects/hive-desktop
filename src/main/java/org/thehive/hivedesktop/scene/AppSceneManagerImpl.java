@@ -72,6 +72,7 @@ public class AppSceneManagerImpl implements AppSceneManager {
             if (contains(type)) {
                 var scene = nameSceneMap.get(type);
                 scene.load(stage);
+                scene.onLoad();
                 this.currentScene = scene;
                 log.info("Scene was loaded successfully, name: {}", type.getName());
             } else

@@ -5,7 +5,6 @@ import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
 import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -18,7 +17,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
@@ -28,10 +26,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import org.thehive.hivedesktop.EditorView;
-import org.thehive.hivedesktop.InboxView;
 import org.thehive.hivedesktop.ProfileDialogView;
-import org.thehive.hivedesktop.SessionView;
+import org.thehive.hivedesktop.scene.MainScene;
 
 import java.io.*;
 import java.net.URL;
@@ -354,7 +350,7 @@ public class EditorViewController implements Initializable {
             public void handle(MouseEvent event) {
 
                 ScreenController screenController = new ScreenController();
-                SessionView sessionView = new SessionView();
+                MainScene sessionView = new MainScene();
                 try {
                     screenController.switchToISessionView(event, sessionView);
                     btnLeaveSession.getScene().getWindow().hide();
