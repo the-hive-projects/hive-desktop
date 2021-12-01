@@ -21,6 +21,8 @@ module org.thehive.hivedesktop {
     requires org.slf4j;
     requires eu.mihosoft.monacofx;
     requires lombok;
+    requires spring.websocket;
+    requires spring.messaging;
 
     opens org.thehive.hivedesktop to javafx.fxml;
     opens org.thehive.hivedesktop.scene to javafx.fxml;

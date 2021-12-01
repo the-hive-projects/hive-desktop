@@ -11,12 +11,15 @@ import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.util.ImageUtils;
-import org.thehive.hiveserverclient.model.Session;
-import org.thehive.hiveserverclient.service.Result;
+import org.thehive.hiveserverclient.net.websocket.WebSocketConnection;
+import org.thehive.hiveserverclient.net.websocket.WebSocketListener;
+import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
+import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription;
+import org.thehive.hiveserverclient.payload.Payload;
+import org.thehive.hiveserverclient.service.ResultStatus;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.function.Consumer;
 
 public class MainScene extends FxmlSingleLoadedScene {
 
@@ -38,7 +41,10 @@ public class MainScene extends FxmlSingleLoadedScene {
         private Label emailLabel;
 
         @FXML
-        private MFXTextField joinIdTextField;
+        private MFXTextField joinSessionIdTextField;
+
+        @FXML
+        private Label joinInfoLabel;
 
         @FXML
         private MFXButton joinSessionButton;
@@ -87,6 +93,42 @@ public class MainScene extends FxmlSingleLoadedScene {
                     });
                 }
             });
+            Ctx.getInstance().webSocketService.connect(new WebSocketListener() {
+                @Override
+                public void onConnect(WebSocketConnection webSocketConnection) {
+                    log.info("WebSocketListener#onConnect");
+                }
+
+                @Override
+                public void onSubscribe(StompSubscription stompSubscription) {
+                    log.info("WebSocketListener#onSubscribe");
+                }
+
+                @Override
+                public void onUnsubscribe(StompSubscription stompSubscription) {
+                    log.info("WebSocketListener#onUnsubscribe");
+                }
+
+                @Override
+                public void onReceive(AppStompHeaders appStompHeaders, Payload payload) {
+                    log.info("WebSocketListener#onReceive");
+                }
+
+                @Override
+                public void onSend(Payload payload) {
+                    log.info("WebSocketListener#onSend");
+                }
+
+                @Override
+                public void onException(Throwable throwable) {
+                    log.info("WebSocketListener#onException");
+                }
+
+                @Override
+                public void onDisconnect(WebSocketConnection webSocketConnection) {
+                    log.info("WebSocketListener#onDisconnect");
+                }
+            });
         }
 
         @Override
@@ -100,15 +142,40 @@ public class MainScene extends FxmlSingleLoadedScene {
         }
 
         @FXML
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
         void onJoinSessionButtonClick(MouseEvent event) {
             log.info("Button clicked, #onJoinSessionButtonClick");
-            var sessionId=joinIdTextField.getText();
-            Ctx.getInstance().sessionService.take(sessionId, new Consumer<>() {
-                @Override
-                public void accept(Result<? extends Session> result) {
-                    if(result.status().isSuccess()){{
-                        log.info("Success");
-                    }}
+            var sessionId = joinSessionIdTextField.getText();
+            if (sessionId.isEmpty()) {
+                log.info("SessionId is empty");
+                return;
+            }
+            log.info("SessionId: {}", sessionId);
+            joinSessionButton.setDisable(true);
+            joinInfoLabel.setText("Joining ...");
+            Ctx.getInstance().sessionService.take(sessionId, result -> {
+                if (result.status().isSuccess()) {
+                    Platform.runLater(() -> {
+                        joinInfoLabel.setText("Joined, name: " + result.entity().get().getName());
+                        Ctx.getInstance().sceneManager.load(EditorScene.class);
+                    });
+                } else if (result.status().isError()) {
+                    if (result.status() == ResultStatus.ERROR_UNAVAILABLE) {
+                        Platform.runLater(() -> {
+                            joinInfoLabel.setText("Session not found");
+                            joinSessionButton.setDisable(false);
+                        });
+                    } else {
+                        Platform.runLater(() -> {
+                            joinInfoLabel.setText(result.message().get());
+                            joinSessionButton.setDisable(false);
+                        });
+                    }
+                } else {
+                    Platform.runLater(() -> {
+                        joinInfoLabel.setText("Fail");
+                        joinSessionButton.setDisable(false);
+                    });
                 }
             });
         }
