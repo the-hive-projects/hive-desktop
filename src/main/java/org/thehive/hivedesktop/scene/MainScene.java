@@ -3,22 +3,23 @@ package org.thehive.hivedesktop.scene;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-
-import java.net.URL;
-import java.util.ResourceBundle;
+import lombok.extern.slf4j.Slf4j;
+import org.thehive.hivedesktop.Ctx;
 
 public class MainScene extends FxmlSingleLoadedScene {
 
-    static final String FXML_FILENAME = "main.fxml";
+    private static final String FXML_FILENAME = "main.fxml";
 
     public MainScene() {
         super(FXML_FILENAME);
     }
 
-    public static class Controller implements Initializable {
+    @Slf4j
+    public static class Controller extends AbstractController {
+
+        private static final Class<? extends AppScene> SCENE_TYPE = MainScene.class;
 
         @FXML
         private MFXButton btCreateSession;
@@ -41,9 +42,23 @@ public class MainScene extends FxmlSingleLoadedScene {
         @FXML
         private MFXTextField tfJoinSession;
 
-        @Override
-        public void initialize(URL url, ResourceBundle resourceBundle) {
+        protected Controller() {
+            super(Ctx.getInstance().sceneManager, SCENE_TYPE);
+        }
 
+        @Override
+        public void onStart() {
+            log.info("MainScene#onStart");
+        }
+
+        @Override
+        public void onLoad() {
+            log.info("MainScene#onLoad");
+        }
+
+        @Override
+        public void onUnload() {
+            log.info("MainScene#onUnload");
         }
 
     }

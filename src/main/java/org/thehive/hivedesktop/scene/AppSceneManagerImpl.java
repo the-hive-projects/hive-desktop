@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 public class AppSceneManagerImpl implements AppSceneManager {
@@ -52,31 +53,39 @@ public class AppSceneManagerImpl implements AppSceneManager {
     }
 
     @Override
-    public void remove(@NonNull Class<? extends AppScene> type) {
-        var scene = nameSceneMap.remove(type);
-        if (scene != null)
-            log.info("AppScene was removed successfully, name: {}", type.getName());
-        else
-            log.warn("AppScene was not removed, name: {}", type.getName());
+    @SuppressWarnings("unchecked")
+    public <S extends AppScene> Optional<S> get(Class<S> sceneType) {
+        return Optional.ofNullable((S) nameSceneMap.get(sceneType));
     }
 
     @Override
-    public boolean contains(@NonNull Class<? extends AppScene> type) {
-        return nameSceneMap.containsKey(type);
+    public void remove(@NonNull Class<? extends AppScene> sceneType) {
+        var scene = nameSceneMap.remove(sceneType);
+        if (scene != null)
+            log.info("AppScene was removed successfully, name: {}", sceneType.getName());
+        else
+            log.warn("AppScene was not removed, name: {}", sceneType.getName());
+    }
+
+    @Override
+    public boolean contains(@NonNull Class<? extends AppScene> sceneType) {
+        return nameSceneMap.containsKey(sceneType);
     }
 
     @SneakyThrows
     @Override
-    public void load(@NonNull Class<? extends AppScene> type) {
+    public void load(@NonNull Class<? extends AppScene> sceneType) {
         if (stage != null) {
-            if (contains(type)) {
-                var scene = nameSceneMap.get(type);
-                scene.load(stage);
-                scene.onLoad();
-                this.currentScene = scene;
-                log.info("Scene was loaded successfully, name: {}", type.getName());
+            if (contains(sceneType)) {
+                var loadedScene = nameSceneMap.get(sceneType);
+                if (currentScene != null)
+                    currentScene.getController().ifPresent(AppController::onUnload);
+                loadedScene.load(stage);
+                loadedScene.getController().ifPresent(AppController::onLoad);
+                this.currentScene = loadedScene;
+                log.info("Scene was loaded successfully, name: {}", sceneType.getName());
             } else
-                log.warn("AppScene is not found, name: {}", type.getName());
+                log.warn("AppScene is not found, name: {}", sceneType.getName());
         } else
             log.warn("Stage in manager is null");
     }

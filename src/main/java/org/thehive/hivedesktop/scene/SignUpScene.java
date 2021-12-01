@@ -5,25 +5,23 @@ import io.github.palexdev.materialfx.controls.MFXLabel;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Ctx;
 
-import java.net.URL;
-import java.util.ResourceBundle;
-
 public class SignUpScene extends FxmlSingleLoadedScene {
 
-    static final String FXML_FILENAME = "sign-up.fxml";
+    private static final String FXML_FILENAME = "sign-up.fxml";
 
     public SignUpScene() {
         super(FXML_FILENAME);
     }
 
     @Slf4j
-    public static class Controller implements Initializable {
+    public static class Controller extends AbstractController {
+
+        private static final Class<? extends AppScene> SCENE_TYPE = SignUpScene.class;
 
         @FXML
         private MFXTextField emailTextField;
@@ -49,9 +47,8 @@ public class SignUpScene extends FxmlSingleLoadedScene {
         @FXML
         private MFXLabel warningMessageLabel;
 
-        @Override
-        public void initialize(URL location, ResourceBundle resources) {
-            log.info("Controller is initializing, class: {}", getClass().getName());
+        public Controller() {
+            super(Ctx.getInstance().sceneManager, SCENE_TYPE);
         }
 
         @FXML
@@ -63,6 +60,21 @@ public class SignUpScene extends FxmlSingleLoadedScene {
         void onSignInLinkClick(MouseEvent event) {
             log.info("Link clicked, id: onSignInLinkClick");
             Ctx.getInstance().sceneManager.load(SignInScene.class);
+        }
+
+        @Override
+        public void onStart() {
+            log.info("SignUpScene#onStart");
+        }
+
+        @Override
+        public void onLoad() {
+            log.info("SignUpScene#onLoad");
+        }
+
+        @Override
+        public void onUnload() {
+            log.info("SignUpScene#onUnload");
         }
 
     }
