@@ -6,7 +6,7 @@ import lombok.NonNull;
 
 import java.io.IOException;
 
-public abstract class FxmlScene implements AppScene {
+public abstract class FxmlScene extends AbstractScene {
 
     protected final String fxmlFilename;
 

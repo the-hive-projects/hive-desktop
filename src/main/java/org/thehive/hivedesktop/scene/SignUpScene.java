@@ -5,25 +5,23 @@ import io.github.palexdev.materialfx.controls.MFXLabel;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Ctx;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+public class SignUpScene extends FxmlSingleLoadedScene {
 
-public class SignUp extends SingleInstanceScene {
+    private static final String FXML_FILENAME = "sign-up.fxml";
 
-    static final String FXML_FILENAME = "sign-up.fxml";
-
-    public SignUp() {
+    public SignUpScene() {
         super(FXML_FILENAME);
     }
 
     @Slf4j
-    public static class Controller implements Initializable {
+    public static class Controller extends AbstractController {
+
+        private static final Class<? extends AppScene> SCENE_TYPE = SignUpScene.class;
 
         @FXML
         private MFXTextField emailTextField;
@@ -49,21 +47,36 @@ public class SignUp extends SingleInstanceScene {
         @FXML
         private MFXLabel warningMessageLabel;
 
+        public Controller() {
+            super(Ctx.getInstance().sceneManager, SCENE_TYPE);
+        }
+
         @Override
-        public void initialize(URL location, ResourceBundle resources) {
-            log.info("Controller is initializing, class: {}", getClass().getName());
+        public void onStart() {
+            log.info("SignUpScene#onStart");
+        }
+
+        @Override
+        public void onLoad() {
+            log.info("SignUpScene#onLoad");
+        }
+
+        @Override
+        public void onUnload() {
+            log.info("SignUpScene#onUnload");
         }
 
         @FXML
         void onSignUpButtonClick(MouseEvent event) {
-            log.info("Button clicked, id: onSignUpButtonClick");
+            log.info("Button clicked, #onSignUpButtonClick");
         }
 
         @FXML
         void onSignInLinkClick(MouseEvent event) {
-            log.info("Link clicked, id: onSignInLinkClick");
-            Ctx.getInstance().sceneManager.load(SignIn.class);
+            log.info("Link clicked, #onSignInLinkClick");
+            Ctx.getInstance().sceneManager.load(SignInScene.class);
         }
+
 
     }
 

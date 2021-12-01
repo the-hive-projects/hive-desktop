@@ -15,8 +15,17 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
+
 <HBox maxHeight="600.0" maxWidth="900.0" minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #f89c0e;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.SignIn$Controller">
     <VBox alignment="CENTER" prefHeight="600.0" prefWidth="623.0" styleClass="left-side-background" stylesheets="@../../../../values/style.css">
+
+<?import java.lang.String?>
+<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+      prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #f89c0e;"
+      xmlns="http://javafx.com/javafx/17" fx:controller="org.thehive.hivedesktop.scene.SignInScene$Controller">
+    <VBox alignment="CENTER" prefWidth="300.0" styleClass="left-side-background"
+          stylesheets="@../../../../values/style.css">
+
         <ImageView id="logoImage" fitHeight="393.0" fitWidth="267.0" pickOnBounds="true" preserveRatio="true">
             <Image url="@../../../../img/logo.png" />
          <VBox.margin>
@@ -35,7 +44,10 @@
       </Label>
     </VBox>
     <VBox alignment="CENTER" prefWidth="600.0">
+
         <MFXTextField fx:id="usernameTextField" lineColor="#ffdd08" prefHeight="30.0" prefWidth="300.0" promptText="Username">
+
+
             <VBox.margin>
                 <Insets top="10.0" />
             </VBox.margin>
@@ -43,7 +55,10 @@
                 <Font name="Arial" size="15.0" />
             </font>
         </MFXTextField>
+
         <MFXPasswordField fx:id="passwordTextField" lineColor="#ffc107" prefHeight="30.0" prefWidth="300.0" promptText="Password">
+
+
             <VBox.margin>
                 <Insets top="20.0" />
             </VBox.margin>

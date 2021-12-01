@@ -2,6 +2,8 @@ package org.thehive.hivedesktop.scene;
 
 import javafx.stage.Stage;
 
+import java.util.Optional;
+
 public interface AppSceneManager {
 
     Stage getStage();
@@ -12,11 +14,13 @@ public interface AppSceneManager {
 
     boolean addIfNotExists(AppScene scene);
 
-    void remove(Class<? extends AppScene> type);
+    <S extends AppScene> Optional<S> get(Class<S> sceneType);
 
-    boolean contains(Class<? extends AppScene> type);
+    void remove(Class<? extends AppScene> sceneType);
 
-    void load(Class<? extends AppScene> type);
+    boolean contains(Class<? extends AppScene> sceneType);
+
+    void load(Class<? extends AppScene> sceneType);
 
     AppScene currentScene();
 
