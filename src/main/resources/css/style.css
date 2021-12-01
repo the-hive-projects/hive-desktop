@@ -59,6 +59,17 @@
 
 }
 
+.btnLogin:hover{
+    -fx-background-color: #4b4b4b;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 3px, 3px, 2px, 1px;
+}
+
+.lbBorderTop{
+	-fx-border-top-style: solid;
+	-fx-border-top-color: coral;
+}
+
 
 
 

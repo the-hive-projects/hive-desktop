@@ -25,7 +25,11 @@ public class App extends Application {
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws Exception {
+        stage.setMinWidth(900);
+        stage.setMinHeight(600);
+        stage.setMaxWidth(900);
+        stage.setMaxHeight(600);
         Ctx.getInstance().sceneManager.setStage(stage);
         Ctx.getInstance().sceneManager.add(new SignInScene());
         Ctx.getInstance().sceneManager.add(new SignUpScene());
@@ -33,6 +37,5 @@ public class App extends Application {
         Ctx.getInstance().sceneManager.add(new EditorScene());
         Ctx.getInstance().sceneManager.add(new InboxScene());
         Ctx.getInstance().sceneManager.load(SignInScene.class);
-    }
 
 }
