@@ -1,7 +1,6 @@
 package org.thehive.hivedesktop;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;

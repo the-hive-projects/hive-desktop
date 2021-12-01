@@ -4,63 +4,82 @@
 <?import io.github.palexdev.materialfx.controls.MFXLabel?>
 <?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
-<?import java.lang.String?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-      minWidth="-Infinity"
-      prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #f89c0e;"
-      xmlns="http://javafx.com/javafx/17" fx:controller="org.thehive.hivedesktop.scene.SignIn$Controller">
-    <VBox alignment="CENTER" prefWidth="300.0" styleClass="left-side-background"
-          stylesheets="@../../../../values/style.css">
+
+<HBox maxHeight="600.0" maxWidth="900.0" minHeight="600.0" minWidth="900.0" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #f89c0e;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.SignIn$Controller">
+    <VBox alignment="CENTER" prefHeight="600.0" prefWidth="623.0" styleClass="left-side-background" stylesheets="@../../../../values/style.css">
         <ImageView id="logoImage" fitHeight="393.0" fitWidth="267.0" pickOnBounds="true" preserveRatio="true">
-            <Image url="@../../../../img/logo.png"/>
+            <Image url="@../../../../img/logo.png" />
+         <VBox.margin>
+            <Insets top="100.0" />
+         </VBox.margin>
         </ImageView>
+      <Label alignment="TOP_CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="17.0" prefWidth="186.0" styleClass="lbBorderTop" stylesheets="@../../../../css/style.css" text="Powered by JavaFX ver: 1.0.0" textFill="WHITE">
+         <VBox.margin>
+            <Insets right="300.0" top="200.0" />
+         </VBox.margin>
+      </Label>
+      <Label alignment="TOP_RIGHT" contentDisplay="CENTER" prefHeight="17.0" prefWidth="159.0" styleClass="lbBorderTop" stylesheets="@../../../../css/style.css" text="ver: 1.0.0" textFill="WHITE">
+         <VBox.margin>
+            <Insets left="300.0" />
+         </VBox.margin>
+      </Label>
     </VBox>
     <VBox alignment="CENTER" prefWidth="600.0">
-        <MFXTextField fx:id="usernameTextField" prefHeight="30.0" prefWidth="300.0" promptText="Username">
+        <MFXTextField fx:id="usernameTextField" lineColor="#ffdd08" prefHeight="30.0" prefWidth="300.0" promptText="Username">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
             <font>
-                <Font name="Arial" size="15.0"/>
+                <Font name="Arial" size="15.0" />
             </font>
         </MFXTextField>
-        <MFXPasswordField fx:id="passwordTextField" prefHeight="30.0" prefWidth="300.0" promptText="Password">
+        <MFXPasswordField fx:id="passwordTextField" lineColor="#ffc107" prefHeight="30.0" prefWidth="300.0" promptText="Password">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="20.0" />
             </VBox.margin>
             <font>
-                <Font name="Arial" size="15.0"/>
+                <Font name="Arial" size="15.0" />
             </font>
         </MFXPasswordField>
-        <MFXButton fx:id="signInButton" onMouseClicked="#onSignInButtonClick" prefHeight="30.0" prefWidth="300.0"
-                   style="-fx-background-color: #373737; -fx-background-radius: 16; -fx-border-radius: 10;"
-                   stylesheets="@../../../../values/style.css" text="Sign In" textFill="#f29811">
+        <MFXButton fx:id="signInButton" onMouseClicked="#onSignInButtonClick" prefHeight="30.0" prefWidth="300.0" style="-fx-background-color: #373737; -fx-background-radius: 16; -fx-border-radius: 10;" stylesheets="@../../../../values/style.css" text="Sign In" textFill="#f29811">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="20.0" />
             </VBox.margin>
             <styleClass>
-                <String fx:value="left-side-background"/>
-                <String fx:value="btnLogin"/>
+                <String fx:value="left-side-background" />
+                <String fx:value="btnLogin" />
             </styleClass>
             <font>
-                <Font size="15.0"/>
+                <Font size="15.0" />
             </font>
         </MFXButton>
-        <Hyperlink fx:id="signUpLink" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onSignUpLinkClick"
-                   prefHeight="30.0" prefWidth="300.0" text="Not a member?" textFill="#373737">
+        <Hyperlink fx:id="signUpLink" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onSignUpLinkClick" prefHeight="30.0" prefWidth="300.0" text="Not a member?" textFill="#373737">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="20.0" />
             </VBox.margin>
             <font>
-                <Font name="Arial" size="15.0"/>
+                <Font name="Arial" size="15.0" />
             </font>
         </Hyperlink>
-        <MFXLabel fx:id="warningMessageLabel"/>
+        <MFXLabel fx:id="warningMessageLabel" lineColor="#f89c0e" prefHeight="36.0" prefWidth="125.0" unfocusedLineColor="#f89c0e">
+         <VBox.margin>
+            <Insets top="50.0" />
+         </VBox.margin>
+         <textFill>
+            <Color red="0.9342105388641357" green="0.047575537115335464" blue="0.047575537115335464" />
+         </textFill>
+         <font>
+            <Font size="15.0" />
+         </font></MFXLabel>
     </VBox>
 </HBox>
