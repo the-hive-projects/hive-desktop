@@ -18,11 +18,7 @@ public class ImageUtils {
         return extractByteArrayFromBufferedImage(scaledBufferedImage);
     }
 
-    public static BufferedImage convertImageToBufferedImage(Image image) {
-        return convertImageToBufferedImage(image, "png");
-    }
-
-    public static BufferedImage convertImageToBufferedImage(Image img, String format) {
+    public static BufferedImage convertImageToBufferedImage(Image img) {
         if (img instanceof BufferedImage)
             return (BufferedImage) img;
         BufferedImage bufferedImage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
@@ -33,8 +29,12 @@ public class ImageUtils {
     }
 
     public static byte[] extractByteArrayFromBufferedImage(BufferedImage image) throws IOException {
+        return extractByteArrayFromBufferedImage(image, "png");
+    }
+
+    public static byte[] extractByteArrayFromBufferedImage(BufferedImage image, String format) throws IOException {
         var imageByteArrayOutputStream = new ByteArrayOutputStream();
-        ImageIO.write(image, "png", imageByteArrayOutputStream);
+        ImageIO.write(image, format, imageByteArrayOutputStream);
         return imageByteArrayOutputStream.toByteArray();
     }
 

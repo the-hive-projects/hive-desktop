@@ -11,9 +11,12 @@ import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.util.ImageUtils;
+import org.thehive.hiveserverclient.model.Session;
+import org.thehive.hiveserverclient.service.Result;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public class MainScene extends FxmlSingleLoadedScene {
 
@@ -99,6 +102,15 @@ public class MainScene extends FxmlSingleLoadedScene {
         @FXML
         void onJoinSessionButtonClick(MouseEvent event) {
             log.info("Button clicked, #onJoinSessionButtonClick");
+            var sessionId=joinIdTextField.getText();
+            Ctx.getInstance().sessionService.take(sessionId, new Consumer<>() {
+                @Override
+                public void accept(Result<? extends Session> result) {
+                    if(result.status().isSuccess()){{
+                        log.info("Success");
+                    }}
+                }
+            });
         }
 
     }

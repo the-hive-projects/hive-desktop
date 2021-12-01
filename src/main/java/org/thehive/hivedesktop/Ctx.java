@@ -6,14 +6,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.thehive.hivedesktop.scene.AppSceneManager;
 import org.thehive.hivedesktop.scene.AppSceneManagerImpl;
-import org.thehive.hiveserverclient.net.http.ImageClient;
-import org.thehive.hiveserverclient.net.http.ImageClientImpl;
-import org.thehive.hiveserverclient.net.http.UserClient;
-import org.thehive.hiveserverclient.net.http.UserClientImpl;
-import org.thehive.hiveserverclient.service.ImageService;
-import org.thehive.hiveserverclient.service.ImageServiceImpl;
-import org.thehive.hiveserverclient.service.UserService;
-import org.thehive.hiveserverclient.service.UserServiceImpl;
+import org.thehive.hiveserverclient.net.http.*;
+import org.thehive.hiveserverclient.service.*;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,6 +19,7 @@ public class Ctx {
 
     public final AppSceneManager sceneManager;
     public final UserService userService;
+    public final SessionService sessionService;
     public final ImageService imageService;
 
     public Ctx() {
@@ -32,10 +27,12 @@ public class Ctx {
         ObjectMapper objectMapper = new ObjectMapper();
         CloseableHttpClient httpClient = HttpClients.createSystem();
         ExecutorService executorService = Executors.newFixedThreadPool(Consts.THREAD_POOL_SIZE);
-        UserClient userClient = new UserClientImpl(Consts.SERVER_USER_URI, objectMapper, httpClient, executorService);
+        UserClient userClient = new UserClientImpl(Consts.SERVER_USER_HTTP_URI, objectMapper, httpClient, executorService);
         this.userService = new UserServiceImpl(userClient);
-        ImageClient imageClient = new ImageClientImpl(Consts.SERVER_IMAGE_URI, objectMapper, httpClient, executorService);
+        ImageClient imageClient = new ImageClientImpl(Consts.SERVER_IMAGE_HTTP_URI, objectMapper, httpClient, executorService);
         this.imageService = new ImageServiceImpl(imageClient);
+        SessionClient sessionClient = new SessionClientImpl(Consts.SERVER_SESSION_HTTP_URI, objectMapper, httpClient, executorService);
+        this.sessionService = new SessionServiceImpl(sessionClient);
     }
 
     public static Ctx getInstance() {
