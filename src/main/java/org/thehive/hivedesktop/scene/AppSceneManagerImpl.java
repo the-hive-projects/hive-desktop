@@ -5,6 +5,7 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -75,13 +76,24 @@ public class AppSceneManagerImpl implements AppSceneManager {
     @SneakyThrows
     @Override
     public void load(@NonNull Class<? extends AppScene> sceneType) {
+        this.load(sceneType, null);
+    }
+
+    @SneakyThrows
+    @Override
+    public void load(@NonNull Class<? extends AppScene> sceneType, Map<String, Object> data) {
         if (stage != null) {
             if (contains(sceneType)) {
                 var loadedScene = nameSceneMap.get(sceneType);
                 if (currentScene != null)
                     currentScene.getController().ifPresent(AppController::onUnload);
                 loadedScene.load(stage);
-                loadedScene.getController().ifPresent(AppController::onLoad);
+                loadedScene.getController().ifPresent(appController -> {
+                    if (data == null)
+                        appController.onLoad(Collections.emptyMap());
+                    else
+                        appController.onLoad(Collections.unmodifiableMap(data));
+                });
                 this.currentScene = loadedScene;
                 log.info("Scene was loaded successfully, name: {}", sceneType.getName());
             } else

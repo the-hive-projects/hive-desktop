@@ -2,6 +2,7 @@ package org.thehive.hivedesktop.scene;
 
 import javafx.stage.Stage;
 
+import java.util.Map;
 import java.util.Optional;
 
 public interface AppSceneManager {
@@ -21,6 +22,8 @@ public interface AppSceneManager {
     boolean contains(Class<? extends AppScene> sceneType);
 
     void load(Class<? extends AppScene> sceneType);
+
+    void load(Class<? extends AppScene> sceneType, Map<String,Object> data);
 
     AppScene currentScene();
 

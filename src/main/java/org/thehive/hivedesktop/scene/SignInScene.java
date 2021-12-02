@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hiveserverclient.util.MessageUtils;
 
+import java.util.Map;
 import java.util.StringJoiner;
 
 public class SignInScene extends FxmlSingleLoadedScene {
@@ -52,7 +53,7 @@ public class SignInScene extends FxmlSingleLoadedScene {
         }
 
         @Override
-        public void onLoad() {
+        public void onLoad(Map<String,Object> data) {
             log.info("SignInScene#onLoad");
         }
 

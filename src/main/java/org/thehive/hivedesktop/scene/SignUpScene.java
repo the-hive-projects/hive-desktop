@@ -10,6 +10,8 @@ import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Ctx;
 
+import java.util.Map;
+
 public class SignUpScene extends FxmlSingleLoadedScene {
 
     private static final String FXML_FILENAME = "sign-up.fxml";
@@ -57,7 +59,7 @@ public class SignUpScene extends FxmlSingleLoadedScene {
         }
 
         @Override
-        public void onLoad() {
+        public void onLoad(Map<String, Object> data) {
             log.info("SignUpScene#onLoad");
         }
 

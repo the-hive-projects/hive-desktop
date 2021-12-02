@@ -20,6 +20,7 @@ import org.thehive.hiveserverclient.service.ResultStatus;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Map;
 
 public class MainScene extends FxmlSingleLoadedScene {
 
@@ -69,7 +70,7 @@ public class MainScene extends FxmlSingleLoadedScene {
 
         @Override
         @SuppressWarnings("OptionalGetWithoutIsPresent")
-        public void onLoad() {
+        public void onLoad(Map<String,Object> data) {
             log.info("MainScene#onLoad");
             Ctx.getInstance().userService.profile(profileResult -> {
                 if (profileResult.status().isSuccess()) {
