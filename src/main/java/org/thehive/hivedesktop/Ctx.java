@@ -28,7 +28,7 @@ public class Ctx {
     public final UserService userService;
     public final SessionService sessionService;
     public final ImageService imageService;
-    public final WebSocketService webSocketService;
+    public final WebSocketSingleConnService webSocketService;
 
     public Ctx() {
         this.sceneManager = new AppSceneManagerImpl();

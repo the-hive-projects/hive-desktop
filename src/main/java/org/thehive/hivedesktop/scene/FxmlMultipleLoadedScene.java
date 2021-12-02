@@ -14,7 +14,7 @@ public class FxmlMultipleLoadedScene extends FxmlScene {
     }
 
     @Override
-    protected Scene createScene(@NonNull Stage stage) throws IOException {
+    protected Scene loadScene() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(AppScene.class.getResource(super.fxmlFilename));
         return new Scene(fxmlLoader.load());
     }

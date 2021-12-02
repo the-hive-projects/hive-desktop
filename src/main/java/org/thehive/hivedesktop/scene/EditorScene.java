@@ -22,10 +22,17 @@ import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.ProfileDialogView;
+import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
+import org.thehive.hiveserverclient.net.websocket.header.PayloadType;
+import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription;
+import org.thehive.hiveserverclient.net.websocket.subscription.SubscriptionListener;
+import org.thehive.hiveserverclient.payload.Chat;
+import org.thehive.hiveserverclient.payload.Payload;
 
 import java.io.*;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.Map;
 
 public class EditorScene extends FxmlMultipleLoadedScene {
 
@@ -145,31 +152,22 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             return fout;
         }
 
-
         @FXML
         private TextArea createLabel() {
-
             TextArea messageLabel = new TextArea();
-
             messageLabel.setEditable(false);
             messageLabel.setWrapText(true);
             messageLabel.wrapTextProperty().set(true);
-
             messageLabel.setPrefHeight(50);
-
             Font font = Font.font("Helvetica", FontWeight.NORMAL,
                     FontPosture.REGULAR, 12);
-
             messageLabel.setFont(font);
             messageLabel.setPadding(new Insets(10, 10, 5, 10));
             //messageLabel.setTextFill(Color.web("#ffc107"));
-        /*Border labelBorder = new Border(new BorderStroke(Color.web("#ffc107"),
+            /*Border labelBorder = new Border(new BorderStroke(Color.web("#ffc107"),
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
-
-        messageLabel.setBorder(labelBorder);*/
+            messageLabel.setBorder(labelBorder);*/
             messageLabel.setStyle("-fx-background-color:transparent;  -fx-text-area-background:#373737; text-area-background:#373737; -fx-text-fill:#ffc107;  ");
-
-
             return messageLabel;
         }
 
@@ -205,20 +203,17 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             view.setPreserveRatio(true);
             userName.setGraphic(view);
 
-            userName.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
+            userName.setOnMouseClicked(mouseEvent -> {
 
-                    ProfileDialogView profileDialogView = new ProfileDialogView();
-                    try {
-                        profileDialogView.start(new Stage());
-                        //userName.setDisable(true);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-
+                ProfileDialogView profileDialogView = new ProfileDialogView();
+                try {
+                    profileDialogView.start(new Stage());
+                    //userName.setDisable(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+
+
             });
 
 
@@ -227,15 +222,22 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         @FXML
         private void addMessageToChatBox() {
-
             var userName = createUser();
             var messageLabel = createLabel();
             var line = createLine();
-
             String message = messageArea.getText();
             messageLabel.setText(message);
             messageArea.setText(null);
+            chatBox.getChildren().addAll(userName, messageLabel, line);
+        }
 
+        @FXML
+        private void addMessageToChatBox(Chat chat) {
+            var userName = createUser();
+            var messageLabel = createLabel();
+            var line = createLine();
+            messageLabel.setText(chat.getText());
+            messageArea.setText(null);
             chatBox.getChildren().addAll(userName, messageLabel, line);
         }
 
@@ -286,8 +288,10 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         }
 
         @Override
-        public void onLoad() {
+        public void onLoad(Map<String,Object> data) {
+            Ctx.getInstance().webSocketService.getConnection().ifPresent(connection->{
 
+            });
         }
 
         @Override

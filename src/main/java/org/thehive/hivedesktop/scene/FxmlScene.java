@@ -15,16 +15,14 @@ public abstract class FxmlScene extends AbstractScene {
     }
 
     @Override
-    public final void load(Stage stage) throws IOException {
-        stage.setScene(createScene(stage));
-        if (!stage.isShowing())
-            stage.show();
+    public final Scene getScene() throws IOException {
+        return loadScene();
     }
+
+    protected abstract Scene loadScene() throws IOException;
 
     public String getFxmlFilename() {
         return fxmlFilename;
     }
-
-    protected abstract Scene createScene(@NonNull Stage stage) throws IOException;
 
 }

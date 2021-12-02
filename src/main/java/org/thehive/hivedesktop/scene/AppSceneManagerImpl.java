@@ -87,7 +87,7 @@ public class AppSceneManagerImpl implements AppSceneManager {
                 var loadedScene = nameSceneMap.get(sceneType);
                 if (currentScene != null)
                     currentScene.getController().ifPresent(AppController::onUnload);
-                loadedScene.load(stage);
+                stage.setScene(loadedScene.getScene());
                 loadedScene.getController().ifPresent(appController -> {
                     if (data == null)
                         appController.onLoad(Collections.emptyMap());

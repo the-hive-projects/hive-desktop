@@ -16,7 +16,7 @@ public class FxmlSingleLoadedScene extends FxmlScene {
     }
 
     @Override
-    protected Scene createScene(@NonNull Stage stage) throws IOException {
+    protected Scene loadScene() throws IOException {
         if (scene == null) {
             FXMLLoader fxmlLoader = new FXMLLoader(AppScene.class.getResource(fxmlFilename));
             this.scene = new Scene(fxmlLoader.load());

@@ -1,5 +1,6 @@
 package org.thehive.hivedesktop.scene;
 
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -11,6 +12,6 @@ public interface AppScene {
 
     Optional<AppController> getController();
 
-    void load(Stage stage) throws IOException;
+    Scene getScene() throws IOException;
 
 }
