@@ -43,7 +43,7 @@ public class WebSocketLoggingListener implements WebSocketListener {
 
     @Override
     public void onException(Throwable throwable) {
-        logger.info("#onExcepiton");
+        logger.warn("#onException",throwable);
     }
 
     @Override

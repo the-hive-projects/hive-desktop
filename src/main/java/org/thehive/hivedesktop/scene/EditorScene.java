@@ -5,6 +5,7 @@ import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
 import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -24,6 +25,7 @@ import org.thehive.hivedesktop.ProfileDialogView;
 import org.thehive.hivedesktop.chat.ChatObservableList;
 import org.thehive.hiveserverclient.model.Session;
 import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
+import org.thehive.hiveserverclient.net.websocket.header.PayloadType;
 import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription;
 import org.thehive.hiveserverclient.net.websocket.subscription.SubscriptionListener;
 import org.thehive.hiveserverclient.payload.Chat;
@@ -47,6 +49,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         private static final Class<? extends AppScene> SCENE_TYPE = EditorScene.class;
         private final ChatObservableList chatObservableList;
+        private final TabPane terminalPane = new TabPane();
+        private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
         @FXML
         Tab firstTab;
         @FXML
@@ -65,28 +69,20 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         private MFXButton btnLeaveSession;
         @FXML
         private TabPane editorPane;
-        private final TabPane terminalPane = new TabPane();
-        private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
 
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
             this.chatObservableList = new ChatObservableList();
-        }
-
-        @FXML
-        private static void readFile1(File fin) throws IOException {
-            FileInputStream fis = new FileInputStream(fin);
-            //Construct BufferedReader from InputStreamReader
-            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            br.close();
+            chatObservableList.registerObserver(chat -> {
+                log.info(chat.toString());
+                Platform.runLater(() -> addMessageToChatBox(chat.getText()));
+            });
         }
 
         @Override
         public void onStart() {
+
+
             btnAddNewTab.setOnMouseClicked(mouseEvent -> {
                 try {
                     addTab();
@@ -117,15 +113,10 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 //        });
 
             btnRunCode.setOnMouseClicked(mouseEvent -> {
-                try {
-                    readFile1(runEditorCode(terminal));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
             });
 
             btnLeaveSession.setOnMouseClicked(event -> {
-                //TODO load sessionview
                 Ctx.getInstance().sceneManager.load(MainScene.class);
             });
             terminalPane.getTabs().add(terminal);
@@ -152,7 +143,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
                     @Override
                     public void onReceive(AppStompHeaders appStompHeaders, Payload payload) {
-
+                        if (appStompHeaders.getPayloadType() == PayloadType.CHAT)
+                            chatObservableList.add((Chat) payload);
                     }
 
                     @Override
@@ -309,18 +301,20 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             messageLabel.setText(message);
             messageArea.setText(null);
             chatBox.getChildren().addAll(userName, messageLabel, line);
+            var chat = new Chat();
+            chat.setText(message);
+            Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(chat);
         }
 
         @FXML
-        private void addMessageToChatBox(Chat chat) {
+        private void addMessageToChatBox(String message) {
             var userName = createUser();
             var messageLabel = createLabel();
             var line = createLine();
-            messageLabel.setText(chat.getText());
+            messageLabel.setText(message);
             messageArea.setText(null);
             chatBox.getChildren().addAll(userName, messageLabel, line);
         }
-
 
     }
 }
