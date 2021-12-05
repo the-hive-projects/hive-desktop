@@ -5,13 +5,11 @@ import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
 import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -20,10 +18,12 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.ProfileDialogView;
+import org.thehive.hivedesktop.chat.ChatObservableList;
+import org.thehive.hiveserverclient.model.Session;
 import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
-import org.thehive.hiveserverclient.net.websocket.header.PayloadType;
 import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription;
 import org.thehive.hiveserverclient.net.websocket.subscription.SubscriptionListener;
 import org.thehive.hiveserverclient.payload.Chat;
@@ -46,40 +46,31 @@ public class EditorScene extends FxmlMultipleLoadedScene {
     public static class Controller extends AbstractController {
 
         private static final Class<? extends AppScene> SCENE_TYPE = EditorScene.class;
-
+        private final ChatObservableList chatObservableList;
         @FXML
         Tab firstTab;
-
         @FXML
         ScrollPane chatScroll;
-
         @FXML
         VBox chatBox;
-
         @FXML
         TextArea messageArea;
-
         @FXML
         private MFXButton btnRunCode;
-
         @FXML
         private MFXButton btnAddNewTab;
-
         @FXML
         private MFXButton btnSendMessage;
-
         @FXML
         private MFXButton btnLeaveSession;
-
         @FXML
         private TabPane editorPane;
-
-        private TabPane terminalPane = new TabPane();
-
-        private Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
+        private final TabPane terminalPane = new TabPane();
+        private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
 
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
+            this.chatObservableList = new ChatObservableList();
         }
 
         @FXML
@@ -94,11 +85,100 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             br.close();
         }
 
+        @Override
+        public void onStart() {
+            btnAddNewTab.setOnMouseClicked(mouseEvent -> {
+                try {
+                    addTab();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            btnSendMessage.setOnMouseClicked(mouseEvent -> addMessageToChatBox());
+
+            //        Dark Config
+            TerminalConfig darkConfig = new TerminalConfig();
+            darkConfig.setBackgroundColor(Color.web("#1e1e1e"));
+            darkConfig.setForegroundColor(Color.rgb(240, 240, 240));
+            darkConfig.setCursorColor(Color.web("#ffc107"));
+
+//        CygWin Config
+            TerminalConfig cygwinConfig = new TerminalConfig();
+            cygwinConfig.setWindowsTerminalStarter("C:\\cygwin64\\bin\\bash -i");
+            cygwinConfig.setFontSize(14);
+
+//        Default Config
+            TerminalConfig defaultConfig = new TerminalConfig();
+            TerminalBuilder terminalBuilder = new TerminalBuilder(darkConfig);
+            TerminalTab terminal = terminalBuilder.newTerminal();
+//        terminal.onTerminalFxReady(() -> {
+//            terminal.getTerminal().command("java -version\r");
+//        });
+
+            btnRunCode.setOnMouseClicked(mouseEvent -> {
+                try {
+                    readFile1(runEditorCode(terminal));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            btnLeaveSession.setOnMouseClicked(event -> {
+                //TODO load sessionview
+                Ctx.getInstance().sceneManager.load(MainScene.class);
+            });
+            terminalPane.getTabs().add(terminal);
+        }
+
+        @Override
+        public void onLoad(Map<String, Object> dataMap) {
+            if (!dataMap.containsKey(Consts.SCENE_SESSION_DATA_KEY))
+                throw new IllegalStateException("session is not available in data map");
+            var session = (Session) dataMap.get(Consts.SCENE_SESSION_DATA_KEY);
+            var connectionOptional = Ctx.getInstance().webSocketService.getConnection();
+            if (connectionOptional.isPresent()) {
+                var connection = connectionOptional.get();
+                connection.subscribeToSession(session.getId(), new SubscriptionListener() {
+                    @Override
+                    public void onSubscribe(StompSubscription stompSubscription) {
+
+                    }
+
+                    @Override
+                    public void onSend(Payload payload) {
+
+                    }
+
+                    @Override
+                    public void onReceive(AppStompHeaders appStompHeaders, Payload payload) {
+
+                    }
+
+                    @Override
+                    public void onUnsubscribe(StompSubscription stompSubscription) {
+
+                    }
+                });
+            } else {
+                log.warn("web socket connection could not be provided");
+                var message = "Something went wrong";
+                var loadDataMap = Map.<String, Object>of(Consts.SCENE_MESSAGE_DATA_KEY, message);
+                Ctx.getInstance().sceneManager.load(MainScene.class, loadDataMap);
+            }
+
+        }
+
+        @Override
+        public void onUnload() {
+
+        }
+
         @FXML
         private MonacoFX setEditor(String language, String theme) {
             MonacoFX monacoFXeditor = new MonacoFX();
             int numTabs = dict.size();
-            monacoFXeditor.setId("monacoFX" + String.valueOf(numTabs));
+            monacoFXeditor.setId("monacoFX" + numTabs);
             monacoFXeditor.getEditor().getDocument().setText(
                     "num = float(input(\"Enter a number: \"))\r" +
                             "if num > 0:\n" +
@@ -241,63 +321,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             chatBox.getChildren().addAll(userName, messageLabel, line);
         }
 
-        @Override
-        public void onStart() {
-            btnAddNewTab.setOnMouseClicked(mouseEvent -> {
-                try {
-                    addTab();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-
-            btnSendMessage.setOnMouseClicked(mouseEvent -> addMessageToChatBox());
-
-            //        Dark Config
-            TerminalConfig darkConfig = new TerminalConfig();
-            darkConfig.setBackgroundColor(Color.web("#1e1e1e"));
-            darkConfig.setForegroundColor(Color.rgb(240, 240, 240));
-            darkConfig.setCursorColor(Color.web("#ffc107"));
-
-//        CygWin Config
-            TerminalConfig cygwinConfig = new TerminalConfig();
-            cygwinConfig.setWindowsTerminalStarter("C:\\cygwin64\\bin\\bash -i");
-            cygwinConfig.setFontSize(14);
-
-//        Default Config
-            TerminalConfig defaultConfig = new TerminalConfig();
-            TerminalBuilder terminalBuilder = new TerminalBuilder(darkConfig);
-            TerminalTab terminal = terminalBuilder.newTerminal();
-//        terminal.onTerminalFxReady(() -> {
-//            terminal.getTerminal().command("java -version\r");
-//        });
-
-            btnRunCode.setOnMouseClicked(mouseEvent -> {
-                try {
-                    readFile1(runEditorCode(terminal));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-
-            btnLeaveSession.setOnMouseClicked(event -> {
-                //TODO load sessionview
-                Ctx.getInstance().sceneManager.load(MainScene.class);
-            });
-            terminalPane.getTabs().add(terminal);
-        }
-
-        @Override
-        public void onLoad(Map<String,Object> data) {
-            Ctx.getInstance().webSocketService.getConnection().ifPresent(connection->{
-
-            });
-        }
-
-        @Override
-        public void onUnload() {
-
-        }
 
     }
 }

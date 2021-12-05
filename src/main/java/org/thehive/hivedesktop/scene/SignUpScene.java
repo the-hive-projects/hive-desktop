@@ -59,7 +59,7 @@ public class SignUpScene extends FxmlSingleLoadedScene {
         }
 
         @Override
-        public void onLoad(Map<String, Object> data) {
+        public void onLoad(Map<String, Object> dataMap) {
             log.info("SignUpScene#onLoad");
         }
 

@@ -7,7 +7,8 @@ import com.kodedu.terminalfx.config.TerminalConfig;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
@@ -25,14 +26,11 @@ public class InboxScene extends FxmlMultipleLoadedScene {
     public static class Controller implements Initializable {
 
 
-        public TabPane tabPane = new TabPane();
-
-        @FXML
-        private SplitPane rightSplitPane;
-
         @FXML
         private final JFXListCell btnAttendeeDetails = new JFXListCell();
-
+        public TabPane tabPane = new TabPane();
+        @FXML
+        private SplitPane rightSplitPane;
 
         @Override
         public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -74,7 +72,6 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         }
 
 
-
-        }
-
     }
+
+}
