@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXListCell;
 import com.kodedu.terminalfx.TerminalBuilder;
 import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
+import eu.mihosoft.monacofx.MonacoFX;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,6 +13,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.ResourceBundle;
 
 public class InboxScene extends FxmlMultipleLoadedScene {
@@ -33,6 +36,20 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         @FXML
         private final JFXListCell btnAttendeeDetails = new JFXListCell();
 
+        private Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
+
+        @FXML
+        private MonacoFX setEditor(String language, String theme) {
+            MonacoFX monacoFXeditor = new MonacoFX();
+            int numTabs = dict.size();
+            monacoFXeditor.setId("monacoFX" + String.valueOf(numTabs));
+            //TODO Student Code
+            monacoFXeditor.getEditor().getDocument().setText("Student Code HERE");
+            // use a predefined language like 'c'
+            monacoFXeditor.getEditor().setCurrentLanguage(language);
+            monacoFXeditor.getEditor().setCurrentTheme(theme);
+            return monacoFXeditor;
+        }
 
         @Override
         public void initialize(URL url, ResourceBundle resourceBundle) {

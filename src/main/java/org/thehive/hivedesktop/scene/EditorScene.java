@@ -5,13 +5,12 @@ import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
 import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import javafx.event.EventHandler;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -22,12 +21,10 @@ import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.ProfileDialogView;
-import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
-import org.thehive.hiveserverclient.net.websocket.header.PayloadType;
-import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription;
-import org.thehive.hiveserverclient.net.websocket.subscription.SubscriptionListener;
+import org.thehive.hivedesktop.util.ImageUtils;
+import org.thehive.hiveserverclient.model.User;
+import org.thehive.hiveserverclient.model.UserInfo;
 import org.thehive.hiveserverclient.payload.Chat;
-import org.thehive.hiveserverclient.payload.Payload;
 
 import java.io.*;
 import java.util.Dictionary;
@@ -56,8 +53,17 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @FXML
         VBox chatBox;
 
+
+
+
+
+
+
+
         @FXML
         TextArea messageArea;
+
+
 
         @FXML
         private MFXButton btnRunCode;
@@ -74,7 +80,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @FXML
         private TabPane editorPane;
 
-        private TabPane terminalPane = new TabPane();
+        @FXML
+        private TabPane terminalPane;
 
         private Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
 
@@ -184,10 +191,10 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         }
 
         @FXML
-        private Hyperlink createUser() {
+        private Hyperlink createUser(String username) {
             //TODO Hyperlink for username who sent message
             Hyperlink userName = new Hyperlink();
-            userName.setText("  Onur Sercan Yılmaz");
+            userName.setText(username);
 
             Font font = Font.font("Helvetica", FontWeight.BOLD,
                     FontPosture.REGULAR, 10);
@@ -220,7 +227,45 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             return userName;
         }
 
-        @FXML
+       /* @FXML
+        private Hyperlink createUser() {
+
+            //TODO Hyperlink for username who sent message
+            Hyperlink userName = new Hyperlink();
+            userName.setText();
+
+            Font font = Font.font("Helvetica", FontWeight.BOLD,
+                    FontPosture.REGULAR, 10);
+
+            userName.setFont(font);
+            userName.setPadding(new Insets(10, 10, 5, 10));
+            userName.setTextFill(Color.web("#ffc107"));
+
+            //TODO Hyperlink for image who sent message
+            Image img = new Image("https://p.kindpng.com/picc/s/78-786207_user-avatar-png-user-avatar-icon-png-transparent.png"); //image who sent the message form db
+            ImageView view = new ImageView(img);
+            view.setFitHeight(20);
+            view.setPreserveRatio(true);
+            userName.setGraphic(view);
+
+            userName.setOnMouseClicked(mouseEvent -> {
+
+                ProfileDialogView profileDialogView = new ProfileDialogView();
+                try {
+                    profileDialogView.start(new Stage());
+                    //userName.setDisable(true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            });
+
+
+            return userName;
+        }*/
+
+       /* @FXML
         private void addMessageToChatBox() {
             var userName = createUser();
             var messageLabel = createLabel();
@@ -229,11 +274,12 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             messageLabel.setText(message);
             messageArea.setText(null);
             chatBox.getChildren().addAll(userName, messageLabel, line);
-        }
+        }*/
 
         @FXML
         private void addMessageToChatBox(Chat chat) {
-            var userName = createUser();
+            log.info("Adding Chat to ChatBox");
+            var userName = createUser(chat.getFrom());
             var messageLabel = createLabel();
             var line = createLine();
             messageLabel.setText(chat.getText());
@@ -243,15 +289,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         @Override
         public void onStart() {
-            btnAddNewTab.setOnMouseClicked(mouseEvent -> {
-                try {
-                    addTab();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-
-            btnSendMessage.setOnMouseClicked(mouseEvent -> addMessageToChatBox());
 
             //        Dark Config
             TerminalConfig darkConfig = new TerminalConfig();
@@ -272,6 +309,25 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 //            terminal.getTerminal().command("java -version\r");
 //        });
 
+            terminalPane.getTabs().add(terminal);
+
+
+
+
+
+            btnAddNewTab.setOnMouseClicked(mouseEvent -> {
+                try {
+                    addTab();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+
+
+
+
+
             btnRunCode.setOnMouseClicked(mouseEvent -> {
                 try {
                     readFile1(runEditorCode(terminal));
@@ -284,14 +340,50 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 //TODO load sessionview
                 Ctx.getInstance().sceneManager.load(MainScene.class);
             });
-            terminalPane.getTabs().add(terminal);
+
+
+
         }
 
         @Override
         public void onLoad(Map<String,Object> data) {
-            Ctx.getInstance().webSocketService.getConnection().ifPresent(connection->{
+            log.info("onLoad Editor");
 
-            });
+            Ctx.getInstance().userService.profile(profileResult -> {
+                if (profileResult.status().isFail()) {
+
+                log.info("profile is ok");
+                var user = profileResult.entity().get();
+                log.info("user is ok");
+                Chat chat = new Chat(user.getUsername(),messageArea.getText(),System.currentTimeMillis());
+                log.info("chat is ok");
+
+                btnSendMessage.setOnMouseClicked(mouseEvent -> addMessageToChatBox(chat));
+
+
+
+            }});
+
+           /* User user;
+                    //new User(1, "onur", "onur@gmail.com", "1234", userInfo);
+            UserInfo userInfo = new UserInfo(1, "onur", "yilmaz", System.currentTimeMillis());*/
+
+
+
+
+
+
+
+
+
+
+
+
+           /* Ctx.getInstance().webSocketService.getConnection().ifPresent(connection->{
+
+
+            });*/
+
         }
 
         @Override
