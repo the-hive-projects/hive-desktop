@@ -11,12 +11,8 @@ import java.util.ResourceBundle;
 public class VSEditor implements Initializable {
 
 
-
     @FXML
     MonacoFX monacoFXeditor;
-
-
-
 
 
     @Override
@@ -32,17 +28,9 @@ public class VSEditor implements Initializable {
                         "}");
 
 
-
-
         // use a predefined language like 'c'
         monacoFXeditor.getEditor().setCurrentLanguage("c");
         monacoFXeditor.getEditor().setCurrentTheme("vs-dark");
-
-
-
-
-
-
 
 
     }

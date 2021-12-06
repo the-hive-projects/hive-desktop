@@ -61,7 +61,7 @@ public class InfoLabelHandler {
     public enum Status {
         DEFAULT,
         SUCCESS,
-        WARNING;
+        WARNING
     }
 
 }

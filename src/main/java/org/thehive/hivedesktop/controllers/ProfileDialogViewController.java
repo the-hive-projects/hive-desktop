@@ -27,11 +27,10 @@ public class ProfileDialogViewController implements Initializable {
     private ImageView imageProfile;
 
     @FXML
-    private Label lblEmail,lblFullName,lblUsername;
+    private Label lblEmail, lblFullName, lblUsername;
 
 
-
-    public void fillProfile(){
+    public void fillProfile() {
 
         //TODO Hyperlink for image who sent message
         Ctx.getInstance().userService.profile(profileResult -> {
@@ -39,7 +38,7 @@ public class ProfileDialogViewController implements Initializable {
                 var user = profileResult.entity().get();
                 Platform.runLater(() -> {
                     lblUsername.setText(user.getUsername());
-                    lblFullName.setText(user.getUserInfo().getFirstname()+" "+user.getUserInfo().getLastname());
+                    lblFullName.setText(user.getUserInfo().getFirstname() + " " + user.getUserInfo().getLastname());
                     lblEmail.setText(user.getEmail());
 
                 });
@@ -51,7 +50,8 @@ public class ProfileDialogViewController implements Initializable {
                     try {
                         var scaledContent = ImageUtils.scaleImageContent(content, 20, 20);
                         var scaledProfileImage = new Image(new ByteArrayInputStream(scaledContent));
-                        Platform.runLater(() -> {imageProfile.setImage(scaledProfileImage);
+                        Platform.runLater(() -> {
+                            imageProfile.setImage(scaledProfileImage);
 
                         });
                     } catch (IOException e) {
@@ -60,9 +60,6 @@ public class ProfileDialogViewController implements Initializable {
                 });
             }
         });
-
-
-
 
 
     }
@@ -83,9 +80,6 @@ public class ProfileDialogViewController implements Initializable {
         });
 
 
-
-
-
     }
 
-    }
+}

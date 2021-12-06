@@ -5,7 +5,6 @@ import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
 import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -19,14 +18,19 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.ProfileDialogView;
+import org.thehive.hivedesktop.chat.ChatObservableList;
+import org.thehive.hivedesktop.util.ExecutionUtils;
 import org.thehive.hivedesktop.util.ImageUtils;
-import org.thehive.hiveserverclient.Authentication;
-import org.thehive.hiveserverclient.model.User;
-import org.thehive.hiveserverclient.model.UserInfo;
+import org.thehive.hiveserverclient.model.Session;
+import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
+import org.thehive.hiveserverclient.net.websocket.header.PayloadType;
+import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription;
+import org.thehive.hiveserverclient.net.websocket.subscription.SubscriptionListener;
 import org.thehive.hiveserverclient.payload.Chat;
-import org.thehive.hiveserverclient.util.HeaderUtils;
+import org.thehive.hiveserverclient.payload.Payload;
 
 import java.io.*;
 import java.util.Dictionary;
@@ -39,56 +43,62 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
     public EditorScene() {
         super(FXML_FILENAME);
-        Authentication.INSTANCE.authenticate(HeaderUtils.httpBasicAuthenticationToken("user","password"));
+        //Authentication.INSTANCE.authenticate(HeaderUtils.httpBasicAuthenticationToken("user", "password"));
     }
 
     @Slf4j
     public static class Controller extends AbstractController {
 
         private static final Class<? extends AppScene> SCENE_TYPE = EditorScene.class;
-
+        private final ChatObservableList chatObservableList;
         @FXML
         Tab firstTab;
-
         @FXML
         ScrollPane chatScroll;
-
         @FXML
         VBox chatBox;
-
-
         @FXML
         TextArea messageArea;
-
-
-
         @FXML
         private MFXButton btnRunCode;
-
         @FXML
         private MFXButton btnAddNewTab;
-
         @FXML
         private MFXButton btnSendMessage;
-
         @FXML
         private MFXButton btnLeaveSession;
-
         @FXML
         private TabPane editorPane;
-
         @FXML
         private TabPane terminalPane;
 
-
-        private Chat chat = new Chat();
-        private ImageView view = new ImageView();
-
-        private Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
+        private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
 
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
+            this.chatObservableList = new ChatObservableList();
+            chatObservableList.registerObserver(chat -> {
+                Ctx.getInstance().imageService.take(chat.getFrom(), result -> {
+                    if (result.status().isSuccess()) {
+                        try {
+                            var scaledContent = ImageUtils.scaleImageContent(result.entity().get().getContent(), 20, 20);
+                            ExecutionUtils.run(() -> {
+
+                                var usernameHyperLink = createUser(chat, scaledContent);
+                                var messageLabel = createLabel(chat.getText());
+                                var line = createLine();
+                                chatBox.getChildren().addAll(usernameHyperLink, messageLabel, line);
+                            });
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        throw new IllegalStateException();
+                    }
+                });
+            });
         }
+
 
         @FXML
         private static void readFile1(File fin) throws IOException {
@@ -106,7 +116,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         private MonacoFX setEditor(String language, String theme) {
             MonacoFX monacoFXeditor = new MonacoFX();
             int numTabs = dict.size();
-            monacoFXeditor.setId("monacoFX" + String.valueOf(numTabs));
+            monacoFXeditor.setId("monacoFX" + numTabs);
             monacoFXeditor.getEditor().getDocument().setText(
                     "num = float(input(\"Enter a number: \"))\r" +
                             "if num > 0:\n" +
@@ -161,7 +171,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         }
 
         @FXML
-        private TextArea createLabel( ) {
+        private TextArea createLabel(String text) {
             TextArea messageLabel = new TextArea();
             messageLabel.setEditable(false);
             messageLabel.setWrapText(true);
@@ -171,11 +181,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                     FontPosture.REGULAR, 12);
             messageLabel.setFont(font);
             messageLabel.setPadding(new Insets(10, 10, 5, 10));
-            //messageLabel.setTextFill(Color.web("#ffc107"));
-            /*Border labelBorder = new Border(new BorderStroke(Color.web("#ffc107"),
-                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT));
-            messageLabel.setBorder(labelBorder);*/
             messageLabel.setStyle("-fx-background-color:transparent;  -fx-text-area-background:#373737; text-area-background:#373737; -fx-text-fill:#ffc107;  ");
+            messageLabel.setText(text);
             return messageLabel;
         }
 
@@ -187,67 +194,27 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             line.setEndY(100);
             line.setEndX(300);
             line.setStyle("-fx-background-color:#ffc107; -fx-stroke: #ffc107; -fx-opacity: 0.5; ");
-
             return line;
         }
 
         @FXML
-        private Hyperlink createUser(Chat chat) {
+        private Hyperlink createUser(Chat chat, byte[] profileImageContent) {
             Hyperlink userName = new Hyperlink();
             Font font = Font.font("Helvetica", FontWeight.BOLD,
                     FontPosture.REGULAR, 10);
-
             userName.setFont(font);
             userName.setPadding(new Insets(10, 10, 5, 10));
             userName.setTextFill(Color.web("#ffc107"));
-
-            Ctx.getInstance().userService.profile(profileResult -> {
-                if (profileResult.status().isSuccess()) {
-                    var user = profileResult.entity().get();
-                    Platform.runLater(() -> {
-                        chat.setFrom(user.getUserInfo().getFirstname()+" "+user.getUserInfo().getLastname());
-                        userName.setText(chat.getFrom());
-                    });
-
-
-
-                    Ctx.getInstance().imageService.take(user.getUsername(), imageResult -> {
-                        var content = imageResult.entity().get().getContent();
-                        var profileImage = new Image(new ByteArrayInputStream(content));
-                        Platform.runLater(() -> view.setImage(profileImage));
-                        try {
-                            var scaledContent = ImageUtils.scaleImageContent(content, 20, 20);
-                            var scaledProfileImage = new Image(new ByteArrayInputStream(scaledContent));
-                            Platform.runLater(() -> {view.setImage(scaledProfileImage);
-
-                               });
-                        } catch (IOException e) {
-                            log.warn("Error while scaling profile image", e);
-                        }
-                    });
-                }
-            });
-
-            view.setPreserveRatio(true);
-            var img = view.getImage();
-
-            userName.setGraphic(new ImageView(img));
-
-
+            var image = new Image(new ByteArrayInputStream(profileImageContent));
+            userName.setGraphic(new ImageView(image));
             userName.setOnMouseClicked(mouseEvent -> {
-
                 ProfileDialogView profileDialogView = new ProfileDialogView();
                 try {
                     profileDialogView.start(new Stage());
-                    //userName.setDisable(true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
             });
-
-
             return userName;
         }
 
@@ -290,27 +257,12 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         }*/
 
         @FXML
-        private void addMessageToChatBox() {
-            var userName = createUser(chat);
-            var messageLabel = createLabel();
-            var line = createLine();
+        private void sendMessage() {
+            var chat = new Chat();
             String message = messageArea.getText();
             chat.setText(message);
-            messageLabel.setText(chat.getText());
-            messageArea.setText(null);
-            chatBox.getChildren().addAll(userName, messageLabel, line);
+            Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(chat);
         }
-
-       /* @FXML
-        private void addMessageToChatBox(Chat chat) {
-            log.info("Adding Chat to ChatBox");
-            var userName = createUser(chat);
-            var messageLabel = createLabel(chat);
-            var line = createLine();
-            messageLabel.setText(chat.getText());
-            messageArea.setText(null);
-            chatBox.getChildren().addAll(userName, messageLabel, line);
-        }*/
 
         @Override
         public void onStart() {
@@ -337,9 +289,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             terminalPane.getTabs().add(terminal);
 
 
-
-
-
             btnAddNewTab.setOnMouseClicked(mouseEvent -> {
                 try {
                     addTab();
@@ -347,10 +296,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                     e.printStackTrace();
                 }
             });
-
-
-
-
 
 
             btnRunCode.setOnMouseClicked(mouseEvent -> {
@@ -367,7 +312,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 //TODO disconnect session connection
             });
 
-            btnSendMessage.setOnMouseClicked(mouseEvent -> addMessageToChatBox());
+            btnSendMessage.setOnMouseClicked(mouseEvent -> sendMessage());
 
             Ctx.getInstance().userService.profile(profileResult -> {
                 if (profileResult.status().isFail()) {
@@ -375,41 +320,43 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                     log.info("profile is ok");
                     var user = profileResult.entity().get();
                     log.info("user is ok");
-                    Chat chat = new Chat(user.getUsername(),messageArea.getText(),System.currentTimeMillis());
+                    Chat chat = new Chat(user.getUsername(), messageArea.getText(), System.currentTimeMillis());
                     log.info("chat is ok");
 
-                }});
-
+                }
+            });
 
 
         }
 
         @Override
-        public void onLoad(Map<String,Object> data) {
+        public void onLoad(Map<String, Object> dataMap) {
             log.info("onLoad Editor");
+            var session = (Session) dataMap.get(Consts.JOINED_SESSION_SCENE_DATA_KEY);
+            Ctx.getInstance().webSocketService.getConnection().ifPresent(connection -> {
+                connection.subscribeToSession(session.getId(), new SubscriptionListener() {
+                    @Override
+                    public void onSubscribe(StompSubscription stompSubscription) {
 
+                    }
 
+                    @Override
+                    public void onSend(Payload payload) {
 
-           /* User user;
-                    //new User(1, "onur", "onur@gmail.com", "1234", userInfo);
-            UserInfo userInfo = new UserInfo(1, "onur", "yilmaz", System.currentTimeMillis());*/
+                    }
 
+                    @Override
+                    public void onReceive(AppStompHeaders appStompHeaders, Payload payload) {
+                        if (appStompHeaders.getPayloadType() == PayloadType.CHAT)
+                            chatObservableList.add((Chat) payload);
+                    }
 
+                    @Override
+                    public void onUnsubscribe(StompSubscription stompSubscription) {
 
-
-
-
-
-
-
-
-
-
-           /* Ctx.getInstance().webSocketService.getConnection().ifPresent(connection->{
-
-
-            });*/
-
+                    }
+                });
+            });
         }
 
         @Override

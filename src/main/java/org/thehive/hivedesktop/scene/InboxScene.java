@@ -8,7 +8,8 @@ import eu.mihosoft.monacofx.MonacoFX;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
@@ -28,21 +29,18 @@ public class InboxScene extends FxmlMultipleLoadedScene {
     public static class Controller implements Initializable {
 
 
-        public TabPane tabPane = new TabPane();
-
-        @FXML
-        private SplitPane rightSplitPane;
-
         @FXML
         private final JFXListCell btnAttendeeDetails = new JFXListCell();
-
-        private Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
+        public TabPane tabPane = new TabPane();
+        @FXML
+        private SplitPane rightSplitPane;
+        private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
 
         @FXML
         private MonacoFX setEditor(String language, String theme) {
             MonacoFX monacoFXeditor = new MonacoFX();
             int numTabs = dict.size();
-            monacoFXeditor.setId("monacoFX" + String.valueOf(numTabs));
+            monacoFXeditor.setId("monacoFX" + numTabs);
             //TODO Student Code
             monacoFXeditor.getEditor().getDocument().setText("Student Code HERE");
             // use a predefined language like 'c'
@@ -91,7 +89,6 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         }
 
 
-
-        }
-
     }
+
+}
