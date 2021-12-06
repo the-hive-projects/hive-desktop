@@ -1,5 +1,7 @@
 package org.thehive.hivedesktop;
 
+import javafx.scene.paint.Color;
+
 public class Consts {
 
     public static final String SERVER_HTTP_URI = "http://127.0.0.1:8080";
@@ -17,5 +19,13 @@ public class Consts {
 
     public static final String SCENE_MESSAGE_DATA_KEY = "message";
     public static final String SCENE_SESSION_DATA_KEY = "session";
+
+    public static final Color INFO_LABEL_DEFAULT_COLOR = Color.BLUE;
+    public static final Color INFO_LABEL_SUCCESS_COLOR = Color.GREEN;
+    public static final Color INFO_LABEL_ERROR_COLOR = Color.RED;
+
+    public static final long INFO_DELAY_MILLIS = 1000L;
+
+    public static final String EMPTY_STRING = "";
 
 }

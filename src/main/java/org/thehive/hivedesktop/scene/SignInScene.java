@@ -9,7 +9,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
+import org.thehive.hivedesktop.util.ExecutionUtils;
+import org.thehive.hivedesktop.util.InfoLabelHandler;
 import org.thehive.hiveserverclient.util.MessageUtils;
 
 import java.util.Map;
@@ -41,7 +44,9 @@ public class SignInScene extends FxmlSingleLoadedScene {
         private MFXTextField usernameTextField;
 
         @FXML
-        private MFXLabel warningMessageLabel;
+        private MFXLabel infoLabel;
+
+        private InfoLabelHandler infoLabelHandler;
 
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
@@ -49,42 +54,52 @@ public class SignInScene extends FxmlSingleLoadedScene {
 
         @Override
         public void onStart() {
-            log.info("SignInScene#onStart");
+            log.info("SignInScene #onStart");
+            this.infoLabelHandler = new InfoLabelHandler(infoLabel);
         }
 
         @Override
         public void onLoad(Map<String, Object> dataMap) {
-            log.info("SignInScene#onLoad");
+            log.info("SignInScene #onLoad");
         }
 
         @Override
         public void onUnload() {
-            log.info("SignInScene#onUnload");
+            log.info("SignInScene #onUnload");
         }
 
         @FXML
         void onSignInButtonClick(MouseEvent event) {
             log.info("Button clicked, #onSignInButtonClick");
-            warningMessageLabel.setText("");
+            infoLabel.setText(Consts.EMPTY_STRING);
             var username = usernameTextField.getText();
             var password = passwordTextField.getPassword();
             signInButton.setDisable(true);
             Ctx.getInstance().userService.signIn(username, password, result -> {
                 if (result.status().isSuccess()) {
-                    Platform.runLater(() -> Ctx.getInstance().sceneManager.load(MainScene.class));
+                    ExecutionUtils.run(() -> infoLabelHandler.setSuccessText("Signed-in successfully"));
+                    ExecutionUtils.schedule(() -> {
+                        Ctx.getInstance().sceneManager.load(MainScene.class);
+                        signInButton.setDisable(false);
+                    }, Consts.INFO_DELAY_MILLIS);
                 } else if (result.status().isError()) {
-                    result.message().ifPresent(message -> {
-                        var errorMessageStringJoiner = new StringJoiner(".\n");
-                        MessageUtils.parseMessageList(message, ",")
-                                .forEach(errorMessageStringJoiner::add);
+                    if (result.message().isPresent()) {
+                        var warningTextStringJoiner = new StringJoiner(".\n");
+                        MessageUtils.parseMessageList(result.message().get(), ",")
+                                .forEach(warningTextStringJoiner::add);
                         Platform.runLater(() -> {
-                            warningMessageLabel.setText(errorMessageStringJoiner.toString());
+                            infoLabelHandler.setWaringText(warningTextStringJoiner.toString());
                             signInButton.setDisable(false);
                         });
-                    });
+                    } else {
+                        Platform.runLater(() -> {
+                            infoLabelHandler.setWaringText("Unknown error");
+                            signInButton.setDisable(false);
+                        });
+                    }
                 } else {
                     Platform.runLater(() -> {
-                        warningMessageLabel.setText("Fail");
+                        infoLabelHandler.setWaringText(result.message().isPresent() ? result.message().get() : "Unknown fail");
                         signInButton.setDisable(false);
                     });
                 }
