@@ -31,7 +31,6 @@ public class Ctx {
     public final SessionService sessionService;
     public final ImageService imageService;
     public final WebSocketSingleConnService webSocketService;
-    public final ScheduledExecutorService scheduledExecutorService;
 
     public Ctx() {
         this.sceneManager = new AppSceneManagerImpl();
@@ -51,7 +50,6 @@ public class Ctx {
         wsStompClient.setMessageConverter(new MappingJackson2MessageConverter());
         WebSocketClient webSocketClient = new WebSocketClientImpl(Consts.SERVER_WS_STOMP_URI, urlEndpointResolver, wsStompClient, executorService);
         this.webSocketService = new WebSocketSingleConnServiceImpl(webSocketClient);
-        this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     }
 
     public static Ctx getInstance() {

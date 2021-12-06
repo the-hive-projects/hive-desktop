@@ -82,7 +82,7 @@
                 <Font name="Arial" size="15.0"/>
             </font>
         </Hyperlink>
-        <MFXLabel fx:id="warningMessageLabel" lineColor="#f89c0e" prefHeight="36.0" prefWidth="125.0"
+        <MFXLabel fx:id="infoLabel" lineColor="#f89c0e" prefHeight="36.0" prefWidth="125.0"
                   unfocusedLineColor="#f89c0e">
             <VBox.margin>
                 <Insets top="50.0"/>

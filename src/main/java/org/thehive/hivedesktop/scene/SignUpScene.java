@@ -11,11 +11,12 @@ import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
+import org.thehive.hivedesktop.util.ExecutionUtils;
+import org.thehive.hivedesktop.util.InfoLabelHandler;
 import org.thehive.hiveserverclient.model.User;
 import org.thehive.hiveserverclient.model.UserInfo;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class SignUpScene extends FxmlSingleLoadedScene {
 
@@ -52,7 +53,9 @@ public class SignUpScene extends FxmlSingleLoadedScene {
         private MFXTextField usernameTextField;
 
         @FXML
-        private MFXLabel warningMessageLabel;
+        private MFXLabel infoLabel;
+
+        private InfoLabelHandler infoLabelHandler;
 
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
@@ -61,6 +64,7 @@ public class SignUpScene extends FxmlSingleLoadedScene {
         @Override
         public void onStart() {
             log.info("SignUpScene #onStart");
+            infoLabelHandler = new InfoLabelHandler(infoLabel);
         }
 
         @Override
@@ -77,14 +81,6 @@ public class SignUpScene extends FxmlSingleLoadedScene {
         void onSignInLinkClick(MouseEvent event) {
             log.info("Link clicked, #onSignInLinkClick");
             Ctx.getInstance().sceneManager.load(SignInScene.class);
-        }
-
-        private void clearAllTextFields() {
-            usernameTextField.setText(Consts.EMPTY_STRING);
-            passwordTextField.setText(Consts.EMPTY_STRING);
-            emailTextField.setText(Consts.EMPTY_STRING);
-            nameTextField.setText(Consts.EMPTY_STRING);
-            surnameTextField.setText(Consts.EMPTY_STRING);
         }
 
         @FXML
@@ -107,16 +103,26 @@ public class SignUpScene extends FxmlSingleLoadedScene {
             user.setUserInfo(userInfo);
             Ctx.getInstance().userService.signUp(user, result -> {
                 if (result.status().isSuccess()) {
-                    Platform.runLater(() -> {
-                        clearAllTextFields();
-                        Ctx.getInstance().scheduledExecutorService.schedule(() -> {
-
-                        }, Consts.INFO_DELAY_MILLIS, TimeUnit.MILLISECONDS);
-                    });
+                    ExecutionUtils.run(() -> infoLabelHandler.setSuccessText("Signed-up successfully"));
+                    ExecutionUtils.schedule(() -> {
+                        Ctx.getInstance().sceneManager.load(SignInScene.class);
+                        usernameTextField.clear();
+                        passwordTextField.clear();
+                        emailTextField.clear();
+                        nameTextField.clear();
+                        surnameTextField.clear();
+                        signUpButton.setDisable(false);
+                    }, Consts.INFO_DELAY_MILLIS);
                 } else if (result.status().isError()) {
-                    warningMessageLabel.setText(result.message().get());
+                    Platform.runLater(() -> {
+                        infoLabelHandler.setWaringText(result.message().isPresent() ? result.message().get() : "Unknown error");
+                        signUpButton.setDisable(false);
+                    });
                 } else {
-                    warningMessageLabel.setText(result.message().get());
+                    Platform.runLater(() -> {
+                        infoLabelHandler.setWaringText(result.message().isPresent() ? result.message().get() : "Unknown fail");
+                        signUpButton.setDisable(false);
+                    });
                 }
             });
         }

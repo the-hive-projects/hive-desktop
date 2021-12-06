@@ -12,7 +12,6 @@ public class InfoLabelHandler {
     public final Color successColor;
     public final Color warningColor;
 
-
     public InfoLabelHandler(@NonNull MFXLabel label) {
         this(label, Consts.INFO_LABEL_DEFAULT_COLOR, Consts.INFO_LABEL_SUCCESS_COLOR, Consts.INFO_LABEL_ERROR_COLOR);
     }
@@ -30,12 +29,12 @@ public class InfoLabelHandler {
     }
 
     public void setSuccessText(@NonNull String text) {
-        label.setTextFill(defaultColor);
+        label.setTextFill(successColor);
         label.setText(text);
     }
 
     public void setWaringText(@NonNull String text) {
-        label.setTextFill(defaultColor);
+        label.setTextFill(warningColor);
         label.setText(text);
     }
 
@@ -53,6 +52,10 @@ public class InfoLabelHandler {
             default:
                 throw new IllegalArgumentException("Unhandled status argument, status: " + status.name());
         }
+    }
+
+    public void clearText() {
+        label.setText(Consts.EMPTY_STRING);
     }
 
     public enum Status {

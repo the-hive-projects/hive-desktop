@@ -87,6 +87,6 @@
                 <Insets top="10.0"/>
             </VBox.margin>
         </Hyperlink>
-        <MFXLabel fx:id="warningMessageLabel"/>
+        <MFXLabel fx:id="infoLabel"/>
     </VBox>
 </HBox>
