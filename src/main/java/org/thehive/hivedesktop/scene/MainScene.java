@@ -9,13 +9,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.util.ImageUtils;
-import org.thehive.hiveserverclient.net.websocket.WebSocketConnection;
-import org.thehive.hiveserverclient.net.websocket.WebSocketListener;
-import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
-import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription;
-import org.thehive.hiveserverclient.payload.Payload;
+import org.thehive.hivedesktop.util.WebSocketLoggingListener;
 import org.thehive.hiveserverclient.service.ResultStatus;
 
 import java.io.ByteArrayInputStream;
@@ -70,7 +67,11 @@ public class MainScene extends FxmlSingleLoadedScene {
 
         @Override
         @SuppressWarnings("OptionalGetWithoutIsPresent")
-        public void onLoad(Map<String,Object> data) {
+        public void onLoad(Map<String, Object> dataMap) {
+            if (dataMap.containsKey(Consts.SCENE_MESSAGE_DATA_KEY)) {
+                var message = dataMap.get(Consts.SCENE_MESSAGE_DATA_KEY).toString();
+                joinInfoLabel.setText(message);
+            }
             log.info("MainScene#onLoad");
             Ctx.getInstance().userService.profile(profileResult -> {
                 if (profileResult.status().isSuccess()) {
@@ -94,42 +95,7 @@ public class MainScene extends FxmlSingleLoadedScene {
                     });
                 }
             });
-            Ctx.getInstance().webSocketService.connect(new WebSocketListener() {
-                @Override
-                public void onConnect(WebSocketConnection webSocketConnection) {
-                    log.info("WebSocketListener#onConnect");
-                }
-
-                @Override
-                public void onSubscribe(StompSubscription stompSubscription) {
-                    log.info("WebSocketListener#onSubscribe");
-                }
-
-                @Override
-                public void onUnsubscribe(StompSubscription stompSubscription) {
-                    log.info("WebSocketListener#onUnsubscribe");
-                }
-
-                @Override
-                public void onReceive(AppStompHeaders appStompHeaders, Payload payload) {
-                    log.info("WebSocketListener#onReceive");
-                }
-
-                @Override
-                public void onSend(Payload payload) {
-                    log.info("WebSocketListener#onSend");
-                }
-
-                @Override
-                public void onException(Throwable throwable) {
-                    log.info("WebSocketListener#onException");
-                }
-
-                @Override
-                public void onDisconnect(WebSocketConnection webSocketConnection) {
-                    log.info("WebSocketListener#onDisconnect");
-                }
-            });
+            Ctx.getInstance().webSocketService.connect(new WebSocketLoggingListener(log));
         }
 
         @Override
@@ -158,7 +124,8 @@ public class MainScene extends FxmlSingleLoadedScene {
                 if (result.status().isSuccess()) {
                     Platform.runLater(() -> {
                         joinInfoLabel.setText("Joined, name: " + result.entity().get().getName());
-                        Ctx.getInstance().sceneManager.load(EditorScene.class);
+                        var dataMap = Map.<String, Object>of(Consts.SCENE_SESSION_DATA_KEY, result.entity().get());
+                        Ctx.getInstance().sceneManager.load(EditorScene.class, dataMap);
                     });
                 } else if (result.status().isError()) {
                     if (result.status() == ResultStatus.ERROR_UNAVAILABLE) {

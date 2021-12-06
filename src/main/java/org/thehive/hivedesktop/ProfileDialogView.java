@@ -15,6 +15,10 @@ import java.io.IOException;
 public class ProfileDialogView extends Application {
 
 
+    public static void main(String[] args) {
+        launch();
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ProfileDialogView.class.getResource("scene/mini-profile.fxml"));
@@ -38,7 +42,7 @@ public class ProfileDialogView extends Application {
             }
         });
 
-        scene.setOnMouseEntered(new EventHandler<MouseEvent>()  {
+        scene.setOnMouseEntered(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent me) {
                 scene.setCursor(Cursor.DEFAULT); //Change cursor to hand
             }
@@ -49,9 +53,5 @@ public class ProfileDialogView extends Application {
         stage.setScene(scene);
         stage.show();
 
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 }

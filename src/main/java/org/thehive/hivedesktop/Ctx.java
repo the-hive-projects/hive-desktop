@@ -14,6 +14,7 @@ import org.thehive.hiveserverclient.net.websocket.UrlEndpointResolver;
 import org.thehive.hiveserverclient.net.websocket.UrlEndpointResolverImpl;
 import org.thehive.hiveserverclient.net.websocket.WebSocketClient;
 import org.thehive.hiveserverclient.net.websocket.WebSocketClientImpl;
+import org.thehive.hiveserverclient.payload.Chat;
 import org.thehive.hiveserverclient.service.*;
 
 import java.util.concurrent.ExecutorService;
@@ -42,6 +43,7 @@ public class Ctx {
         ImageClient imageClient = new ImageClientImpl(Consts.SERVER_IMAGE_HTTP_URI, objectMapper, httpClient, executorService);
         this.imageService = new ImageServiceImpl(imageClient);
         UrlEndpointResolver urlEndpointResolver = new UrlEndpointResolverImpl(Consts.SERVER_SESSION_WS_STOMP_SUBSCRIPTION_ENDPOINT, Consts.SERVER_WS_STOMP_DESTINATION_PREFIX);
+        urlEndpointResolver.addDestinationUrlEndpoint(Chat.class, Consts.SERVER_SESSION_WS_STOMP_CHAT_PAYLOAD_ENDPOINT);
         var wsClient = new StandardWebSocketClient();
         var wsStompClient = new WebSocketStompClient(wsClient);
         wsStompClient.setMessageConverter(new MappingJackson2MessageConverter());

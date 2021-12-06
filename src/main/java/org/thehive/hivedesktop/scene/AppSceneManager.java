@@ -23,7 +23,7 @@ public interface AppSceneManager {
 
     void load(Class<? extends AppScene> sceneType);
 
-    void load(Class<? extends AppScene> sceneType, Map<String,Object> data);
+    void load(Class<? extends AppScene> sceneType, Map<String, Object> data);
 
     AppScene currentScene();
 
