@@ -17,8 +17,8 @@ public class Consts {
 
     public static final int THREAD_POOL_SIZE = 10;
 
-    public static final String SCENE_MESSAGE_DATA_KEY = "message";
-    public static final String SCENE_SESSION_DATA_KEY = "session";
+    public static final String JOINED_SESSION_SCENE_DATA_KEY = "joined-session";
+    public static final String SIGNED_UP_USERNAME_SESSION_DATA_KEY = "signed-up-username";
 
     public static final Color INFO_LABEL_DEFAULT_COLOR = Color.BLUE;
     public static final Color INFO_LABEL_SUCCESS_COLOR = Color.GREEN;

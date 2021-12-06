@@ -4,7 +4,6 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXLabel;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.input.MouseEvent;
@@ -84,7 +83,6 @@ public class SignUpScene extends FxmlSingleLoadedScene {
         }
 
         @FXML
-        @SuppressWarnings("OptionalGetWithoutIsPresent")
         void onSignUpButtonClick(MouseEvent event) {
             log.info("Button clicked, #onSignUpButtonClick");
             signUpButton.setDisable(true);
@@ -105,7 +103,11 @@ public class SignUpScene extends FxmlSingleLoadedScene {
                 if (result.status().isSuccess()) {
                     ExecutionUtils.run(() -> infoLabelHandler.setSuccessText("Signed-up successfully"));
                     ExecutionUtils.schedule(() -> {
-                        Ctx.getInstance().sceneManager.load(SignInScene.class);
+                        if (result.entity().isPresent()) {
+                            var dataMap = Map.<String, Object>of(Consts.SIGNED_UP_USERNAME_SESSION_DATA_KEY, result.entity().get().getUsername());
+                            Ctx.getInstance().sceneManager.load(SignInScene.class, dataMap);
+                        } else
+                            Ctx.getInstance().sceneManager.load(SignInScene.class);
                         usernameTextField.clear();
                         passwordTextField.clear();
                         emailTextField.clear();
@@ -114,12 +116,12 @@ public class SignUpScene extends FxmlSingleLoadedScene {
                         signUpButton.setDisable(false);
                     }, Consts.INFO_DELAY_MILLIS);
                 } else if (result.status().isError()) {
-                    Platform.runLater(() -> {
+                    ExecutionUtils.run(() -> {
                         infoLabelHandler.setWaringText(result.message().isPresent() ? result.message().get() : "Unknown error");
                         signUpButton.setDisable(false);
                     });
                 } else {
-                    Platform.runLater(() -> {
+                    ExecutionUtils.run(() -> {
                         infoLabelHandler.setWaringText(result.message().isPresent() ? result.message().get() : "Unknown fail");
                         signUpButton.setDisable(false);
                     });

@@ -4,7 +4,6 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXLabel;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.input.MouseEvent;
@@ -61,6 +60,8 @@ public class SignInScene extends FxmlSingleLoadedScene {
         @Override
         public void onLoad(Map<String, Object> dataMap) {
             log.info("SignInScene #onLoad");
+            if (dataMap.containsKey(Consts.SIGNED_UP_USERNAME_SESSION_DATA_KEY))
+                usernameTextField.setText(dataMap.get(Consts.SIGNED_UP_USERNAME_SESSION_DATA_KEY).toString());
         }
 
         @Override
@@ -87,18 +88,18 @@ public class SignInScene extends FxmlSingleLoadedScene {
                         var warningTextStringJoiner = new StringJoiner(".\n");
                         MessageUtils.parseMessageList(result.message().get(), ",")
                                 .forEach(warningTextStringJoiner::add);
-                        Platform.runLater(() -> {
+                        ExecutionUtils.run(() -> {
                             infoLabelHandler.setWaringText(warningTextStringJoiner.toString());
                             signInButton.setDisable(false);
                         });
                     } else {
-                        Platform.runLater(() -> {
+                        ExecutionUtils.run(() -> {
                             infoLabelHandler.setWaringText("Unknown error");
                             signInButton.setDisable(false);
                         });
                     }
                 } else {
-                    Platform.runLater(() -> {
+                    ExecutionUtils.run(() -> {
                         infoLabelHandler.setWaringText(result.message().isPresent() ? result.message().get() : "Unknown fail");
                         signInButton.setDisable(false);
                     });

@@ -2,7 +2,6 @@ package org.thehive.hivedesktop.scene;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -11,6 +10,7 @@ import javafx.scene.input.MouseEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
+import org.thehive.hivedesktop.util.ExecutionUtils;
 import org.thehive.hivedesktop.util.ImageUtils;
 import org.thehive.hivedesktop.util.WebSocketLoggingListener;
 import org.thehive.hiveserverclient.service.ResultStatus;
@@ -68,15 +68,11 @@ public class MainScene extends FxmlSingleLoadedScene {
         @Override
         @SuppressWarnings("OptionalGetWithoutIsPresent")
         public void onLoad(Map<String, Object> dataMap) {
-            if (dataMap.containsKey(Consts.SCENE_MESSAGE_DATA_KEY)) {
-                var message = dataMap.get(Consts.SCENE_MESSAGE_DATA_KEY).toString();
-                joinInfoLabel.setText(message);
-            }
             log.info("MainScene#onLoad");
             Ctx.getInstance().userService.profile(profileResult -> {
                 if (profileResult.status().isSuccess()) {
                     var user = profileResult.entity().get();
-                    Platform.runLater(() -> {
+                    ExecutionUtils.run(() -> {
                         usernameLabel.setText(user.getUsername());
                         emailLabel.setText(user.getEmail());
                         nameLabel.setText(user.getUserInfo().getFirstname() + " " + user.getUserInfo().getLastname());
@@ -84,11 +80,11 @@ public class MainScene extends FxmlSingleLoadedScene {
                     Ctx.getInstance().imageService.take(user.getUsername(), imageResult -> {
                         var content = imageResult.entity().get().getContent();
                         var profileImage = new Image(new ByteArrayInputStream(content));
-                        Platform.runLater(() -> profileImageView.setImage(profileImage));
+                        ExecutionUtils.run(() -> profileImageView.setImage(profileImage));
                         try {
                             var scaledContent = ImageUtils.scaleImageContent(content, 800, 800);
                             var scaledProfileImage = new Image(new ByteArrayInputStream(scaledContent));
-                            Platform.runLater(() -> profileImageView.setImage(scaledProfileImage));
+                            ExecutionUtils.run(() -> profileImageView.setImage(scaledProfileImage));
                         } catch (IOException e) {
                             log.warn("Error while scaling profile image", e);
                         }
@@ -122,25 +118,25 @@ public class MainScene extends FxmlSingleLoadedScene {
             joinInfoLabel.setText("Joining ...");
             Ctx.getInstance().sessionService.take(sessionId, result -> {
                 if (result.status().isSuccess()) {
-                    Platform.runLater(() -> {
+                    ExecutionUtils.run(() -> {
                         joinInfoLabel.setText("Joined, name: " + result.entity().get().getName());
-                        var dataMap = Map.<String, Object>of(Consts.SCENE_SESSION_DATA_KEY, result.entity().get());
+                        var dataMap = Map.<String, Object>of(Consts.JOINED_SESSION_SCENE_DATA_KEY, result.entity().get());
                         Ctx.getInstance().sceneManager.load(EditorScene.class, dataMap);
                     });
                 } else if (result.status().isError()) {
                     if (result.status() == ResultStatus.ERROR_UNAVAILABLE) {
-                        Platform.runLater(() -> {
+                        ExecutionUtils.run(() -> {
                             joinInfoLabel.setText("Session not found");
                             joinSessionButton.setDisable(false);
                         });
                     } else {
-                        Platform.runLater(() -> {
+                        ExecutionUtils.run(() -> {
                             joinInfoLabel.setText(result.message().get());
                             joinSessionButton.setDisable(false);
                         });
                     }
                 } else {
-                    Platform.runLater(() -> {
+                    ExecutionUtils.run(() -> {
                         joinInfoLabel.setText("Fail");
                         joinSessionButton.setDisable(false);
                     });
