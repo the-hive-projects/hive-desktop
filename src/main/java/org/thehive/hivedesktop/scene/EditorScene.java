@@ -22,9 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.ProfileDialogView;
 import org.thehive.hivedesktop.util.ImageUtils;
+import org.thehive.hiveserverclient.Authentication;
 import org.thehive.hiveserverclient.model.User;
 import org.thehive.hiveserverclient.model.UserInfo;
 import org.thehive.hiveserverclient.payload.Chat;
+import org.thehive.hiveserverclient.util.HeaderUtils;
 
 import java.io.*;
 import java.util.Dictionary;
@@ -37,6 +39,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
     public EditorScene() {
         super(FXML_FILENAME);
+        Authentication.INSTANCE.authenticate(HeaderUtils.httpBasicAuthenticationToken("user","password"));
     }
 
     @Slf4j
@@ -52,12 +55,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         @FXML
         VBox chatBox;
-
-
-
-
-
-
 
 
         @FXML
@@ -82,6 +79,10 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         @FXML
         private TabPane terminalPane;
+
+
+        private Chat chat = new Chat();
+        private ImageView view = new ImageView();
 
         private Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
 
@@ -160,7 +161,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         }
 
         @FXML
-        private TextArea createLabel() {
+        private TextArea createLabel( ) {
             TextArea messageLabel = new TextArea();
             messageLabel.setEditable(false);
             messageLabel.setWrapText(true);
@@ -191,11 +192,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         }
 
         @FXML
-        private Hyperlink createUser(String username) {
-            //TODO Hyperlink for username who sent message
+        private Hyperlink createUser(Chat chat) {
             Hyperlink userName = new Hyperlink();
-            userName.setText(username);
-
             Font font = Font.font("Helvetica", FontWeight.BOLD,
                     FontPosture.REGULAR, 10);
 
@@ -203,12 +201,38 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             userName.setPadding(new Insets(10, 10, 5, 10));
             userName.setTextFill(Color.web("#ffc107"));
 
-            //TODO Hyperlink for image who sent message
-            Image img = new Image("https://p.kindpng.com/picc/s/78-786207_user-avatar-png-user-avatar-icon-png-transparent.png"); //image who sent the message form db
-            ImageView view = new ImageView(img);
-            view.setFitHeight(20);
+            Ctx.getInstance().userService.profile(profileResult -> {
+                if (profileResult.status().isSuccess()) {
+                    var user = profileResult.entity().get();
+                    Platform.runLater(() -> {
+                        chat.setFrom(user.getUserInfo().getFirstname()+" "+user.getUserInfo().getLastname());
+                        userName.setText(chat.getFrom());
+                    });
+
+
+
+                    Ctx.getInstance().imageService.take(user.getUsername(), imageResult -> {
+                        var content = imageResult.entity().get().getContent();
+                        var profileImage = new Image(new ByteArrayInputStream(content));
+                        Platform.runLater(() -> view.setImage(profileImage));
+                        try {
+                            var scaledContent = ImageUtils.scaleImageContent(content, 20, 20);
+                            var scaledProfileImage = new Image(new ByteArrayInputStream(scaledContent));
+                            Platform.runLater(() -> {view.setImage(scaledProfileImage);
+
+                               });
+                        } catch (IOException e) {
+                            log.warn("Error while scaling profile image", e);
+                        }
+                    });
+                }
+            });
+
             view.setPreserveRatio(true);
-            userName.setGraphic(view);
+            var img = view.getImage();
+
+            userName.setGraphic(new ImageView(img));
+
 
             userName.setOnMouseClicked(mouseEvent -> {
 
@@ -265,27 +289,28 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             return userName;
         }*/
 
-       /* @FXML
+        @FXML
         private void addMessageToChatBox() {
-            var userName = createUser();
+            var userName = createUser(chat);
             var messageLabel = createLabel();
             var line = createLine();
             String message = messageArea.getText();
-            messageLabel.setText(message);
-            messageArea.setText(null);
-            chatBox.getChildren().addAll(userName, messageLabel, line);
-        }*/
-
-        @FXML
-        private void addMessageToChatBox(Chat chat) {
-            log.info("Adding Chat to ChatBox");
-            var userName = createUser(chat.getFrom());
-            var messageLabel = createLabel();
-            var line = createLine();
+            chat.setText(message);
             messageLabel.setText(chat.getText());
             messageArea.setText(null);
             chatBox.getChildren().addAll(userName, messageLabel, line);
         }
+
+       /* @FXML
+        private void addMessageToChatBox(Chat chat) {
+            log.info("Adding Chat to ChatBox");
+            var userName = createUser(chat);
+            var messageLabel = createLabel(chat);
+            var line = createLine();
+            messageLabel.setText(chat.getText());
+            messageArea.setText(null);
+            chatBox.getChildren().addAll(userName, messageLabel, line);
+        }*/
 
         @Override
         public void onStart() {
@@ -339,7 +364,21 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             btnLeaveSession.setOnMouseClicked(event -> {
                 //TODO load sessionview
                 Ctx.getInstance().sceneManager.load(MainScene.class);
+                //TODO disconnect session connection
             });
+
+            btnSendMessage.setOnMouseClicked(mouseEvent -> addMessageToChatBox());
+
+            Ctx.getInstance().userService.profile(profileResult -> {
+                if (profileResult.status().isFail()) {
+
+                    log.info("profile is ok");
+                    var user = profileResult.entity().get();
+                    log.info("user is ok");
+                    Chat chat = new Chat(user.getUsername(),messageArea.getText(),System.currentTimeMillis());
+                    log.info("chat is ok");
+
+                }});
 
 
 
@@ -349,20 +388,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         public void onLoad(Map<String,Object> data) {
             log.info("onLoad Editor");
 
-            Ctx.getInstance().userService.profile(profileResult -> {
-                if (profileResult.status().isFail()) {
 
-                log.info("profile is ok");
-                var user = profileResult.entity().get();
-                log.info("user is ok");
-                Chat chat = new Chat(user.getUsername(),messageArea.getText(),System.currentTimeMillis());
-                log.info("chat is ok");
-
-                btnSendMessage.setOnMouseClicked(mouseEvent -> addMessageToChatBox(chat));
-
-
-
-            }});
 
            /* User user;
                     //new User(1, "onur", "onur@gmail.com", "1234", userInfo);

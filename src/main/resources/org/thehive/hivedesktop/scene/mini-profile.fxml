@@ -16,7 +16,7 @@
         <buttons>
             <Button fx:id="btnClose" mnemonicParsing="false" prefHeight="32.0" prefWidth="36.0" stylesheets="@../../../../values/style.css">
                 <graphic>
-                    <ImageView fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 50; -fx-background-radius: 50;">
+                    <ImageView fx:id="" fitHeight="26.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true" style="-fx-border-radius: 50; -fx-background-radius: 50;">
                         <image>
                             <Image url="@../../../../img/close.png" />
                         </image>
@@ -29,34 +29,23 @@
             </Button>
         </buttons>
       </ButtonBar>
-      <ImageView fx:id="image" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@../../../../img/44066965.png" />
-         </image>
+      <ImageView fx:id="imageProfile" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+
       </ImageView>
       <Pane prefHeight="12.0" prefWidth="442.0" />
-      <Label fx:id="lbFullname" alignment="CENTER" prefHeight="27.0" prefWidth="239.0" text="Mustafa Tüfekçi" textFill="#373737">
+      <Label fx:id="lblFullName" alignment="CENTER" prefHeight="27.0" prefWidth="239.0" text="Mustafa Tüfekçi" textFill="#373737">
          <font>
             <Font name="Arial Bold" size="30.0" />
          </font>
       </Label>
-      <Label fx:id="lbFullname1" alignment="CENTER" prefHeight="11.0" prefWidth="239.0" text="Yazılım Mühendisliği" textFill="#373737">
-         <font>
-            <Font name="Arial Bold" size="17.0" />
-         </font>
-      </Label>
-      <Label fx:id="lbFullname11" alignment="CENTER" prefHeight="11.0" prefWidth="239.0" text="3.Sınıf" textFill="#373737">
-         <font>
-            <Font name="Arial Bold" size="17.0" />
-         </font>
-      </Label>
+
       <Pane prefHeight="10.0" prefWidth="378.0" />
       <Label prefHeight="22.0" prefWidth="263.0" text="Username" textFill="#b49300">
          <font>
             <Font name="Arial Bold" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="lbUsername" prefHeight="22.0" prefWidth="266.0" text="mustafatufekci" textFill="#373737">
+      <Label fx:id="lblUsername" prefHeight="22.0" prefWidth="266.0" text="mustafatufekci" textFill="#373737">
          <font>
             <Font name="Arial Bold" size="18.0" />
          </font>
@@ -67,7 +56,7 @@
             <Font name="Arial Bold" size="18.0" />
          </font>
       </Label>
-      <Label fx:id="lbEmail" prefHeight="22.0" prefWidth="266.0" text="mustafa.tufekci@gmail.com" textFill="#373737">
+      <Label fx:id="lblEmail" prefHeight="22.0" prefWidth="266.0" text="mustafa.tufekci@gmail.com" textFill="#373737">
          <font>
             <Font name="Arial Bold" size="18.0" />
          </font>

@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.scene.*;
+import org.thehive.hiveserverclient.Authentication;
+import org.thehive.hiveserverclient.util.HeaderUtils;
 
 @Slf4j
 public class App extends Application {
@@ -37,6 +39,7 @@ public class App extends Application {
         Ctx.getInstance().sceneManager.add(new EditorScene());
         Ctx.getInstance().sceneManager.add(new InboxScene());
         Ctx.getInstance().sceneManager.load(EditorScene.class);
+
         stage.show();
     }
 
