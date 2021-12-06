@@ -1,92 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import io.github.palexdev.materialfx.controls.*?>
-<?import javafx.geometry.*?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXLabel?>
+<?import io.github.palexdev.materialfx.controls.MFXPasswordField?>
+<?import io.github.palexdev.materialfx.controls.MFXTextField?>
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-<?import java.lang.String?>
-<HBox xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-      minWidth="-Infinity"
-      prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #f89c0e;"
-      xmlns="http://javafx.com/javafx/17" fx:controller="org.thehive.hivedesktop.scene.SignUpScene$Controller">
-    <VBox alignment="CENTER" prefWidth="300.0" styleClass="left-side-background"
-          stylesheets="@../../../../values/style.css">
-        <ImageView fitHeight="393.0" fitWidth="267.0" pickOnBounds="true" preserveRatio="true">
-            <Image url="@../../../../img/logo.png"/>
-        </ImageView>
-    </VBox>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #f89c0e;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.SignUpScene$Controller">
+   <VBox alignment="CENTER" prefHeight="600.0" prefWidth="500.0" styleClass="left-side-background" stylesheets="@../../../../css/style.css">
+      <children>
+         <ImageView id="logoImage" fitHeight="310.0" fitWidth="267.0" pickOnBounds="true" preserveRatio="true">
+            <VBox.margin>
+               <Insets top="100.0" />
+            </VBox.margin>
+            <image>
+               <Image url="@../../../../img/logo.png" />
+            </image>
+         </ImageView>
+         <BorderPane prefHeight="32.0" prefWidth="400.0">
+            <center>
+               <Label alignment="TOP_LEFT" contentDisplay="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="17.0" prefWidth="273.0" text="Powered by JavaFX  " textFill="WHITE" BorderPane.alignment="CENTER">
+                  <font>
+                     <Font name="Rockwell" size="15.0" />
+                  </font>
+               </Label>
+            </center>
+            <VBox.margin>
+               <Insets top="150.0" />
+            </VBox.margin>
+            <right>
+               <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="17.0" prefWidth="120.0" text="version 0.0.1" textFill="WHITE" BorderPane.alignment="CENTER">
+                  <font>
+                     <Font name="Rockwell" size="15.0" />
+                  </font>
+               </Label>
+            </right>
+         </BorderPane>
+      </children>
+   </VBox>
     <VBox alignment="CENTER" prefWidth="600.0">
-        <MFXTextField fx:id="nameTextField" prefHeight="30.0" prefWidth="300.0" promptText="Name"
-                      unfocusedLineColor="#373737">
+        <MFXTextField fx:id="nameTextField" lineColor="#ffdd08" prefHeight="30.0" prefWidth="300.0" promptText="Name" unfocusedLineColor="#373737">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
             <font>
-                <Font size="15.0"/>
+                <Font size="15.0" />
             </font>
         </MFXTextField>
-        <MFXTextField fx:id="surnameTextField" prefHeight="30.0" prefWidth="300.0" promptText="Surname"
-                      unfocusedLineColor="#373737">
+        <MFXTextField fx:id="surnameTextField" lineColor="#ffdd08" prefHeight="30.0" prefWidth="300.0" promptText="Surname" unfocusedLineColor="#373737">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
             <font>
-                <Font size="15.0"/>
+                <Font size="15.0" />
             </font>
         </MFXTextField>
-        <MFXTextField fx:id="usernameTextField" prefHeight="30.0" prefWidth="300.0" promptText="Username"
-                      unfocusedLineColor="#373737">
+        <MFXTextField fx:id="usernameTextField" lineColor="#ffdd08" prefHeight="30.0" prefWidth="300.0" promptText="Username" unfocusedLineColor="#373737">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
             <font>
-                <Font size="15.0"/>
+                <Font size="15.0" />
             </font>
         </MFXTextField>
-        <MFXTextField fx:id="emailTextField" prefHeight="30.0" prefWidth="300.0" promptText="Email"
-                      unfocusedLineColor="#373737">
+        <MFXTextField fx:id="emailTextField" lineColor="#ffdd08" prefHeight="30.0" prefWidth="300.0" promptText="Email" unfocusedLineColor="#373737">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
             <font>
-                <Font size="15.0"/>
+                <Font size="15.0" />
             </font>
         </MFXTextField>
-        <MFXPasswordField fx:id="passwordTextField" allowCopy="false" allowCut="false" prefHeight="30.0"
-                          prefWidth="300.0" promptText="Password">
+        <MFXPasswordField fx:id="passwordTextField" allowCopy="false" allowCut="false" lineColor="#ffdd08" prefHeight="30.0" prefWidth="300.0" promptText="Password">
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
             <font>
-                <Font name="Arial" size="15.0"/>
+                <Font name="Arial" size="15.0" />
             </font>
         </MFXPasswordField>
-        <MFXButton fx:id="signUpButton" onMouseClicked="#onSignUpButtonClick" prefHeight="30.0" prefWidth="300.0"
-                   style="-fx-background-color: #373737; -fx-background-radius: 16; -fx-border-radius: 10;"
-                   stylesheets="@../../../../values/style.css" text="Sign Up" textFill="#f29811">
+        <MFXButton fx:id="signUpButton" onMouseClicked="#onSignUpButtonClick" prefHeight="30.0" prefWidth="300.0" style="-fx-background-color: #373737; -fx-background-radius: 16; -fx-border-radius: 10;" stylesheets="@../../../../values/style.css" text="Sign Up" textFill="#f29811">
             <styleClass>
-                <String fx:value="left-side-background"/>
-                <String fx:value="btnLogin"/>
+                <String fx:value="left-side-background" />
+                <String fx:value="btnLogin" />
             </styleClass>
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
             <font>
-                <Font name="Arial" size="15.0"/>
+                <Font name="Arial" size="15.0" />
             </font>
         </MFXButton>
-        <Hyperlink fx:id="signInLink" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onSignInLinkClick"
-                   prefHeight="30.0" prefWidth="300.0" text="Do you have account?" textFill="#373737">
+        <Hyperlink fx:id="signInLink" alignment="CENTER" contentDisplay="CENTER" onMouseClicked="#onSignInLinkClick" prefHeight="30.0" prefWidth="300.0" text="Do you have account?" textFill="#373737">
             <font>
-                <Font name="Arial" size="15.0"/>
+                <Font name="Arial" size="15.0" />
             </font>
             <VBox.margin>
-                <Insets top="10.0"/>
+                <Insets top="10.0" />
             </VBox.margin>
         </Hyperlink>
-        <MFXLabel fx:id="infoLabel"/>
+        <MFXLabel fx:id="warningMessageLabel" lineColor="#f89c0e" unfocusedLineColor="#f89c0e" />
     </VBox>
 </HBox>
