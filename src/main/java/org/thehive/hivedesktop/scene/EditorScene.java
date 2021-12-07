@@ -203,6 +203,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             Font font = Font.font("Helvetica", FontWeight.BOLD,
                     FontPosture.REGULAR, 10);
             userName.setFont(font);
+            userName.setText(chat.getFrom());
             userName.setPadding(new Insets(10, 10, 5, 10));
             userName.setTextFill(Color.web("#ffc107"));
             var image = new Image(new ByteArrayInputStream(profileImageContent));
@@ -314,17 +315,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
             btnSendMessage.setOnMouseClicked(mouseEvent -> sendMessage());
 
-            Ctx.getInstance().userService.profile(profileResult -> {
-                if (profileResult.status().isFail()) {
-
-                    log.info("profile is ok");
-                    var user = profileResult.entity().get();
-                    log.info("user is ok");
-                    Chat chat = new Chat(user.getUsername(), messageArea.getText(), System.currentTimeMillis());
-                    log.info("chat is ok");
-
-                }
-            });
 
 
         }

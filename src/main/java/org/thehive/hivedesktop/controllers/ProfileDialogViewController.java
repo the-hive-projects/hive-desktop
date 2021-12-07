@@ -29,8 +29,14 @@ public class ProfileDialogViewController implements Initializable {
     @FXML
     private Label lblEmail, lblFullName, lblUsername;
 
+    private final String username;
 
-    public void fillProfile() {
+    public ProfileDialogViewController(String username){
+        this.username = username;
+
+    }
+
+    public void fillProfile(String username) {
 
         //TODO Hyperlink for image who sent message
         Ctx.getInstance().userService.profile(profileResult -> {
@@ -67,7 +73,7 @@ public class ProfileDialogViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        fillProfile();
+        fillProfile(username);
 
 
         btnClose.setOnMouseClicked(new EventHandler<MouseEvent>() {
