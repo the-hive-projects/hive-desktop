@@ -26,25 +26,38 @@
         </ImageView>
         <BorderPane prefHeight="32.0" prefWidth="400.0">
             <center>
-                <Label alignment="TOP_LEFT" contentDisplay="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="17.0" prefWidth="273.0" text="Powered by JavaFX  " textFill="WHITE" BorderPane.alignment="CENTER">
+                <Label alignment="TOP_LEFT" contentDisplay="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="17.0" prefWidth="273.0" text="Powered by HIVE Team" textFill="WHITE" BorderPane.alignment="CENTER">
                     <font>
-                        <Font name="Rockwell" size="15.0" />
+                        <Font name="Century Gothic" size="15.0" />
                     </font>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
                 </Label>
             </center>
             <VBox.margin>
-                <Insets top="150.0" />
+                <Insets top="175.0" />
             </VBox.margin>
             <right>
                 <Label alignment="TOP_RIGHT" contentDisplay="RIGHT" nodeOrientation="LEFT_TO_RIGHT" prefHeight="17.0" prefWidth="120.0" text="version 0.0.1" textFill="WHITE" BorderPane.alignment="CENTER">
                     <font>
-                        <Font name="Rockwell" size="15.0" />
+                        <Font name="Century Gothic" size="15.0" />
                     </font>
+               <padding>
+                  <Insets right="10.0" />
+               </padding>
                 </Label>
             </right>
         </BorderPane>
     </VBox>
     <VBox alignment="CENTER" prefWidth="600.0">
+      <Label fx:id="lblLoading" prefHeight="74.0" prefWidth="258.0">
+         <VBox.margin>
+            <Insets bottom="25.0" />
+         </VBox.margin></Label>
         <MFXTextField fx:id="usernameTextField" lineColor="#ffdd08" prefHeight="30.0" prefWidth="300.0" promptText="Username" text="user">
             <VBox.margin>
                 <Insets top="10.0" />
