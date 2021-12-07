@@ -36,7 +36,7 @@ public class App extends Application {
         Ctx.getInstance().sceneManager.add(new MainScene());
         Ctx.getInstance().sceneManager.add(new EditorScene());
         Ctx.getInstance().sceneManager.add(new InboxScene());
-        Ctx.getInstance().sceneManager.load(InboxScene.class);
+        Ctx.getInstance().sceneManager.load(SignInScene.class);
         stage.show();
     }
 

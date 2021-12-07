@@ -41,7 +41,7 @@ public class InboxScene extends FxmlMultipleLoadedScene {
 
     public InboxScene() {
         super(FXML_FILENAME);
-        Authentication.INSTANCE.authenticate(HeaderUtils.httpBasicAuthenticationToken("user", "password"));
+        //Authentication.INSTANCE.authenticate(HeaderUtils.httpBasicAuthenticationToken("user", "password"));
     }
 
     @Slf4j
