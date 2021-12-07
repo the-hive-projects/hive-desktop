@@ -13,6 +13,10 @@ public abstract class AbstractController implements AppController {
         });
     }
 
+    public AbstractController() {
+
+    }
+
     @Override
     public final void initialize(URL location, ResourceBundle resources) {
         this.onStart();
