@@ -7,15 +7,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class ChatMessageObservableMessageList extends AbstractChatMessageObservable implements ChatMessageList {
+public class ChatMessageObservableList extends AbstractChatMessageObservable implements ChatMessageList {
 
     private final List<ChatMessage> chatList;
 
-    public ChatMessageObservableMessageList() {
+    public ChatMessageObservableList() {
         this.chatList = new ArrayList<>();
     }
 
-    public ChatMessageObservableMessageList(@NonNull Collection<? extends ChatMessage> chatMessages) {
+    public ChatMessageObservableList(@NonNull Collection<? extends ChatMessage> chatMessages) {
         this.chatList = new ArrayList<>(chatMessages);
     }
 

@@ -8,7 +8,6 @@ import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -26,14 +25,10 @@ import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.ProfileDialogView;
-import org.thehive.hiveserverclient.Authentication;
-import org.thehive.hiveserverclient.payload.Chat;
-import org.thehive.hiveserverclient.util.HeaderUtils;
+import org.thehive.hiveserverclient.payload.ChatMessage;
 
 import java.io.*;
-import java.net.URL;
 import java.util.Map;
-import java.util.ResourceBundle;
 
 public class InboxScene extends FxmlMultipleLoadedScene {
 
@@ -68,12 +63,20 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         @FXML
         private Hyperlink profileTab;
 
-
-
-
+        @FXML
+        private static void readCode(File fin) throws IOException {
+            FileInputStream fis = new FileInputStream(fin);
+            //Construct BufferedReader from InputStreamReader
+            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+            br.close();
+        }
 
         @FXML
-        private Hyperlink createUser(Chat chat, byte[] profileImageContent) {
+        private Hyperlink createUser(ChatMessage chat, byte[] profileImageContent) {
             Hyperlink userName = new Hyperlink();
             Font font = Font.font("Helvetica", FontWeight.BOLD,
                     FontPosture.REGULAR, 10);
@@ -94,10 +97,8 @@ public class InboxScene extends FxmlMultipleLoadedScene {
             return userName;
         }
 
-
-
         @FXML
-        private MonacoFX setCode(MonacoFX editor,String language, String theme) {
+        private MonacoFX setCode(MonacoFX editor, String language, String theme) {
             //When click a person, his/her code will be loaded from db with setCode
             //int numTabs = dict.size();
             // monacoFXeditor.setId("monacoFX" + numTabs);
@@ -109,19 +110,6 @@ public class InboxScene extends FxmlMultipleLoadedScene {
             codeEditor = editor;
             return codeEditor;
         }
-
-        @FXML
-        private static void readCode(File fin) throws IOException {
-            FileInputStream fis = new FileInputStream(fin);
-            //Construct BufferedReader from InputStreamReader
-            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            br.close();
-        }
-
 
         @FXML
         private File runEditorCode(TerminalTab terminal) throws IOException {
@@ -144,7 +132,7 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         }
 
 
-        public void createBox(){
+        public void createBox() {
 
             JFXListCell<Label> listCell = new JFXListCell<Label>();
             listCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px;");
@@ -168,21 +156,18 @@ public class InboxScene extends FxmlMultipleLoadedScene {
             listCell.setMinHeight(44);
 
 
-
             attendedList.getChildren().addAll(listCell);
 
             listCell.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
                     rightSplitPane.setVisible(true);
-                    setCode(codeEditor,"python","vs-dark");
+                    setCode(codeEditor, "python", "vs-dark");
                     //TODO user info
-                   // profileTab = createUser();
+                    // profileTab = createUser();
 
                 }
             });
-
-
 
 
         }
@@ -209,7 +194,6 @@ public class InboxScene extends FxmlMultipleLoadedScene {
 //        });
 
 
-
             terminalTab.getTabs().add(terminal);
 
             log.info("onStart InBox");
@@ -226,7 +210,6 @@ public class InboxScene extends FxmlMultipleLoadedScene {
             });*/
 
 
-
             Ctx.getInstance().sceneManager.getStage().resizableProperty();
 
             btnRunCode.setOnMouseClicked(mouseEvent -> {
@@ -238,8 +221,6 @@ public class InboxScene extends FxmlMultipleLoadedScene {
             });
 
             createBox();
-
-
 
 
             profileTab.setOnMouseClicked(mouseEvent -> {
@@ -263,6 +244,5 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         }
 
 
-
-
-    }}
+    }
+}

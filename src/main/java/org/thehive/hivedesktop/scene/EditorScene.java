@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.ProfileDialogView;
-import org.thehive.hivedesktop.chat.ChatObservableList;
+import org.thehive.hivedesktop.chat.ChatMessageObservableList;
 import org.thehive.hivedesktop.util.ExecutionUtils;
 import org.thehive.hivedesktop.util.ImageUtils;
 import org.thehive.hiveserverclient.model.Session;
@@ -29,7 +29,7 @@ import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
 import org.thehive.hiveserverclient.net.websocket.header.PayloadType;
 import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription;
 import org.thehive.hiveserverclient.net.websocket.subscription.SubscriptionListener;
-import org.thehive.hiveserverclient.payload.Chat;
+import org.thehive.hiveserverclient.payload.ChatMessage;
 import org.thehive.hiveserverclient.payload.Payload;
 
 import java.io.*;
@@ -43,14 +43,14 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
     public EditorScene() {
         super(FXML_FILENAME);
-        //Authentication.INSTANCE.authenticate(HeaderUtils.httpBasicAuthenticationToken("user", "password"));
     }
 
     @Slf4j
     public static class Controller extends AbstractController {
 
         private static final Class<? extends AppScene> SCENE_TYPE = EditorScene.class;
-        private final ChatObservableList chatObservableList;
+        private final ChatMessageObservableList chatMessageObservableList;
+        private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
         @FXML
         Tab firstTab;
         @FXML
@@ -72,12 +72,10 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @FXML
         private TabPane terminalPane;
 
-        private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
-
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
-            this.chatObservableList = new ChatObservableList();
-            chatObservableList.registerObserver(chat -> {
+            this.chatMessageObservableList = new ChatMessageObservableList();
+            chatMessageObservableList.registerObserver(chat -> {
                 Ctx.getInstance().imageService.take(chat.getFrom(), result -> {
                     if (result.status().isSuccess()) {
                         try {
@@ -198,12 +196,12 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         }
 
         @FXML
-        private Hyperlink createUser(Chat chat, byte[] profileImageContent) {
+        private Hyperlink createUser(ChatMessage chatMessage, byte[] profileImageContent) {
             Hyperlink userName = new Hyperlink();
             Font font = Font.font("Helvetica", FontWeight.BOLD,
                     FontPosture.REGULAR, 10);
             userName.setFont(font);
-            userName.setText(chat.getFrom());
+            userName.setText(chatMessage.getFrom());
             userName.setPadding(new Insets(10, 10, 5, 10));
             userName.setTextFill(Color.web("#ffc107"));
             var image = new Image(new ByteArrayInputStream(profileImageContent));
@@ -259,10 +257,11 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         @FXML
         private void sendMessage() {
-            var chat = new Chat();
+            var chatMessage = new ChatMessage();
             String message = messageArea.getText();
-            chat.setText(message);
-            Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(chat);
+            messageArea.clear();
+            chatMessage.setText(message);
+            Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(chatMessage);
         }
 
         @Override
@@ -316,7 +315,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             btnSendMessage.setOnMouseClicked(mouseEvent -> sendMessage());
 
 
-
         }
 
         @Override
@@ -337,8 +335,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
                     @Override
                     public void onReceive(AppStompHeaders appStompHeaders, Payload payload) {
-                        if (appStompHeaders.getPayloadType() == PayloadType.CHAT)
-                            chatObservableList.add((Chat) payload);
+                        if (appStompHeaders.getPayloadType() == PayloadType.CHAT_MESSAGE)
+                            chatMessageObservableList.add((ChatMessage) payload);
                     }
 
                     @Override

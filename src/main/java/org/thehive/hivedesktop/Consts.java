@@ -13,7 +13,7 @@ public class Consts {
     public static final String SERVER_WS_STOMP_URI = SERVER_WS_URI + "/stomp";
     public static final String SERVER_WS_STOMP_DESTINATION_PREFIX = "/websocket";
     public static final String SERVER_SESSION_WS_STOMP_SUBSCRIPTION_ENDPOINT = "/topic/session/{id}";
-    public static final String SERVER_SESSION_WS_STOMP_CHAT_PAYLOAD_ENDPOINT = "/session/chat/{id}";
+    public static final String SERVER_SESSION_WS_STOMP_CHAT_MESSAGE_PAYLOAD_ENDPOINT = "/session/chat/{id}";
 
     public static final int THREAD_POOL_SIZE = 10;
 

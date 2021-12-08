@@ -23,22 +23,22 @@ public class WebSocketLoggingListener implements WebSocketListener {
 
     @Override
     public void onSubscribe(StompSubscription stompSubscription) {
-        logger.info("#onSubscribe");
+        logger.info("#onSubscribe, destination: {}", stompSubscription.getDestination());
     }
 
     @Override
     public void onUnsubscribe(StompSubscription stompSubscription) {
-        logger.info("#onUnsubscribe");
+        logger.info("#onUnsubscribe, destination: {}", stompSubscription.getDestination());
     }
 
     @Override
     public void onReceive(AppStompHeaders appStompHeaders, Payload payload) {
-        logger.info("#onReceive");
+        logger.info("#onReceive, payload: {}", payload);
     }
 
     @Override
     public void onSend(Payload payload) {
-        logger.info("#onSend");
+        logger.info("#onSend, payload{}", payload);
     }
 
     @Override
