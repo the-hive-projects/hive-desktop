@@ -70,14 +70,12 @@ public class SignInScene extends FxmlSingleLoadedScene {
         public void onStart() {
             log.info("SignInScene #onStart");
             this.infoLabelHandler = new InfoLabelHandler(infoLabel);
-
-
-
         }
 
         @Override
         public void onLoad(Map<String, Object> dataMap) {
             log.info("SignInScene #onLoad");
+            infoLabelHandler.setDefaultText("");
             if (dataMap.containsKey(Consts.SIGNED_UP_USERNAME_SESSION_DATA_KEY))
                 usernameTextField.setText(dataMap.get(Consts.SIGNED_UP_USERNAME_SESSION_DATA_KEY).toString());
         }
@@ -112,17 +110,14 @@ public class SignInScene extends FxmlSingleLoadedScene {
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-
                             Ctx.getInstance().userService.signIn(username, password, result -> {
-
-
                                 if (result.status().isSuccess()) {
-
                                     ExecutionUtils.run(() -> infoLabelHandler.setSuccessText("Signed-in successfully"));
                                     ExecutionUtils.schedule(() -> {
                                         Ctx.getInstance().sceneManager.load(MainScene.class);
                                         signInButton.setDisable(false);
                                     }, Consts.INFO_DELAY_MILLIS);
+                                    lblLoading.setVisible(false);
                                 } else if (result.status().isError()) {
                                     lblLoading.setVisible(false);
                                     if (result.message().isPresent()) {

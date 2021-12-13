@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import io.github.palexdev.materialfx.controls.MFXButton?>
+<?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -9,10 +10,10 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="876.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.MainScene$Controller">
     <left>
@@ -70,18 +71,21 @@
         </VBox>
     </left>
     <center>
-        <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+        <SplitPane dividerPositions="0.5" minHeight="200.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" style="-fx-box-border: 0;" BorderPane.alignment="CENTER">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                <MFXButton fx:id="createSessionButton" layoutX="385.0" layoutY="128.0" onMouseClicked="#onCreateSessionButtonClick" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Create Session" textFill="WHITE">
+                <MFXButton fx:id="createSessionButton" layoutX="349.0" layoutY="284.0" onMouseClicked="#onCreateSessionButtonClick" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Create Session" textFill="WHITE">
                     <font>
                         <Font size="15.0" />
                     </font>
                 </MFXButton>
-                <HBox layoutX="47.0" layoutY="98.0" prefHeight="100.0" prefWidth="370.0" />
+            <MFXTextField fx:id="txtSessionName" layoutX="105.0" layoutY="98.0" prefHeight="26.0" prefWidth="181.0" promptText="Session Name" />
+            <MFXFilterComboBox fx:id="cmbSessionDuration" layoutX="103.0" layoutY="203.0" prefHeight="27.0" prefWidth="186.0" />
+            <Label layoutX="53.0" layoutY="289.0" prefHeight="32.0" prefWidth="117.0" text="Session Number" />
+            <Text fx:id="txSessionLabel" layoutX="170.0" layoutY="309.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="140.9830722808838" />
             </AnchorPane>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                <MFXTextField fx:id="joinSessionIdTextField" layoutX="128.0" layoutY="136.0" prefHeight="25.0" prefWidth="236.0" text="00000000000" />
-                <MFXButton fx:id="joinSessionButton" layoutX="383.0" layoutY="128.0" onMouseClicked="#onJoinSessionButtonClick" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Join Session" textFill="WHITE">
+            <AnchorPane maxHeight="200.0" minHeight="200.0" minWidth="0.0" prefHeight="242.0" prefWidth="554.0">
+                <MFXTextField fx:id="joinSessionIdTextField" layoutX="116.0" layoutY="88.0" prefHeight="25.0" prefWidth="236.0" text="00000000000" />
+                <MFXButton fx:id="joinSessionButton" layoutX="370.0" layoutY="80.0" onMouseClicked="#onJoinSessionButtonClick" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Join Session" textFill="WHITE">
                     <font>
                         <Font size="15.0" />
                     </font>
