@@ -2,17 +2,24 @@ package org.thehive.hivedesktop.scene;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.util.ExecutionUtils;
 import org.thehive.hivedesktop.util.ImageUtils;
 import org.thehive.hivedesktop.util.WebSocketLoggingListener;
+import org.thehive.hiveserverclient.Authentication;
 import org.thehive.hiveserverclient.service.ResultStatus;
 
 import java.io.ByteArrayInputStream;
@@ -55,6 +62,43 @@ public class MainScene extends FxmlSingleLoadedScene {
 
         @FXML
         private Label usernameLabel;
+
+        @FXML
+        private BorderPane mainPane;
+
+        Stage stage;
+
+        public void logout(ActionEvent event) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Logout");
+            alert.setHeaderText("You're about to logout!");
+            alert.setContentText("Do you want to save before exiting?");
+
+            if (alert.showAndWait().get() == ButtonType.OK) {
+                stage = (Stage) mainPane.getScene().getWindow();
+                System.out.println("You successfully logged out!");
+                Authentication.INSTANCE.unauthenticate();
+                Ctx.getInstance().sceneManager.load(SignInScene.class);
+            }
+        }
+
+//        public  void start(Stage stage){
+//            try {
+//
+//                Parent root = FXMLLoader.load(getClass().getResource("Scene.fxml"));
+//                Scene scene = new Scene(root);
+//                stage.setScene(scene);
+//                stage.show();
+//
+//                stage.setOnCloseRequest(event -> {
+//                    event.consume();
+//                    logout(stage);
+//                });
+//
+//            } catch(Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);

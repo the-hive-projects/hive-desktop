@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="876.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.MainScene$Controller">
+<BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="876.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.MainScene$Controller">
     <left>
         <VBox prefHeight="600.0" prefWidth="320.0" styleClass="white-background" stylesheets="@../../../../values/style.css" BorderPane.alignment="CENTER">
             <VBox alignment="CENTER" prefHeight="261.0" prefWidth="320.0" styleClass="profile-layout" stylesheets="@../../../../values/style.css">
@@ -61,6 +61,11 @@
                     </font>
                 </Label>
                 <Pane prefHeight="40.0" prefWidth="300.0" />
+            <MFXButton fx:id="logoutButton" onAction="#logout" onMouseClicked="#onCreateSessionButtonClick" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Logout" textFill="WHITE">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </MFXButton>
             </VBox>
         </VBox>
     </left>
@@ -75,7 +80,7 @@
                 <HBox layoutX="47.0" layoutY="98.0" prefHeight="100.0" prefWidth="370.0" />
             </AnchorPane>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                <MFXTextField fx:id="joinSessionIdTextField" layoutX="128.0" layoutY="136.0" prefHeight="25.0" prefWidth="236.0" text="00000000000"/>
+                <MFXTextField fx:id="joinSessionIdTextField" layoutX="128.0" layoutY="136.0" prefHeight="25.0" prefWidth="236.0" text="00000000000" />
                 <MFXButton fx:id="joinSessionButton" layoutX="383.0" layoutY="128.0" onMouseClicked="#onJoinSessionButtonClick" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Join Session" textFill="WHITE">
                     <font>
                         <Font size="15.0" />
