@@ -1,15 +1,20 @@
 package org.thehive.hivedesktop.scene;
 
+import com.jfoenix.controls.JFXListCell;
 import com.kodedu.terminalfx.TerminalBuilder;
 import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
 import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -51,12 +56,17 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         private static final Class<? extends AppScene> SCENE_TYPE = EditorScene.class;
         private final ChatMessageObservableList chatMessageObservableList;
         private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
-        @FXML
-        Tab firstTab;
+
         @FXML
         ScrollPane chatScroll;
         @FXML
         VBox chatBox;
+
+
+
+        @FXML
+        private VBox attendeeList;
+
         @FXML
         TextArea messageArea;
         @FXML
@@ -126,18 +136,73 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             // use a predefined language like 'c'
             monacoFXeditor.getEditor().setCurrentLanguage(language);
             monacoFXeditor.getEditor().setCurrentTheme(theme);
+
             return monacoFXeditor;
         }
 
+
+        public void createBox() {
+
+            JFXListCell<Label> listCell = new JFXListCell<Label>();
+            listCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px;");
+
+            //File file = new File("img/logo.png");
+            Image img = new Image("https://avatars.githubusercontent.com/u/93194123?s=200&v=4");
+
+            ImageView view = new ImageView(img);
+            view.setFitHeight(20);
+            view.setFitWidth(20);
+
+            Label user = new Label();
+
+            //TODO add session code from db
+            user.setText(" Onur Sercan Yılmaz");
+            user.setGraphic(view);
+            user.setGraphicTextGap(3);
+
+            listCell.setGraphic(user);
+            listCell.setMinWidth(165);
+            listCell.setMinHeight(44);
+
+
+            attendeeList.getChildren().addAll(listCell);
+
+            listCell.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    //setCode(codeEditor, "python", "vs-dark");
+                    //TODO user info
+                    // profileTab = createUser();
+
+                }
+            });
+
+
+        }
+
         @FXML
-        private MonacoFX addTab() throws IOException {
+        private MonacoFX addTab() {
             int numTabs = dict.size();
-            Tab tab = new Tab("Tab " + numTabs);
+            Tab tab = new Tab("Yours " + numTabs);
             tab.setId(String.valueOf(numTabs));
             var settedEditor = setEditor("python", "vs-dark");
+            settedEditor.getEditor().getDocument().textProperty().addListener(new ChangeListener<String>() {
+                @Override
+                public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
+                    System.out.println(settedEditor.getEditor().getDocument().getText());
+                }
+            });
+
             tab.setContent(settedEditor);
             addToDict(tab.getText(), settedEditor);
+
+            if (numTabs >= 1){
+               //TODO: set not editable editor
+
+            }
+
             editorPane.getTabs().add(tab);
+            tab.setClosable(false);
             return settedEditor;
         }
 
@@ -267,6 +332,11 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @Override
         public void onStart() {
 
+            addTab();
+            addTab();
+            addTab();
+            createBox();
+
             //        Dark Config
             TerminalConfig darkConfig = new TerminalConfig();
             darkConfig.setBackgroundColor(Color.web("#1e1e1e"));
@@ -289,13 +359,9 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             terminalPane.getTabs().add(terminal);
 
 
-            btnAddNewTab.setOnMouseClicked(mouseEvent -> {
-                try {
+            /*btnAddNewTab.setOnMouseClicked(mouseEvent -> {
                     addTab();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
+            });*/
 
 
             btnRunCode.setOnMouseClicked(mouseEvent -> {
@@ -315,10 +381,16 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             btnSendMessage.setOnMouseClicked(mouseEvent -> sendMessage());
 
 
+
+
+
+
         }
 
         @Override
-        public void onLoad(Map<String, Object> dataMap) {
+        public void onLoad(Map<String, Object> dataMap)  {
+
+
             log.info("onLoad Editor");
             var session = (Session) dataMap.get(Consts.JOINED_SESSION_SCENE_DATA_KEY);
             Ctx.getInstance().webSocketService.getConnection().ifPresent(connection -> {

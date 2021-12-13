@@ -123,6 +123,7 @@ public class SignInScene extends FxmlSingleLoadedScene {
                                         Ctx.getInstance().sceneManager.load(MainScene.class);
                                         signInButton.setDisable(false);
                                     }, Consts.INFO_DELAY_MILLIS);
+
                                 } else if (result.status().isError()) {
                                     lblLoading.setVisible(false);
                                     if (result.message().isPresent()) {
