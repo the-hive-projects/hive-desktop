@@ -6,6 +6,7 @@ import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
 import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -21,8 +22,10 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import org.thehive.hivedesktop.App;
 import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.ProfileDialogView;
@@ -36,11 +39,12 @@ import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription
 import org.thehive.hiveserverclient.net.websocket.subscription.SubscriptionListener;
 import org.thehive.hiveserverclient.payload.ChatMessage;
 import org.thehive.hiveserverclient.payload.Payload;
+import org.thehive.hiveserverclient.util.MessageUtils;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.*;
-import java.util.Dictionary;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 
 public class EditorScene extends FxmlMultipleLoadedScene {
 
@@ -48,6 +52,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
     public EditorScene() {
         super(FXML_FILENAME);
+
+
     }
 
     @Slf4j
@@ -57,10 +63,16 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         private final ChatMessageObservableList chatMessageObservableList;
         private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
 
+
+        Timer timer = new Timer();
+
         @FXML
         ScrollPane chatScroll;
         @FXML
         VBox chatBox;
+
+        @FXML
+        MFXButton btnSaveCode;
 
 
 
@@ -68,7 +80,13 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         private VBox attendeeList;
 
         @FXML
+        SplitPane mainPane;
+
+        @FXML
         TextArea messageArea;
+
+        @FXML
+        ButtonBar btnBar;
         @FXML
         private MFXButton btnRunCode;
         @FXML
@@ -118,6 +136,58 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 System.out.println(line);
             }
             br.close();
+        }
+
+        @FXML
+        private void saveCode() throws IOException {
+           /* FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save");
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Python Files", "*.py"));
+            fileChooser.setInitialFileName("code");
+            fileChooser.setInitialDirectory(file);7*/
+
+           // fileChooser.showSaveDialog(this.messageArea.getScene().getWindow());
+            var currentTabName = editorPane.getSelectionModel().getSelectedItem().getText();
+            MonacoFX currentEditor = dict.get(currentTabName);
+
+            var currentEditorContent = currentEditor.getEditor().getDocument().getText();
+            //System.out.println(currentEditorContent);
+
+            var codeDoc = currentEditor.getEditor().getDocument();
+            codeDoc.setLanguage("python");
+
+            String userHomeFolder = System.getProperty("user.home");
+            File fout = new File(userHomeFolder+"/Desktop","code.py");
+            FileOutputStream fos = new FileOutputStream(fout);
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+
+            bw.write(codeDoc.getText());
+            bw.close();
+
+            btnSaveCode.setMinWidth(300);
+            btnSaveCode.setText("code.py Saved Succesfully to Desktop!");
+
+
+
+            timer.schedule(new TimerTask() {
+
+                @Override
+                public void run() {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            btnSaveCode.setText("Save");
+                            btnSaveCode.setMinWidth(0);
+
+                        }
+                    });
+
+                }
+            }, 5000);
+
+
+
+
         }
 
         @FXML
@@ -363,6 +433,13 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                     addTab();
             });*/
 
+            btnSaveCode.setOnMouseClicked(mouseEvent -> {
+                try {
+                    saveCode();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
 
             btnRunCode.setOnMouseClicked(mouseEvent -> {
                 try {

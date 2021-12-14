@@ -19,12 +19,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<SplitPane dividerPositions="0.7256016042780747" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" style="-fx-background-color: #373737; -fx-box-border: 0;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.EditorScene$Controller">
+<SplitPane fx:id="mainPane" dividerPositions="0.7256016042780747" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" style="-fx-background-color: #373737; -fx-box-border: 0;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.EditorScene$Controller">
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #373737;">
         <SplitPane dividerPositions="0.6557459677419355" layoutX="31.0" layoutY="24.0" orientation="VERTICAL" prefHeight="398.4" prefWidth="175.2" style="-fx-background-color: #373737; -fx-box-border: 0000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="389.0" prefWidth="598.0" style="-fx-background-color: #373737;">
                 <VBox prefHeight="386.4" prefWidth="632.8" style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <ButtonBar prefHeight="40.0" prefWidth="200.0">
+                    <ButtonBar  fx:id="btnBar" prefHeight="40.0" prefWidth="200.0">
                         <buttons>
                             <MFXButton style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Submit">
                                 <graphic>
@@ -35,7 +35,7 @@
                                     </ImageView>
                                 </graphic>
                             </MFXButton>
-                            <MFXButton style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Save">
+                            <MFXButton fx:id="btnSaveCode" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Save">
                                 <graphic>
                                     <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                         <Image url="@../../../../img/saveCode.png" />
