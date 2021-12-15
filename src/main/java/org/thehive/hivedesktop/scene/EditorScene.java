@@ -7,8 +7,6 @@ import com.kodedu.terminalfx.config.TerminalConfig;
 import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -22,10 +20,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
-import org.thehive.hivedesktop.App;
 import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.ProfileDialogView;
@@ -38,11 +34,9 @@ import org.thehive.hiveserverclient.net.websocket.header.PayloadType;
 import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription;
 import org.thehive.hiveserverclient.net.websocket.subscription.SubscriptionListener;
 import org.thehive.hiveserverclient.payload.ChatMessage;
+import org.thehive.hiveserverclient.payload.LiveSessionInformation;
 import org.thehive.hiveserverclient.payload.Payload;
-import org.thehive.hiveserverclient.util.MessageUtils;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.*;
 
@@ -63,34 +57,30 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         private final ChatMessageObservableList chatMessageObservableList;
         private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
 
-
         Timer timer = new Timer();
 
         @FXML
         ScrollPane chatScroll;
+
         @FXML
         VBox chatBox;
 
         @FXML
         MFXButton btnSaveCode;
-
-
-
-        @FXML
-        private VBox attendeeList;
-
         @FXML
         SplitPane mainPane;
-
         @FXML
         TextArea messageArea;
-
         @FXML
         ButtonBar btnBar;
         @FXML
+        private VBox attendeeList;
+        @FXML
         private MFXButton btnRunCode;
+
         @FXML
         private MFXButton btnAddNewTab;
+
         @FXML
         private MFXButton btnSendMessage;
         @FXML
@@ -108,8 +98,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                     if (result.status().isSuccess()) {
                         try {
                             var scaledContent = ImageUtils.scaleImageContent(result.entity().get().getContent(), 20, 20);
-                            ExecutionUtils.run(() -> {
-
+                            ExecutionUtils.runOnUi(() -> {
                                 var usernameHyperLink = createUser(chat, scaledContent);
                                 var messageLabel = createLabel(chat.getText());
                                 var line = createLine();
@@ -146,7 +135,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             fileChooser.setInitialFileName("code");
             fileChooser.setInitialDirectory(file);7*/
 
-           // fileChooser.showSaveDialog(this.messageArea.getScene().getWindow());
+            // fileChooser.showSaveDialog(this.messageArea.getScene().getWindow());
             var currentTabName = editorPane.getSelectionModel().getSelectedItem().getText();
             MonacoFX currentEditor = dict.get(currentTabName);
 
@@ -157,7 +146,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             codeDoc.setLanguage("python");
 
             String userHomeFolder = System.getProperty("user.home");
-            File fout = new File(userHomeFolder+"/Desktop","code.py");
+            File fout = new File(userHomeFolder + "/Desktop", "code.py");
             FileOutputStream fos = new FileOutputStream(fout);
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
 
@@ -166,7 +155,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
             btnSaveCode.setMinWidth(300);
             btnSaveCode.setText("code.py Saved Succesfully to Desktop!");
-
 
 
             timer.schedule(new TimerTask() {
@@ -184,9 +172,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
                 }
             }, 5000);
-
-
-
 
         }
 
@@ -223,20 +208,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             view.setFitHeight(20);
             view.setFitWidth(20);
 
-            Label user = new Label();
-
-            //TODO add session code from db
-            user.setText(" Onur Sercan Yılmaz");
-            user.setGraphic(view);
-            user.setGraphicTextGap(3);
-
-            listCell.setGraphic(user);
-            listCell.setMinWidth(165);
-            listCell.setMinHeight(44);
-
-
-            attendeeList.getChildren().addAll(listCell);
-
             listCell.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent mouseEvent) {
@@ -256,18 +227,11 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             Tab tab = new Tab("Yours " + numTabs);
             tab.setId(String.valueOf(numTabs));
             var settedEditor = setEditor("python", "vs-dark");
-            settedEditor.getEditor().getDocument().textProperty().addListener(new ChangeListener<String>() {
-                @Override
-                public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
-                    System.out.println(settedEditor.getEditor().getDocument().getText());
-                }
-            });
-
             tab.setContent(settedEditor);
             addToDict(tab.getText(), settedEditor);
 
-            if (numTabs >= 1){
-               //TODO: set not editable editor
+            if (numTabs >= 1) {
+                //TODO: set not editable editor
 
             }
 
@@ -454,24 +418,39 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 Ctx.getInstance().sceneManager.load(MainScene.class);
                 //TODO disconnect session connection
             });
-
             btnSendMessage.setOnMouseClicked(mouseEvent -> sendMessage());
-
-
-
-
-
-
         }
 
+
+        private Hyperlink createAttendenceItem(String username, byte[] profileImageContent) {
+            Hyperlink userName = new Hyperlink();
+            Font font = Font.font("Helvetica", FontWeight.BOLD,
+                    FontPosture.REGULAR, 10);
+            userName.setFont(font);
+            userName.setText(username);
+            userName.setPadding(new Insets(10, 10, 5, 10));
+            userName.setTextFill(Color.web("#ffc107"));
+            var image = new Image(new ByteArrayInputStream(profileImageContent));
+            userName.setGraphic(new ImageView(image));
+            userName.setOnMouseClicked(mouseEvent -> {
+                ProfileDialogView profileDialogView = new ProfileDialogView();
+                try {
+                    profileDialogView.start(new Stage());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            return userName;
+        }
+
+
         @Override
-        public void onLoad(Map<String, Object> dataMap)  {
-
-
+        public void onLoad(Map<String, Object> dataMap) {
             log.info("onLoad Editor");
             var session = (Session) dataMap.get(Consts.JOINED_SESSION_SCENE_DATA_KEY);
+            var id = (String) dataMap.get(Consts.JOINED_SESSION_LIVE_ID_SCENE_DATA_KEY);
             Ctx.getInstance().webSocketService.getConnection().ifPresent(connection -> {
-                connection.subscribeToSession(session.getId(), new SubscriptionListener() {
+                connection.subscribeToSession(id, new SubscriptionListener() {
                     @Override
                     public void onSubscribe(StompSubscription stompSubscription) {
 
@@ -486,6 +465,21 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                     public void onReceive(AppStompHeaders appStompHeaders, Payload payload) {
                         if (appStompHeaders.getPayloadType() == PayloadType.CHAT_MESSAGE)
                             chatMessageObservableList.add((ChatMessage) payload);
+                        else if (appStompHeaders.getPayloadType() == PayloadType.LIVE_SESSION_INFORMATION) {
+                            var liveSessionInfo = (LiveSessionInformation) payload;
+                            liveSessionInfo.getParticipants().parallelStream().forEach(p -> {
+                                Ctx.getInstance().imageService.take(p, result -> {
+                                    if (result.status().isSuccess()) {
+                                        try {
+                                            var scaledContent = ImageUtils.scaleImageContent(result.entity().get().getContent(), 20, 20);
+                                            ExecutionUtils.runOnUi(() -> attendeeList.getChildren().add(createAttendenceItem(p, scaledContent)));
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                            });
+                        }
                     }
 
                     @Override

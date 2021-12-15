@@ -30,12 +30,13 @@ public class Ctx {
     public final SessionService sessionService;
     public final ImageService imageService;
     public final WebSocketSingleConnService webSocketService;
+    public final ExecutorService executorService;
 
     public Ctx() {
         this.sceneManager = new AppSceneManagerImpl();
         ObjectMapper objectMapper = new ObjectMapper();
         CloseableHttpClient httpClient = HttpClients.createSystem();
-        ExecutorService executorService = Executors.newFixedThreadPool(Consts.THREAD_POOL_SIZE);
+        this.executorService = Executors.newFixedThreadPool(Consts.THREAD_POOL_SIZE);
         UserClient userClient = new UserClientImpl(Consts.SERVER_USER_HTTP_URI, objectMapper, httpClient, executorService);
         this.userService = new UserServiceImpl(userClient);
         SessionClient sessionClient = new SessionClientImpl(Consts.SERVER_SESSION_HTTP_URI, objectMapper, httpClient, executorService);

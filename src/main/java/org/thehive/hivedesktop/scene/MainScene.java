@@ -2,7 +2,6 @@ package org.thehive.hivedesktop.scene;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXTextField;
-import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -38,48 +37,28 @@ public class MainScene extends FxmlSingleLoadedScene {
     public static class Controller extends AbstractController {
 
         private static final Class<? extends AppScene> SCENE_TYPE = MainScene.class;
-
+        Stage stage;
         @FXML
         private MFXButton createSessionButton;
-
         @FXML
         private Label emailLabel;
-
         @FXML
         private MFXTextField joinSessionIdTextField;
-
         @FXML
         private Label joinInfoLabel;
-
         @FXML
         private MFXButton joinSessionButton;
-
         @FXML
         private Label nameLabel;
-
         @FXML
         private ImageView profileImageView;
-
         @FXML
         private Label usernameLabel;
-
         @FXML
         private BorderPane mainPane;
 
-        Stage stage;
-
-        public void logout(ActionEvent event) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Logout");
-            alert.setHeaderText("You're about to logout!");
-            alert.setContentText("Do you want to save before exiting?");
-
-            if (alert.showAndWait().get() == ButtonType.OK) {
-                stage = (Stage) mainPane.getScene().getWindow();
-                System.out.println("You successfully logged out!");
-                Authentication.INSTANCE.unauthenticate();
-                Ctx.getInstance().sceneManager.load(SignInScene.class);
-            }
+        public Controller() {
+            super(Ctx.getInstance().sceneManager, SCENE_TYPE);
         }
 
 //        public  void start(Stage stage){
@@ -100,8 +79,18 @@ public class MainScene extends FxmlSingleLoadedScene {
 //            }
 //        }
 
-        public Controller() {
-            super(Ctx.getInstance().sceneManager, SCENE_TYPE);
+        public void logout(ActionEvent event) {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Logout");
+            alert.setHeaderText("You're about to logout!");
+            alert.setContentText("Do you want to save before exiting?");
+
+            if (alert.showAndWait().get() == ButtonType.OK) {
+                stage = (Stage) mainPane.getScene().getWindow();
+                System.out.println("You successfully logged out!");
+                Authentication.INSTANCE.unauthenticate();
+                Ctx.getInstance().sceneManager.load(SignInScene.class);
+            }
         }
 
         @Override
@@ -116,7 +105,7 @@ public class MainScene extends FxmlSingleLoadedScene {
             Ctx.getInstance().userService.profile(profileResult -> {
                 if (profileResult.status().isSuccess()) {
                     var user = profileResult.entity().get();
-                    ExecutionUtils.run(() -> {
+                    ExecutionUtils.runOnUi(() -> {
                         usernameLabel.setText(user.getUsername());
                         emailLabel.setText(user.getEmail());
                         nameLabel.setText(user.getUserInfo().getFirstname() + " " + user.getUserInfo().getLastname());
@@ -124,11 +113,11 @@ public class MainScene extends FxmlSingleLoadedScene {
                     Ctx.getInstance().imageService.take(user.getUsername(), imageResult -> {
                         var content = imageResult.entity().get().getContent();
                         var profileImage = new Image(new ByteArrayInputStream(content));
-                        ExecutionUtils.run(() -> profileImageView.setImage(profileImage));
+                        ExecutionUtils.runOnUi(() -> profileImageView.setImage(profileImage));
                         try {
                             var scaledContent = ImageUtils.scaleImageContent(content, 800, 800);
                             var scaledProfileImage = new Image(new ByteArrayInputStream(scaledContent));
-                            ExecutionUtils.run(() -> profileImageView.setImage(scaledProfileImage));
+                            ExecutionUtils.runOnUi(() -> profileImageView.setImage(scaledProfileImage));
                         } catch (IOException e) {
                             log.warn("Error while scaling profile image", e);
                         }
@@ -152,35 +141,37 @@ public class MainScene extends FxmlSingleLoadedScene {
         @SuppressWarnings("OptionalGetWithoutIsPresent")
         void onJoinSessionButtonClick(MouseEvent event) {
             log.info("Button clicked, #onJoinSessionButtonClick");
-            var sessionId = joinSessionIdTextField.getText();
-            if (sessionId.isEmpty()) {
+            var liveId = joinSessionIdTextField.getText();
+            if (liveId.isEmpty()) {
                 log.info("SessionId is empty");
                 return;
             }
-            log.info("SessionId: {}", sessionId);
+            log.info("SessionId: {}", liveId);
             joinSessionButton.setDisable(true);
             joinInfoLabel.setText("Joining ...");
-            Ctx.getInstance().sessionService.take(sessionId, result -> {
+            Ctx.getInstance().sessionService.takeLive(liveId, result -> {
                 if (result.status().isSuccess()) {
-                    ExecutionUtils.run(() -> {
+                    ExecutionUtils.runOnUi(() -> {
                         joinInfoLabel.setText("Joined, name: " + result.entity().get().getName());
-                        var dataMap = Map.<String, Object>of(Consts.JOINED_SESSION_SCENE_DATA_KEY, result.entity().get());
+                        var dataMap = Map.of(
+                                Consts.JOINED_SESSION_SCENE_DATA_KEY, result.entity().get(),
+                                Consts.JOINED_SESSION_LIVE_ID_SCENE_DATA_KEY, liveId);
                         Ctx.getInstance().sceneManager.load(EditorScene.class, dataMap);
                     });
                 } else if (result.status().isError()) {
                     if (result.status() == ResultStatus.ERROR_UNAVAILABLE) {
-                        ExecutionUtils.run(() -> {
+                        ExecutionUtils.runOnUi(() -> {
                             joinInfoLabel.setText("Session not found");
                             joinSessionButton.setDisable(false);
                         });
                     } else {
-                        ExecutionUtils.run(() -> {
+                        ExecutionUtils.runOnUi(() -> {
                             joinInfoLabel.setText(result.message().get());
                             joinSessionButton.setDisable(false);
                         });
                     }
                 } else {
-                    ExecutionUtils.run(() -> {
+                    ExecutionUtils.runOnUi(() -> {
                         joinInfoLabel.setText("Fail");
                         joinSessionButton.setDisable(false);
                     });

@@ -101,8 +101,8 @@ public class SignUpScene extends FxmlSingleLoadedScene {
             user.setUserInfo(userInfo);
             Ctx.getInstance().userService.signUp(user, result -> {
                 if (result.status().isSuccess()) {
-                    ExecutionUtils.run(() -> infoLabelHandler.setSuccessText("Signed-up successfully"));
-                    ExecutionUtils.schedule(() -> {
+                    ExecutionUtils.runOnUi(() -> infoLabelHandler.setSuccessText("Signed-up successfully"));
+                    ExecutionUtils.scheduleOnUi(() -> {
                         if (result.entity().isPresent()) {
                             var dataMap = Map.<String, Object>of(Consts.SIGNED_UP_USERNAME_SESSION_DATA_KEY, result.entity().get().getUsername());
                             Ctx.getInstance().sceneManager.load(SignInScene.class, dataMap);
@@ -116,12 +116,12 @@ public class SignUpScene extends FxmlSingleLoadedScene {
                         signUpButton.setDisable(false);
                     }, Consts.INFO_DELAY_MILLIS);
                 } else if (result.status().isError()) {
-                    ExecutionUtils.run(() -> {
+                    ExecutionUtils.runOnUi(() -> {
                         infoLabelHandler.setWaringText(result.message().isPresent() ? result.message().get() : "Unknown error");
                         signUpButton.setDisable(false);
                     });
                 } else {
-                    ExecutionUtils.run(() -> {
+                    ExecutionUtils.runOnUi(() -> {
                         infoLabelHandler.setWaringText(result.message().isPresent() ? result.message().get() : "Unknown fail");
                         signUpButton.setDisable(false);
                     });

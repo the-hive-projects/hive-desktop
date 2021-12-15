@@ -20,18 +20,15 @@ import java.util.ResourceBundle;
 
 public class ProfileDialogViewController implements Initializable {
 
+    private final String username;
     @FXML
     private Button btnClose;
-
     @FXML
     private ImageView imageProfile;
-
     @FXML
     private Label lblEmail, lblFullName, lblUsername;
 
-    private final String username;
-
-    public ProfileDialogViewController(String username){
+    public ProfileDialogViewController(String username) {
         this.username = username;
 
     }
