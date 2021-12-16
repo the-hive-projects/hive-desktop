@@ -1,13 +1,16 @@
 package org.thehive.hivedesktop.util.observable;
 
+import lombok.NonNull;
+
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
-public class WrapperObservableCollection<T extends Collection<E>, E> extends AbstractObservable<T> implements ObservableCollection<T, E> {
+public class ObservableCollectionWrapper<E> extends AbstractObservable<Collection<E>> implements ObservableCollection<E> {
 
-    private final T collection;
+    private final Collection<E> collection;
 
-    public WrapperObservableCollection(T collection) {
+    public ObservableCollectionWrapper(@NonNull Collection<E> collection) {
         this.collection = collection;
     }
 
@@ -18,8 +21,8 @@ public class WrapperObservableCollection<T extends Collection<E>, E> extends Abs
         observerIterator()
                 .forEachRemaining(o -> {
                     o.onChanged(collection);
-                    if (o instanceof ObserverCollection)
-                        ((ObserverCollection<T, E>) o).onAdded(e);
+                    if (o instanceof CollectionObserver)
+                        ((CollectionObserver<E>) o).onAdded(e);
                 });
     }
 
@@ -30,14 +33,24 @@ public class WrapperObservableCollection<T extends Collection<E>, E> extends Abs
         observerIterator()
                 .forEachRemaining(o -> {
                     o.onChanged(collection);
-                    if (o instanceof ObserverCollection)
-                        ((ObserverCollection<T, E>) o).onRemoved(e);
+                    if (o instanceof CollectionObserver)
+                        ((CollectionObserver<E>) o).onRemoved(e);
                 });
     }
 
     @Override
     public int size() {
         return collection.size();
+    }
+
+    @Override
+    public boolean contains(E e) {
+        return collection.contains(e);
+    }
+
+    @Override
+    public Collection<E> getCollection() {
+        return Collections.unmodifiableCollection(collection);
     }
 
     @Override

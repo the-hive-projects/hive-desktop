@@ -2,10 +2,10 @@ package org.thehive.hivedesktop.util.observable;
 
 import java.util.Collection;
 
-public abstract class ObserverCollectionAdapter<T extends Collection<? super E>, E> implements ObserverCollection<T, E> {
+public abstract class CollectionObserverAdapter<E> implements CollectionObserver<E> {
 
     @Override
-    public void onChanged(T t) {
+    public void onChanged(Collection<E> c) {
     }
 
     @Override

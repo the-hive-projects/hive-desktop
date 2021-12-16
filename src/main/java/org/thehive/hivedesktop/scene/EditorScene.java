@@ -9,27 +9,21 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
-import org.thehive.hivedesktop.ProfileDialogView;
+import org.thehive.hivedesktop.component.AttendeeComponent;
 import org.thehive.hivedesktop.component.ChatMessageComponent;
 import org.thehive.hivedesktop.util.ExecutionUtils;
-import org.thehive.hivedesktop.util.ImageUtils;
 import org.thehive.hivedesktop.util.observable.ObservableCollection;
-import org.thehive.hivedesktop.util.observable.ObserverCollectionAdapter;
-import org.thehive.hivedesktop.util.observable.WrapperObservableCollection;
+import org.thehive.hivedesktop.util.observable.CollectionObserverAdapter;
+import org.thehive.hivedesktop.util.observable.ObservableCollectionWrapper;
 import org.thehive.hiveserverclient.model.Session;
 import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
 import org.thehive.hiveserverclient.net.websocket.header.PayloadType;
@@ -48,15 +42,14 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
     public EditorScene() {
         super(FXML_FILENAME);
-
-
     }
 
     @Slf4j
     public static class Controller extends AbstractController {
 
         private static final Class<? extends AppScene> SCENE_TYPE = EditorScene.class;
-        private final ObservableCollection<LinkedList<ChatMessageComponent>, ChatMessageComponent> chatMessageComponentsObservable;
+        private final ObservableCollection<ChatMessageComponent> chatMessageComponentsObservable;
+        private final ObservableCollection<AttendeeComponent> attendeeComponentsObservable;
         private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
 
         Timer timer = new Timer();
@@ -94,11 +87,18 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
-            this.chatMessageComponentsObservable = new WrapperObservableCollection<>(new LinkedList<>());
-            chatMessageComponentsObservable.registerObserver(new ObserverCollectionAdapter<>() {
+            this.chatMessageComponentsObservable = new ObservableCollectionWrapper<>(new LinkedList<>());
+            chatMessageComponentsObservable.registerObserver(new CollectionObserverAdapter<>() {
                 @Override
                 public void onAdded(ChatMessageComponent chatMessageComponent) {
                     ExecutionUtils.runOnUi(() -> chatBox.getChildren().add(chatMessageComponent.getParentNode()));
+                }
+            });
+            this.attendeeComponentsObservable = new ObservableCollectionWrapper<>(new TreeSet<>((a1, a2) -> a1.username.compareTo(a2.username)));
+            attendeeComponentsObservable.registerObserver(new CollectionObserverAdapter<>() {
+                @Override
+                public void onAdded(AttendeeComponent attendeeComponent) {
+                    ExecutionUtils.runOnUi(() -> attendeeList.getChildren().add(attendeeComponent.getParentNode()));
                 }
             });
 
@@ -362,29 +362,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             btnSendMessage.setOnMouseClicked(mouseEvent -> sendMessage());
         }
 
-
-        private Hyperlink createAttendenceItem(String username, byte[] profileImageContent) {
-            Hyperlink userName = new Hyperlink();
-            Font font = Font.font("Helvetica", FontWeight.BOLD,
-                    FontPosture.REGULAR, 10);
-            userName.setFont(font);
-            userName.setText(username);
-            userName.setPadding(new Insets(10, 10, 5, 10));
-            userName.setTextFill(Color.web("#ffc107"));
-            var image = new Image(new ByteArrayInputStream(profileImageContent));
-            userName.setGraphic(new ImageView(image));
-            userName.setOnMouseClicked(mouseEvent -> {
-                ProfileDialogView profileDialogView = new ProfileDialogView();
-                try {
-                    profileDialogView.start(new Stage());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            return userName;
-        }
-
-
         @Override
         public void onLoad(Map<String, Object> dataMap) {
             log.info("onLoad Editor");
@@ -418,12 +395,9 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             liveSessionInfo.getParticipants().parallelStream().forEach(p -> {
                                 Ctx.getInstance().imageService.take(p, result -> {
                                     if (result.status().isSuccess()) {
-                                        try {
-                                            var scaledContent = ImageUtils.scaleImageContent(result.entity().get().getContent(), 20, 20);
-                                            ExecutionUtils.runOnUi(() -> attendeeList.getChildren().add(createAttendenceItem(p, scaledContent)));
-                                        } catch (IOException e) {
-                                            e.printStackTrace();
-                                        }
+                                        attendeeComponentsObservable.add(new AttendeeComponent(p, result.entity().get()));
+                                    } else {
+                                        log.warn("Profile image cannot be taken");
                                     }
                                 });
                             });
