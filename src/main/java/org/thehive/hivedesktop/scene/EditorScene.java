@@ -106,6 +106,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 @Override
                 public void onAdded(String username, AttendeeComponent attendeeComponent) {
                     ExecutionUtils.runOnUiThread(() -> attendeeList.getChildren().add(attendeeComponent.getParentNode()));
+
+
                 }
 
                 @Override
@@ -201,30 +203,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         }
 
 
-        public void createBox() {
 
-            JFXListCell<Label> listCell = new JFXListCell<Label>();
-            listCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px;");
-
-            //File file = new File("img/logo.png");
-            Image img = new Image("https://avatars.githubusercontent.com/u/93194123?s=200&v=4");
-
-            ImageView view = new ImageView(img);
-            view.setFitHeight(20);
-            view.setFitWidth(20);
-
-            listCell.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    //setCode(codeEditor, "python", "vs-dark");
-                    //TODO user info
-                    // profileTab = createUser();
-
-                }
-            });
-
-
-        }
 
         @FXML
         private MonacoFX addTab() {
@@ -272,43 +251,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             return fout;
         }
 
-       /* @FXML
-        private Hyperlink createUser() {
 
-            //TODO Hyperlink for username who sent message
-            Hyperlink userName = new Hyperlink();
-            userName.setText();
-
-            Font font = Font.font("Helvetica", FontWeight.BOLD,
-                    FontPosture.REGULAR, 10);
-
-            userName.setFont(font);
-            userName.setPadding(new Insets(10, 10, 5, 10));
-            userName.setTextFill(Color.web("#ffc107"));
-
-            //TODO Hyperlink for image who sent message
-            Image img = new Image("https://p.kindpng.com/picc/s/78-786207_user-avatar-png-user-avatar-icon-png-transparent.png"); //image who sent the message form db
-            ImageView view = new ImageView(img);
-            view.setFitHeight(20);
-            view.setPreserveRatio(true);
-            userName.setGraphic(view);
-
-            userName.setOnMouseClicked(mouseEvent -> {
-
-                ProfileDialogView profileDialogView = new ProfileDialogView();
-                try {
-                    profileDialogView.start(new Stage());
-                    //userName.setDisable(true);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-
-            });
-
-
-            return userName;
-        }*/
 
         @FXML
         private void sendMessage() {
@@ -322,10 +265,12 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @Override
         public void onStart() {
 
-            addTab();
-            addTab();
-            addTab();
-            createBox();
+            for (int i = 0; i < 5; i++) {
+                addTab();
+            }
+
+
+
 
             //        Dark Config
             TerminalConfig darkConfig = new TerminalConfig();
@@ -400,7 +345,11 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             var chatMessage = (ChatMessage) payload;
                             Ctx.getInstance().imageService.take(chatMessage.getFrom(), result -> {
                                 if (result.status().isSuccess()) {
-                                    chatMessageComponentCollection.add(new ChatMessageComponent(chatMessage, result.entity().get()));
+                                    try {
+                                        chatMessageComponentCollection.add(new ChatMessageComponent(chatMessage, result.entity().get()));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 } else {
                                     log.warn("Profile image cannot be taken");
                                 }
