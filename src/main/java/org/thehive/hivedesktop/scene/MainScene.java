@@ -105,7 +105,7 @@ public class MainScene extends FxmlSingleLoadedScene {
             Ctx.getInstance().userService.profile(profileResult -> {
                 if (profileResult.status().isSuccess()) {
                     var user = profileResult.entity().get();
-                    ExecutionUtils.runOnUi(() -> {
+                    ExecutionUtils.runOnUiThread(() -> {
                         usernameLabel.setText(user.getUsername());
                         emailLabel.setText(user.getEmail());
                         nameLabel.setText(user.getUserInfo().getFirstname() + " " + user.getUserInfo().getLastname());
@@ -113,11 +113,11 @@ public class MainScene extends FxmlSingleLoadedScene {
                     Ctx.getInstance().imageService.take(user.getUsername(), imageResult -> {
                         var content = imageResult.entity().get().getContent();
                         var profileImage = new Image(new ByteArrayInputStream(content));
-                        ExecutionUtils.runOnUi(() -> profileImageView.setImage(profileImage));
+                        ExecutionUtils.runOnUiThread(() -> profileImageView.setImage(profileImage));
                         try {
                             var scaledContent = ImageUtils.scaleImageContent(content, 800, 800);
                             var scaledProfileImage = new Image(new ByteArrayInputStream(scaledContent));
-                            ExecutionUtils.runOnUi(() -> profileImageView.setImage(scaledProfileImage));
+                            ExecutionUtils.runOnUiThread(() -> profileImageView.setImage(scaledProfileImage));
                         } catch (IOException e) {
                             log.warn("Error while scaling profile image", e);
                         }
@@ -151,7 +151,7 @@ public class MainScene extends FxmlSingleLoadedScene {
             joinInfoLabel.setText("Joining ...");
             Ctx.getInstance().sessionService.takeLive(liveId, result -> {
                 if (result.status().isSuccess()) {
-                    ExecutionUtils.runOnUi(() -> {
+                    ExecutionUtils.runOnUiThread(() -> {
                         joinInfoLabel.setText("Joined, name: " + result.entity().get().getName());
                         var dataMap = Map.of(
                                 Consts.JOINED_SESSION_SCENE_DATA_KEY, result.entity().get(),
@@ -160,18 +160,18 @@ public class MainScene extends FxmlSingleLoadedScene {
                     });
                 } else if (result.status().isError()) {
                     if (result.status() == ResultStatus.ERROR_UNAVAILABLE) {
-                        ExecutionUtils.runOnUi(() -> {
+                        ExecutionUtils.runOnUiThread(() -> {
                             joinInfoLabel.setText("Session not found");
                             joinSessionButton.setDisable(false);
                         });
                     } else {
-                        ExecutionUtils.runOnUi(() -> {
+                        ExecutionUtils.runOnUiThread(() -> {
                             joinInfoLabel.setText(result.message().get());
                             joinSessionButton.setDisable(false);
                         });
                     }
                 } else {
-                    ExecutionUtils.runOnUi(() -> {
+                    ExecutionUtils.runOnUiThread(() -> {
                         joinInfoLabel.setText("Fail");
                         joinSessionButton.setDisable(false);
                     });

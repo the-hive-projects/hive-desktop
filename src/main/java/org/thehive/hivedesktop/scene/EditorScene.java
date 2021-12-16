@@ -98,19 +98,24 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             chatMessageComponentCollection.registerObserver(new CollectionObserverAdapter<>() {
                 @Override
                 public void onAdded(ChatMessageComponent chatMessageComponent) {
-                    ExecutionUtils.runOnUi(() -> chatBox.getChildren().add(chatMessageComponent.getParentNode()));
+                    ExecutionUtils.runOnUiThread(() -> chatBox.getChildren().add(chatMessageComponent.getParentNode()));
                 }
             });
             this.attendeeComponentMap = new ObservableMapWrapper<>(new HashMap<>());
             attendeeComponentMap.registerObserver(new MapObserverAdapter<>() {
                 @Override
                 public void onAdded(String username, AttendeeComponent attendeeComponent) {
-                    ExecutionUtils.runOnUi(() -> attendeeList.getChildren().add(attendeeComponent.getParentNode()));
+                    ExecutionUtils.runOnUiThread(() -> attendeeList.getChildren().add(attendeeComponent.getParentNode()));
                 }
 
                 @Override
                 public void onRemoved(String s, AttendeeComponent attendeeComponent) {
-                    ExecutionUtils.runOnUi(() -> attendeeList.getChildren().remove(attendeeComponentMap.get(s).getParentNode()));
+                    ExecutionUtils.runOnUiThread(() -> attendeeList.getChildren().remove(attendeeComponent.getParentNode()));
+                }
+
+                @Override
+                public void onCleared(Map<String, AttendeeComponent> map) {
+                    ExecutionUtils.runOnUiThread(() -> attendeeList.getChildren().clear());
                 }
             });
         }
@@ -402,6 +407,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             });
                         } else if (appStompHeaders.getPayloadType() == PayloadType.LIVE_SESSION_INFORMATION) {
                             var liveSessionInfo = (LiveSessionInformation) payload;
+                            attendeeComponentMap.clear();
                             liveSessionInfo.getParticipants().parallelStream().forEach(p -> {
                                 Ctx.getInstance().imageService.take(p, result -> {
                                     if (result.status().isSuccess()) {

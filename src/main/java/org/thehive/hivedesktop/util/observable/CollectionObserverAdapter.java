@@ -16,4 +16,8 @@ public abstract class CollectionObserverAdapter<E> implements CollectionObserver
     public void onRemoved(E e) {
     }
 
+    @Override
+    public void onCleared(Collection<E> collection) {
+    }
+
 }

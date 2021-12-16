@@ -12,6 +12,8 @@ public interface ObservableMap<K, V> extends Observable<Map<K, V>>, Iterable<Map
 
     V get(K k);
 
+    void clear();
+
     boolean containsKey(K k);
 
     boolean containsValue(V v);

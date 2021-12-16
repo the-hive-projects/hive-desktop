@@ -16,4 +16,8 @@ public abstract class MapObserverAdapter<K, V> implements MapObserver<K, V> {
     public void onRemoved(K k, V v) {
     }
 
+    @Override
+    public void onCleared(Map<K, V> map) {
+    }
+
 }

@@ -2,6 +2,7 @@ package org.thehive.hivedesktop.util.observable;
 
 import lombok.NonNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -41,6 +42,18 @@ public class ObservableCollectionWrapper<E> extends AbstractObservable<Collectio
     @Override
     public int size() {
         return collection.size();
+    }
+
+    @Override
+    public void clear() {
+        var copyCollection=new ArrayList<>(collection);
+        collection.clear();
+        observerIterator()
+                .forEachRemaining(o -> {
+                    o.onChanged(copyCollection);
+                    if (o instanceof CollectionObserver)
+                        ((CollectionObserver) o).onCleared(copyCollection);
+                });
     }
 
     @Override

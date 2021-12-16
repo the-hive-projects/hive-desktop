@@ -8,4 +8,6 @@ public interface CollectionObserver<E> extends Observer<Collection<E>> {
 
     void onRemoved(E e);
 
+    void onCleared(Collection<E> collection);
+
 }

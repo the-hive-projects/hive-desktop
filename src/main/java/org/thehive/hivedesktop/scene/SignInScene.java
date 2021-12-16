@@ -111,8 +111,8 @@ public class SignInScene extends FxmlSingleLoadedScene {
                         public void run() {
                             Ctx.getInstance().userService.signIn(username, password, result -> {
                                 if (result.status().isSuccess()) {
-                                    ExecutionUtils.runOnUi(() -> infoLabelHandler.setSuccessText("Signed-in successfully"));
-                                    ExecutionUtils.scheduleOnUi(() -> {
+                                    ExecutionUtils.runOnUiThread(() -> infoLabelHandler.setSuccessText("Signed-in successfully"));
+                                    ExecutionUtils.scheduleOnUiThread(() -> {
                                         Ctx.getInstance().sceneManager.load(MainScene.class);
                                         signInButton.setDisable(false);
                                     }, Consts.INFO_DELAY_MILLIS);
@@ -123,18 +123,18 @@ public class SignInScene extends FxmlSingleLoadedScene {
                                         var warningTextStringJoiner = new StringJoiner(".\n");
                                         MessageUtils.parseMessageList(result.message().get(), ",")
                                                 .forEach(warningTextStringJoiner::add);
-                                        ExecutionUtils.runOnUi(() -> {
+                                        ExecutionUtils.runOnUiThread(() -> {
                                             infoLabelHandler.setWaringText(warningTextStringJoiner.toString());
                                             signInButton.setDisable(false);
                                         });
                                     } else {
-                                        ExecutionUtils.runOnUi(() -> {
+                                        ExecutionUtils.runOnUiThread(() -> {
                                             infoLabelHandler.setWaringText("Unknown error");
                                             signInButton.setDisable(false);
                                         });
                                     }
                                 } else {
-                                    ExecutionUtils.runOnUi(() -> {
+                                    ExecutionUtils.runOnUiThread(() -> {
                                         infoLabelHandler.setWaringText(result.message().isPresent() ? result.message().get() : "Unknown fail");
                                         signInButton.setDisable(false);
                                     });

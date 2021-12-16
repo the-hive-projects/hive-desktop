@@ -10,6 +10,8 @@ public interface ObservableCollection<E> extends Observable<Collection<E>>, Iter
 
     int size();
 
+    void clear();
+
     boolean contains(E e);
 
     Collection<E> getCollection();

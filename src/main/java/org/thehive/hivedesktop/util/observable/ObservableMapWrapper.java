@@ -3,6 +3,7 @@ package org.thehive.hivedesktop.util.observable;
 import lombok.NonNull;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -33,7 +34,7 @@ public class ObservableMapWrapper<K, V> extends AbstractObservable<Map<K, V>> im
             observerIterator().forEachRemaining(o -> {
                 o.onChanged(map);
                 if (o instanceof MapObserver)
-                    ((MapObserver) o).onAdded(k, v);
+                    ((MapObserver) o).onRemoved(k, v);
             });
         }
     }
@@ -46,6 +47,17 @@ public class ObservableMapWrapper<K, V> extends AbstractObservable<Map<K, V>> im
     @Override
     public V get(K k) {
         return map.get(k);
+    }
+
+    @Override
+    public void clear() {
+        var copyMap = new HashMap<>(map);
+        map.clear();
+        observerIterator().forEachRemaining(o -> {
+            o.onChanged(copyMap);
+            if (o instanceof MapObserver)
+                ((MapObserver) o).onCleared(copyMap);
+        });
     }
 
     @Override

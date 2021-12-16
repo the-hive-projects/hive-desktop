@@ -15,12 +15,12 @@ public class ExecutionUtils {
         SCHEDULED_EXECUTOR_SERVICE = Executors.newSingleThreadScheduledExecutor();
     }
 
-    public static void runOnUi(@NonNull Runnable r) {
+    public static void runOnUiThread(@NonNull Runnable r) {
         Platform.runLater(r);
     }
 
-    public static void scheduleOnUi(@NonNull Runnable r, long delay) {
-        SCHEDULED_EXECUTOR_SERVICE.schedule(() -> runOnUi(r), delay, TimeUnit.MILLISECONDS);
+    public static void scheduleOnUiThread(@NonNull Runnable r, long delay) {
+        SCHEDULED_EXECUTOR_SERVICE.schedule(() -> runOnUiThread(r), delay, TimeUnit.MILLISECONDS);
     }
 
 }
