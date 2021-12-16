@@ -21,7 +21,7 @@ public class ObservableMapWrapper<K, V> extends AbstractObservable<Map<K, V>> im
         observerIterator().forEachRemaining(o -> {
             o.onChanged(map);
             if (o instanceof MapObserver)
-                ((MapObserver<K, V>) o).onAdded(k, v);
+                ((MapObserver) o).onAdded(k, v);
         });
     }
 
@@ -33,7 +33,7 @@ public class ObservableMapWrapper<K, V> extends AbstractObservable<Map<K, V>> im
             observerIterator().forEachRemaining(o -> {
                 o.onChanged(map);
                 if (o instanceof MapObserver)
-                    ((MapObserver<K, V>) o).onAdded(k, v);
+                    ((MapObserver) o).onAdded(k, v);
             });
         }
     }

@@ -22,7 +22,7 @@ public class ObservableCollectionWrapper<E> extends AbstractObservable<Collectio
                 .forEachRemaining(o -> {
                     o.onChanged(collection);
                     if (o instanceof CollectionObserver)
-                        ((CollectionObserver<E>) o).onAdded(e);
+                        ((CollectionObserver) o).onAdded(e);
                 });
     }
 
@@ -34,7 +34,7 @@ public class ObservableCollectionWrapper<E> extends AbstractObservable<Collectio
                 .forEachRemaining(o -> {
                     o.onChanged(collection);
                     if (o instanceof CollectionObserver)
-                        ((CollectionObserver<E>) o).onRemoved(e);
+                        ((CollectionObserver) o).onRemoved(e);
                 });
     }
 

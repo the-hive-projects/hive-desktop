@@ -21,9 +21,7 @@ import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.component.AttendeeComponent;
 import org.thehive.hivedesktop.component.ChatMessageComponent;
 import org.thehive.hivedesktop.util.ExecutionUtils;
-import org.thehive.hivedesktop.util.observable.ObservableCollection;
-import org.thehive.hivedesktop.util.observable.CollectionObserverAdapter;
-import org.thehive.hivedesktop.util.observable.ObservableCollectionWrapper;
+import org.thehive.hivedesktop.util.observable.*;
 import org.thehive.hiveserverclient.model.Session;
 import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
 import org.thehive.hiveserverclient.net.websocket.header.PayloadType;
@@ -31,6 +29,7 @@ import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription
 import org.thehive.hiveserverclient.net.websocket.subscription.SubscriptionListener;
 import org.thehive.hiveserverclient.payload.ChatMessage;
 import org.thehive.hiveserverclient.payload.LiveSessionInformation;
+import org.thehive.hiveserverclient.payload.ParticipationNotification;
 import org.thehive.hiveserverclient.payload.Payload;
 
 import java.io.*;
@@ -48,8 +47,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
     public static class Controller extends AbstractController {
 
         private static final Class<? extends AppScene> SCENE_TYPE = EditorScene.class;
-        private final ObservableCollection<ChatMessageComponent> chatMessageComponentsObservable;
-        private final ObservableCollection<AttendeeComponent> attendeeComponentsObservable;
+        private final ObservableCollection<ChatMessageComponent> chatMessageComponentCollection;
+        private final ObservableMap<String, AttendeeComponent> attendeeComponentMap;
         private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
 
         Timer timer = new Timer();
@@ -62,14 +61,19 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         @FXML
         MFXButton btnSaveCode;
+
         @FXML
         SplitPane mainPane;
+
         @FXML
         TextArea messageArea;
+
         @FXML
         ButtonBar btnBar;
+
         @FXML
         private VBox attendeeList;
+
         @FXML
         private MFXButton btnRunCode;
 
@@ -78,32 +82,38 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         @FXML
         private MFXButton btnSendMessage;
+
         @FXML
         private MFXButton btnLeaveSession;
+
         @FXML
         private TabPane editorPane;
+
         @FXML
         private TabPane terminalPane;
 
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
-            this.chatMessageComponentsObservable = new ObservableCollectionWrapper<>(new LinkedList<>());
-            chatMessageComponentsObservable.registerObserver(new CollectionObserverAdapter<>() {
+            this.chatMessageComponentCollection = new ObservableCollectionWrapper<>(new LinkedList<>());
+            chatMessageComponentCollection.registerObserver(new CollectionObserverAdapter<>() {
                 @Override
                 public void onAdded(ChatMessageComponent chatMessageComponent) {
                     ExecutionUtils.runOnUi(() -> chatBox.getChildren().add(chatMessageComponent.getParentNode()));
                 }
             });
-            this.attendeeComponentsObservable = new ObservableCollectionWrapper<>(new TreeSet<>((a1, a2) -> a1.username.compareTo(a2.username)));
-            attendeeComponentsObservable.registerObserver(new CollectionObserverAdapter<>() {
+            this.attendeeComponentMap = new ObservableMapWrapper<>(new HashMap<>());
+            attendeeComponentMap.registerObserver(new MapObserverAdapter<>() {
                 @Override
-                public void onAdded(AttendeeComponent attendeeComponent) {
+                public void onAdded(String username, AttendeeComponent attendeeComponent) {
                     ExecutionUtils.runOnUi(() -> attendeeList.getChildren().add(attendeeComponent.getParentNode()));
                 }
+
+                @Override
+                public void onRemoved(String s, AttendeeComponent attendeeComponent) {
+                    ExecutionUtils.runOnUi(() -> attendeeList.getChildren().remove(attendeeComponentMap.get(s).getParentNode()));
+                }
             });
-
         }
-
 
         @FXML
         private static void readFile1(File fin) throws IOException {
@@ -385,7 +395,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             var chatMessage = (ChatMessage) payload;
                             Ctx.getInstance().imageService.take(chatMessage.getFrom(), result -> {
                                 if (result.status().isSuccess()) {
-                                    chatMessageComponentsObservable.add(new ChatMessageComponent(chatMessage, result.entity().get()));
+                                    chatMessageComponentCollection.add(new ChatMessageComponent(chatMessage, result.entity().get()));
                                 } else {
                                     log.warn("Profile image cannot be taken");
                                 }
@@ -395,12 +405,25 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             liveSessionInfo.getParticipants().parallelStream().forEach(p -> {
                                 Ctx.getInstance().imageService.take(p, result -> {
                                     if (result.status().isSuccess()) {
-                                        attendeeComponentsObservable.add(new AttendeeComponent(p, result.entity().get()));
+                                        attendeeComponentMap.add(p, new AttendeeComponent(p, result.entity().get()));
                                     } else {
                                         log.warn("Profile image cannot be taken");
                                     }
                                 });
                             });
+                        } else if (appStompHeaders.getPayloadType() == PayloadType.PARTICIPATION_NOTIFICATION) {
+                            var participationNotification = (ParticipationNotification) payload;
+                            if (participationNotification.isJoined()) {
+                                Ctx.getInstance().imageService.take(participationNotification.getParticipant(), result -> {
+                                    if (result.status().isSuccess()) {
+                                        attendeeComponentMap.add(participationNotification.getParticipant(), new AttendeeComponent(participationNotification.getParticipant(), result.entity().get()));
+                                    } else {
+                                        log.warn("Profile image cannot be taken");
+                                    }
+                                });
+                            } else {
+                                attendeeComponentMap.remove(participationNotification.getParticipant());
+                            }
                         }
                     }
 
