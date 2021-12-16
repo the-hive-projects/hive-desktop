@@ -1,14 +1,19 @@
 package org.thehive.hivedesktop.scene;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
+import io.github.palexdev.materialfx.controls.MFXLabel;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -39,26 +44,63 @@ public class MainScene extends FxmlSingleLoadedScene {
         private static final Class<? extends AppScene> SCENE_TYPE = MainScene.class;
         Stage stage;
         @FXML
+        private Button btnCopyClipboard;
+
+        @FXML
+        private MFXFilterComboBox<?> cmbSessionDuration;
+
+        @FXML
         private MFXButton createSessionButton;
+
         @FXML
         private Label emailLabel;
-        @FXML
-        private MFXTextField joinSessionIdTextField;
+
         @FXML
         private Label joinInfoLabel;
+
         @FXML
         private MFXButton joinSessionButton;
+
         @FXML
-        private Label nameLabel;
+        private MFXTextField joinSessionIdTextField;
+
         @FXML
-        private ImageView profileImageView;
-        @FXML
-        private Label usernameLabel;
+        private MFXButton logoutButton;
+
         @FXML
         private BorderPane mainPane;
 
+        @FXML
+        private Label nameLabel;
+
+        @FXML
+        private ImageView profileImageView;
+
+        @FXML
+        private Label txSessionLabel;
+
+        @FXML
+        private MFXTextField txtSessionName;
+
+        @FXML
+        private Label usernameLabel;
+
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
+        }
+
+        public static void copyToClipboardText(String s) {
+
+            final Clipboard clipboard = Clipboard.getSystemClipboard();
+            final ClipboardContent content = new ClipboardContent();
+
+            content.putString(s);
+            clipboard.setContent(content);
+
+        }
+
+        public void handle(ActionEvent event){
+            copyToClipboardText(txSessionLabel.getText());
         }
 
 //        public  void start(Stage stage){
