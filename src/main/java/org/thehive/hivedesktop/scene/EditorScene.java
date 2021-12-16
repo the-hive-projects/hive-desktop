@@ -16,7 +16,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -25,9 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.ProfileDialogView;
-import org.thehive.hivedesktop.chat.ChatMessageObservableList;
+import org.thehive.hivedesktop.component.ChatMessageComponent;
 import org.thehive.hivedesktop.util.ExecutionUtils;
 import org.thehive.hivedesktop.util.ImageUtils;
+import org.thehive.hivedesktop.util.observable.ObservableCollection;
+import org.thehive.hivedesktop.util.observable.ObserverCollectionAdapter;
+import org.thehive.hivedesktop.util.observable.WrapperObservableCollection;
 import org.thehive.hiveserverclient.model.Session;
 import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
 import org.thehive.hiveserverclient.net.websocket.header.PayloadType;
@@ -54,7 +56,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
     public static class Controller extends AbstractController {
 
         private static final Class<? extends AppScene> SCENE_TYPE = EditorScene.class;
-        private final ChatMessageObservableList chatMessageObservableList;
+        private final ObservableCollection<LinkedList<ChatMessageComponent>, ChatMessageComponent> chatMessageComponentsObservable;
         private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
 
         Timer timer = new Timer();
@@ -92,26 +94,14 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
-            this.chatMessageObservableList = new ChatMessageObservableList();
-            chatMessageObservableList.registerObserver(chat -> {
-                Ctx.getInstance().imageService.take(chat.getFrom(), result -> {
-                    if (result.status().isSuccess()) {
-                        try {
-                            var scaledContent = ImageUtils.scaleImageContent(result.entity().get().getContent(), 20, 20);
-                            ExecutionUtils.runOnUi(() -> {
-                                var usernameHyperLink = createUser(chat, scaledContent);
-                                var messageLabel = createLabel(chat.getText());
-                                var line = createLine();
-                                chatBox.getChildren().addAll(usernameHyperLink, messageLabel, line);
-                            });
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        throw new IllegalStateException();
-                    }
-                });
+            this.chatMessageComponentsObservable = new WrapperObservableCollection<>(new LinkedList<>());
+            chatMessageComponentsObservable.registerObserver(new ObserverCollectionAdapter<>() {
+                @Override
+                public void onAdded(ChatMessageComponent chatMessageComponent) {
+                    ExecutionUtils.runOnUi(() -> chatBox.getChildren().add(chatMessageComponent.getParentNode()));
+                }
             });
+
         }
 
 
@@ -267,55 +257,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             return fout;
         }
 
-        @FXML
-        private TextArea createLabel(String text) {
-            TextArea messageLabel = new TextArea();
-            messageLabel.setEditable(false);
-            messageLabel.setWrapText(true);
-            messageLabel.wrapTextProperty().set(true);
-            messageLabel.setPrefHeight(50);
-            Font font = Font.font("Helvetica", FontWeight.NORMAL,
-                    FontPosture.REGULAR, 12);
-            messageLabel.setFont(font);
-            messageLabel.setPadding(new Insets(10, 10, 5, 10));
-            messageLabel.setStyle("-fx-background-color:transparent;  -fx-text-area-background:#373737; text-area-background:#373737; -fx-text-fill:#ffc107;  ");
-            messageLabel.setText(text);
-            return messageLabel;
-        }
-
-        @FXML
-        private Line createLine() {
-            Line line = new Line();
-            line.setStartX(0);
-            line.setStartY(100);
-            line.setEndY(100);
-            line.setEndX(300);
-            line.setStyle("-fx-background-color:#ffc107; -fx-stroke: #ffc107; -fx-opacity: 0.5; ");
-            return line;
-        }
-
-        @FXML
-        private Hyperlink createUser(ChatMessage chatMessage, byte[] profileImageContent) {
-            Hyperlink userName = new Hyperlink();
-            Font font = Font.font("Helvetica", FontWeight.BOLD,
-                    FontPosture.REGULAR, 10);
-            userName.setFont(font);
-            userName.setText(chatMessage.getFrom());
-            userName.setPadding(new Insets(10, 10, 5, 10));
-            userName.setTextFill(Color.web("#ffc107"));
-            var image = new Image(new ByteArrayInputStream(profileImageContent));
-            userName.setGraphic(new ImageView(image));
-            userName.setOnMouseClicked(mouseEvent -> {
-                ProfileDialogView profileDialogView = new ProfileDialogView();
-                try {
-                    profileDialogView.start(new Stage());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-            return userName;
-        }
-
        /* @FXML
         private Hyperlink createUser() {
 
@@ -463,9 +404,16 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
                     @Override
                     public void onReceive(AppStompHeaders appStompHeaders, Payload payload) {
-                        if (appStompHeaders.getPayloadType() == PayloadType.CHAT_MESSAGE)
-                            chatMessageObservableList.add((ChatMessage) payload);
-                        else if (appStompHeaders.getPayloadType() == PayloadType.LIVE_SESSION_INFORMATION) {
+                        if (appStompHeaders.getPayloadType() == PayloadType.CHAT_MESSAGE) {
+                            var chatMessage = (ChatMessage) payload;
+                            Ctx.getInstance().imageService.take(chatMessage.getFrom(), result -> {
+                                if (result.status().isSuccess()) {
+                                    chatMessageComponentsObservable.add(new ChatMessageComponent(chatMessage, result.entity().get()));
+                                } else {
+                                    log.warn("Profile image cannot be taken");
+                                }
+                            });
+                        } else if (appStompHeaders.getPayloadType() == PayloadType.LIVE_SESSION_INFORMATION) {
                             var liveSessionInfo = (LiveSessionInformation) payload;
                             liveSessionInfo.getParticipants().parallelStream().forEach(p -> {
                                 Ctx.getInstance().imageService.take(p, result -> {

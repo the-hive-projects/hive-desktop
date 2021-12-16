@@ -1,10 +1,12 @@
 package org.thehive.hivedesktop.util.observable;
 
-public interface ObservableCollection<T> extends Observable<T>, Iterable<T> {
+import java.util.Collection;
 
-    void add(T t);
+public interface ObservableCollection<T extends Collection<E>, E> extends Observable<T>, Iterable<E> {
 
-    void remove(T t);
+    void add(E e);
+
+    void remove(E e);
 
     int size();
 
