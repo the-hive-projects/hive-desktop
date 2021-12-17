@@ -4,6 +4,7 @@
 <?import io.github.palexdev.materialfx.controls.MFXFilterComboBox?>
 <?import io.github.palexdev.materialfx.controls.MFXTextField?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.image.Image?>
@@ -13,7 +14,6 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<?import javafx.scene.text.Text?>
 
 <BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="876.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.MainScene$Controller">
     <left>
@@ -73,15 +73,25 @@
     <center>
         <SplitPane dividerPositions="0.5" minHeight="200.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" style="-fx-box-border: 0;" BorderPane.alignment="CENTER">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                <MFXButton fx:id="createSessionButton" layoutX="349.0" layoutY="284.0" onMouseClicked="#onCreateSessionButtonClick" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Create Session" textFill="WHITE">
+                <MFXButton fx:id="createSessionButton" layoutX="378.0" layoutY="324.0" onMouseClicked="#onCreateSessionButtonClick" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Create Session" textFill="WHITE">
                     <font>
                         <Font size="15.0" />
                     </font>
                 </MFXButton>
-            <MFXTextField fx:id="txtSessionName" layoutX="105.0" layoutY="98.0" prefHeight="26.0" prefWidth="181.0" promptText="Session Name" />
-            <MFXFilterComboBox fx:id="cmbSessionDuration" layoutX="103.0" layoutY="203.0" prefHeight="27.0" prefWidth="186.0" />
-            <Label layoutX="53.0" layoutY="289.0" prefHeight="32.0" prefWidth="117.0" text="Session Number" />
-            <Text fx:id="txSessionLabel" layoutX="170.0" layoutY="309.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="140.9830722808838" />
+            <MFXTextField fx:id="txtSessionName" layoutX="146.0" layoutY="107.0" prefHeight="26.0" prefWidth="181.0" promptText="Session Name" />
+            <MFXFilterComboBox fx:id="cmbSessionDuration" layoutX="147.0" layoutY="183.0" prefHeight="27.0" prefWidth="186.0" />
+            <Label layoutX="30.0" layoutY="270.0" prefHeight="32.0" prefWidth="117.0" text="Session Number" />
+            <Button fx:id="btnCopyClipboard" layoutX="336.0" layoutY="270.0" mnemonicParsing="false" onAction="#handle">
+               <graphic>
+                  <ImageView fitHeight="17.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../img/icons8-copy-30.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <Label layoutX="30.0" layoutY="181.0" prefHeight="32.0" prefWidth="117.0" text="Session Duration" />
+            <Label fx:id="txSessionLabel" layoutX="157.0" layoutY="278.0" prefHeight="18.0" prefWidth="123.0" stylesheets="@../../../../css/style.css" text="Label" />
             </AnchorPane>
             <AnchorPane maxHeight="200.0" minHeight="200.0" minWidth="0.0" prefHeight="242.0" prefWidth="554.0">
                 <MFXTextField fx:id="joinSessionIdTextField" layoutX="116.0" layoutY="88.0" prefHeight="25.0" prefWidth="236.0" text="00000000000" />

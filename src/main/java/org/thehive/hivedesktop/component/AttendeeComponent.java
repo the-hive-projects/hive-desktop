@@ -1,21 +1,17 @@
 package org.thehive.hivedesktop.component;
 
-import javafx.geometry.Insets;
+import com.jfoenix.controls.JFXListCell;
+import javafx.event.EventHandler;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight;
-import javafx.stage.Stage;
 import lombok.SneakyThrows;
-import org.thehive.hivedesktop.ProfileDialogView;
 import org.thehive.hivedesktop.util.ImageUtils;
 import org.thehive.hiveserverclient.model.Image;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 public class AttendeeComponent implements Component<Pane> {
 
@@ -25,9 +21,12 @@ public class AttendeeComponent implements Component<Pane> {
     @SneakyThrows
     public AttendeeComponent(String username, Image image) {
         this.username = username;
-        pane = new Pane();
         var scaledContent = ImageUtils.scaleImageContent(image.getContent(), 20, 20);
-        pane.getChildren().add(createAttendenceItem(username, scaledContent));
+        var attendeeLabel = createAttendenceItem(username,scaledContent);
+
+        pane = new Pane();
+
+        pane.getChildren().add(attendeeLabel);
     }
 
     @Override
@@ -35,25 +34,31 @@ public class AttendeeComponent implements Component<Pane> {
         return pane;
     }
 
-    private Hyperlink createAttendenceItem(String username, byte[] profileImageContent) {
-        Hyperlink userName = new Hyperlink();
-        Font font = Font.font("Helvetica", FontWeight.BOLD,
-                FontPosture.REGULAR, 10);
-        userName.setFont(font);
-        userName.setText(username);
-        userName.setPadding(new Insets(10, 10, 5, 10));
-        userName.setTextFill(Color.web("#ffc107"));
+    private JFXListCell<Label> createAttendenceItem(String username, byte[] profileImageContent) {
+        JFXListCell<Label> listCell = new JFXListCell<Label>();
+        listCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; ");
+
         var image = new javafx.scene.image.Image(new ByteArrayInputStream(profileImageContent));
-        userName.setGraphic(new ImageView(image));
-        userName.setOnMouseClicked(mouseEvent -> {
-            ProfileDialogView profileDialogView = new ProfileDialogView();
-            try {
-                profileDialogView.start(new Stage());
-            } catch (IOException e) {
-                e.printStackTrace();
+        listCell.setText(username);
+        listCell.setGraphic(new ImageView(image));
+        listCell.setMinWidth(100);
+
+
+
+
+        listCell.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                //setCode(codeEditor, "python", "vs-dark");
+                //TODO user info
+                // profileTab = createUser();
+
             }
         });
-        return userName;
+
+        return listCell;
     }
+
+
 
 }

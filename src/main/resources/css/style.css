@@ -8,6 +8,9 @@
     -fx-background-color: text-area-background ;
 }
 
+.txSessionLabel{
+    -fx-border: 1px solid black;
+}
 
 
 .text-area .content {

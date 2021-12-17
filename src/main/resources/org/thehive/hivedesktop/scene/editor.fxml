@@ -119,63 +119,7 @@
             <Tab closable="false" text="Attendees">
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #373737;">
                     <VBox fx:id="attendeeList" prefHeight="534.0" prefWidth="236.0" style="-fx-background-color: #373737; -fx-alignment: top-center;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                        <JFXListCell expanded="true" prefHeight="44.0" prefWidth="179.0" style="-fx-background-color: #F89C0E; -fx-background-radius: 15;">
-                            <graphic>
-                                <Label style="-fx-background-color: transparent; -fx-border-radius: 10;" text="  Semih Büyükgüngör" textAlignment="CENTER">
-                                    <graphic>
-                                        <ImageView fitHeight="21.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                            <Image url="@../../../../img/black.png" />
-                                        </ImageView>
-                                    </graphic>
-                                </Label>
-                            </graphic>
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                            </VBox.margin>
-                        </JFXListCell>
-                        <JFXListCell expanded="true" prefHeight="44.0" prefWidth="179.0" style="-fx-background-color: #F89C0E; -fx-background-radius: 15;">
-                            <graphic>
-                                <Label style="-fx-background-color: transparent; -fx-border-radius: 10;" text="Onur Sercan Yılmaz" textAlignment="CENTER">
-                                    <graphic>
 
-                                        <ImageView fitHeight="28.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                                            <Image url="@../../../../img/logo1.png" />
-                                        </ImageView>
-                                    </graphic>
-                                </Label>
-                            </graphic>
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                            </VBox.margin>
-                        </JFXListCell>
-                        <JFXListCell expanded="true" prefHeight="44.0" prefWidth="179.0" style="-fx-background-color: #F89C0E; -fx-background-radius: 15;">
-                            <graphic>
-                                <Label style="-fx-background-color: transparent; -fx-border-radius: 10;" text="Mustafa Tüfekçi" textAlignment="CENTER">
-                                    <graphic>
-                                        <ImageView fitHeight="28.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                                            <Image url="@../../../../img/logo1.png" />
-                                        </ImageView>
-                                    </graphic>
-                                </Label>
-                            </graphic>
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                            </VBox.margin>
-                        </JFXListCell>
-                        <JFXListCell expanded="true" prefHeight="44.0" prefWidth="179.0" style="-fx-background-color: #F89C0E; -fx-background-radius: 15;">
-                            <graphic>
-                                <Label style="-fx-background-color: transparent; -fx-border-radius: 10;" text="Fatih Bilgi" textAlignment="CENTER">
-                                    <graphic>
-                                        <ImageView fitHeight="28.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
-                                            <Image url="@../../../../img/logo1.png" />
-                                        </ImageView>
-                                    </graphic>
-                                </Label>
-                            </graphic>
-                            <VBox.margin>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                            </VBox.margin>
-                        </JFXListCell>
                     </VBox>
                 </AnchorPane>
             </Tab>

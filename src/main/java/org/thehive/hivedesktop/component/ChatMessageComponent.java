@@ -1,7 +1,9 @@
 package org.thehive.hivedesktop.component;
 
+import com.jfoenix.controls.JFXListCell;
 import javafx.geometry.Insets;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -26,9 +28,10 @@ public class ChatMessageComponent implements Component<Pane> {
     public final ChatMessage chatMessage;
     private final Pane pane;
 
+
     // TODO: 12/16/2021 add default image in resources
     @SneakyThrows
-    public ChatMessageComponent(@NonNull ChatMessage chatMessage, @NonNull Image image) {
+    public ChatMessageComponent(@NonNull ChatMessage chatMessage, @NonNull Image image) throws IOException {
         this.chatMessage = chatMessage;
         var scaledContent = ImageUtils.scaleImageContent(image.getContent(), 20, 20);
         pane = new Pane();
@@ -37,7 +40,7 @@ public class ChatMessageComponent implements Component<Pane> {
         var usernameHyperLink = createUser(chatMessage, scaledContent);
         var messageLabel = createLabel(chatMessage.getText());
         var line = createLine();
-        pane.getChildren().addAll(usernameHyperLink, messageLabel, line);
+        pane.getChildren().addAll(messageLabel, line, usernameHyperLink);
     }
 
     @Override
@@ -50,11 +53,13 @@ public class ChatMessageComponent implements Component<Pane> {
         Font font = Font.font("Helvetica", FontWeight.BOLD,
                 FontPosture.REGULAR, 10);
         userName.setFont(font);
+        userName.setMinWidth(100);
         userName.setText(chatMessage.getFrom());
         userName.setPadding(new Insets(10, 10, 5, 10));
         userName.setTextFill(Color.web("#ffc107"));
         var image = new javafx.scene.image.Image(new ByteArrayInputStream(profileImageContent));
         userName.setGraphic(new ImageView(image));
+
         userName.setOnMouseClicked(mouseEvent -> {
             ProfileDialogView profileDialogView = new ProfileDialogView();
             try {
@@ -76,8 +81,8 @@ public class ChatMessageComponent implements Component<Pane> {
         Font font = Font.font("Helvetica", FontWeight.NORMAL,
                 FontPosture.REGULAR, 12);
         messageLabel.setFont(font);
-        messageLabel.setPadding(new Insets(10, 10, 5, 10));
-        messageLabel.setStyle("-fx-background-color:transparent;  -fx-text-area-background:#373737; text-area-background:#373737; -fx-text-fill:#ffc107;  ");
+        messageLabel.setPadding(new Insets(50, 10, 5, 10));
+        messageLabel.setStyle("-fx-background-color:transparent;  -fx-text-area-background:#373737; text-area-background:#373737; -fx-text-fill:#ffc107;");
         messageLabel.setText(text);
         return messageLabel;
     }
@@ -92,5 +97,7 @@ public class ChatMessageComponent implements Component<Pane> {
         line.setStyle("-fx-background-color:#ffc107; -fx-stroke: #ffc107; -fx-opacity: 0.5; ");
         return line;
     }
+
+
 
 }
