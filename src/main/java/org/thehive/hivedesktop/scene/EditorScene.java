@@ -106,8 +106,11 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 }
 
                 @Override
-                public void onRemoved(String s, AttendeeComponent attendeeComponent) {
-                    ExecutionUtils.runOnUiThread(() -> attendeeList.getChildren().remove(attendeeComponent.getParentNode()));
+                public void onRemoved(String username, AttendeeComponent attendeeComponent) {
+                    ExecutionUtils.runOnUiThread(() -> {
+                        attendeeList.getChildren().remove(attendeeComponent.getParentNode());
+                        removeTab(username);
+                    });
                 }
 
                 @Override
@@ -195,17 +198,18 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             return monacoFXeditor;
         }
 
-
-        @FXML
-        private MonacoFX addTab(String tabName) {
+        private void addTab(String tabName) {
             Tab tab = new Tab(tabName);
+            tab.setId(tabName);
             var settedEditor = setEditor("python", "vs-dark");
             tab.setContent(settedEditor);
             editorPane.getTabs().add(tab);
             tab.setClosable(false);
-            return settedEditor;
         }
 
+        private void removeTab(String tabName) {
+            editorPane.getTabs().removeIf(tab -> tab.getId().equals(tabName));
+        }
 
         @FXML
         private File runEditorCode(TerminalTab terminal) throws IOException {
