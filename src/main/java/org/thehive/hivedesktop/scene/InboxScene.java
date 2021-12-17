@@ -9,10 +9,8 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TabPane;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -28,6 +26,7 @@ import org.thehive.hivedesktop.ProfileDialogView;
 import org.thehive.hiveserverclient.payload.ChatMessage;
 
 import java.io.*;
+import java.util.Collection;
 import java.util.Map;
 
 public class InboxScene extends FxmlMultipleLoadedScene {
@@ -49,10 +48,19 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         private MFXButton btnRunCode;
 
         @FXML
+        private MFXButton btnGoHome;
+
+        @FXML
+        private MFXButton btnGoHome2;
+
+        @FXML
         private TabPane terminalTab;
 
         @FXML
         private VBox attendedList;
+
+        @FXML
+        private VBox createdListVBox;
 
         @FXML
         private MonacoFX codeEditor;
@@ -131,8 +139,47 @@ public class InboxScene extends FxmlMultipleLoadedScene {
             return fout;
         }
 
+        public Accordion createAccordionBox() {
 
-        public void createBox() {
+            Accordion accordionCell = new Accordion();
+            accordionCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px; -fx-margin-left:15px;");
+
+
+
+            Image img = new Image("https://avatars.githubusercontent.com/u/93194123?s=200&v=4");
+
+            ImageView view = new ImageView(img);
+            view.setFitHeight(20);
+            view.setFitWidth(20);
+
+            accordionCell.setMinWidth(165);
+            accordionCell.setMaxWidth(165);
+
+
+
+            VBox insideAccordion = new VBox(5);
+            insideAccordion.setStyle("-fx-background-color:#373737;");
+            TitledPane p1 = new TitledPane();
+            p1.setText("Session Code 1"); //TODO Session Code
+            p1.setGraphic(view);
+
+
+            insideAccordion.getChildren().addAll(createBox("xx"),createBox("mm"),createBox("kk"));
+            p1.setContent(insideAccordion);
+            p1.setGraphicTextGap(3);
+
+
+
+            accordionCell.getPanes().addAll(p1);
+
+
+            createdListVBox.getChildren().addAll(accordionCell);
+            return accordionCell;
+
+
+        }
+
+        public  JFXListCell<Label> createBox(String deneme) {
 
             JFXListCell<Label> listCell = new JFXListCell<Label>();
             listCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px;");
@@ -147,7 +194,7 @@ public class InboxScene extends FxmlMultipleLoadedScene {
             Label sessionCode = new Label();
 
             //TODO add session code from db
-            sessionCode.setText(" SESSION CODE");
+            sessionCode.setText(deneme);
             sessionCode.setGraphic(view);
             sessionCode.setGraphicTextGap(3);
 
@@ -170,10 +217,13 @@ public class InboxScene extends FxmlMultipleLoadedScene {
             });
 
 
+            return  listCell;
         }
 
         @Override
         public void onStart() {
+
+            createAccordionBox();
             //        Dark Config
             TerminalConfig darkConfig = new TerminalConfig();
             darkConfig.setBackgroundColor(Color.web("#1e1e1e"));
@@ -220,7 +270,15 @@ public class InboxScene extends FxmlMultipleLoadedScene {
                 }
             });
 
-            createBox();
+            btnGoHome.setOnMouseClicked(mouseEvent -> {
+                Ctx.getInstance().sceneManager.load(MainScene.class);
+            });
+
+            btnGoHome2.setOnMouseClicked(mouseEvent -> {
+                Ctx.getInstance().sceneManager.load(MainScene.class);
+            });
+
+            createBox("xx");
 
 
             profileTab.setOnMouseClicked(mouseEvent -> {

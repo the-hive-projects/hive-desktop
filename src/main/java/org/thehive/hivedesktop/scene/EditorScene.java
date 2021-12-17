@@ -289,9 +289,9 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             });
 
             btnLeaveSession.setOnMouseClicked(event -> {
-                //TODO load sessionview
+
                 Ctx.getInstance().sceneManager.load(MainScene.class);
-                //TODO disconnect session connection
+
             });
             btnSendMessage.setOnMouseClicked(mouseEvent -> sendMessage());
         }
