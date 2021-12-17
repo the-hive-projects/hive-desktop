@@ -319,7 +319,11 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             var chatMessage = (ChatMessage) payload;
                             Ctx.getInstance().imageService.take(chatMessage.getFrom(), result -> {
                                 if (result.status().isSuccess()) {
-                                    chatMessageComponentCollection.add(new ChatMessageComponent(chatMessage, result.response().get()));
+                                    try {
+                                        chatMessageComponentCollection.add(new ChatMessageComponent(chatMessage, result.response().get()));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 } else {
                                     log.warn("Profile image cannot be taken");
                                 }
