@@ -30,7 +30,6 @@ public class ProfileDialogViewController implements Initializable {
 
     public ProfileDialogViewController(String username) {
         this.username = username;
-
     }
 
     public void fillProfile(String username) {
@@ -38,7 +37,7 @@ public class ProfileDialogViewController implements Initializable {
         //TODO Hyperlink for image who sent message
         Ctx.getInstance().userService.profile(profileResult -> {
             if (profileResult.status().isSuccess()) {
-                var user = profileResult.entity().get();
+                var user = profileResult.response().get();
                 Platform.runLater(() -> {
                     lblUsername.setText(user.getUsername());
                     lblFullName.setText(user.getUserInfo().getFirstname() + " " + user.getUserInfo().getLastname());
@@ -47,7 +46,7 @@ public class ProfileDialogViewController implements Initializable {
                 });
 
                 Ctx.getInstance().imageService.take(user.getUsername(), imageResult -> {
-                    var content = imageResult.entity().get().getContent();
+                    var content = imageResult.response().get().getContent();
                     var profileImage = new Image(new ByteArrayInputStream(content));
                     Platform.runLater(() -> imageProfile.setImage(profileImage));
                     try {

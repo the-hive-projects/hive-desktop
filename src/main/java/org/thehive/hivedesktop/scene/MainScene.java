@@ -19,7 +19,7 @@ import org.thehive.hivedesktop.util.ExecutionUtils;
 import org.thehive.hivedesktop.util.ImageUtils;
 import org.thehive.hivedesktop.util.WebSocketLoggingListener;
 import org.thehive.hiveserverclient.Authentication;
-import org.thehive.hiveserverclient.service.ResultStatus;
+import org.thehive.hiveserverclient.service.ResponseStatus;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -104,14 +104,14 @@ public class MainScene extends FxmlSingleLoadedScene {
             log.info("MainScene#onLoad");
             Ctx.getInstance().userService.profile(profileResult -> {
                 if (profileResult.status().isSuccess()) {
-                    var user = profileResult.entity().get();
+                    var user = profileResult.response().get();
                     ExecutionUtils.runOnUiThread(() -> {
                         usernameLabel.setText(user.getUsername());
                         emailLabel.setText(user.getEmail());
                         nameLabel.setText(user.getUserInfo().getFirstname() + " " + user.getUserInfo().getLastname());
                     });
                     Ctx.getInstance().imageService.take(user.getUsername(), imageResult -> {
-                        var content = imageResult.entity().get().getContent();
+                        var content = imageResult.response().get().getContent();
                         var profileImage = new Image(new ByteArrayInputStream(content));
                         ExecutionUtils.runOnUiThread(() -> profileImageView.setImage(profileImage));
                         try {
@@ -152,14 +152,14 @@ public class MainScene extends FxmlSingleLoadedScene {
             Ctx.getInstance().sessionService.takeLive(liveId, result -> {
                 if (result.status().isSuccess()) {
                     ExecutionUtils.runOnUiThread(() -> {
-                        joinInfoLabel.setText("Joined, name: " + result.entity().get().getName());
+                        joinInfoLabel.setText("Joined, name: " + result.response().get().getName());
                         var dataMap = Map.of(
-                                Consts.JOINED_SESSION_SCENE_DATA_KEY, result.entity().get(),
+                                Consts.JOINED_SESSION_SCENE_DATA_KEY, result.response().get(),
                                 Consts.JOINED_SESSION_LIVE_ID_SCENE_DATA_KEY, liveId);
                         Ctx.getInstance().sceneManager.load(EditorScene.class, dataMap);
                     });
                 } else if (result.status().isError()) {
-                    if (result.status() == ResultStatus.ERROR_UNAVAILABLE) {
+                    if (result.status() == ResponseStatus.ERROR_UNAVAILABLE) {
                         ExecutionUtils.runOnUiThread(() -> {
                             joinInfoLabel.setText("Session not found");
                             joinSessionButton.setDisable(false);

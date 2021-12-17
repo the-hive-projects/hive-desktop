@@ -49,7 +49,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         private static final Class<? extends AppScene> SCENE_TYPE = EditorScene.class;
         private final ObservableCollection<ChatMessageComponent> chatMessageComponentCollection;
         private final ObservableMap<String, AttendeeComponent> attendeeComponentMap;
-        private final Dictionary<String, MonacoFX> dict = new Hashtable<String, MonacoFX>();
 
         Timer timer = new Timer();
 
@@ -105,7 +104,10 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             attendeeComponentMap.registerObserver(new MapObserverAdapter<>() {
                 @Override
                 public void onAdded(String username, AttendeeComponent attendeeComponent) {
-                    ExecutionUtils.runOnUiThread(() -> attendeeList.getChildren().add(attendeeComponent.getParentNode()));
+                    ExecutionUtils.runOnUiThread(() -> {
+                        attendeeList.getChildren().add(attendeeComponent.getParentNode());
+                        addTab(username);
+                    });
                 }
 
                 @Override
@@ -141,8 +143,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             fileChooser.setInitialDirectory(file);7*/
 
             // fileChooser.showSaveDialog(this.messageArea.getScene().getWindow());
-            var currentTabName = editorPane.getSelectionModel().getSelectedItem().getText();
-            MonacoFX currentEditor = dict.get(currentTabName);
+            var currentTabIndex = editorPane.getSelectionModel().getSelectedIndex();
+            MonacoFX currentEditor = (MonacoFX) editorPane.getTabs().get(currentTabIndex).getContent();
 
             var currentEditorContent = currentEditor.getEditor().getDocument().getText();
             //System.out.println(currentEditorContent);
@@ -183,8 +185,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @FXML
         private MonacoFX setEditor(String language, String theme) {
             MonacoFX monacoFXeditor = new MonacoFX();
-            int numTabs = dict.size();
-            monacoFXeditor.setId("monacoFX" + numTabs);
             monacoFXeditor.getEditor().getDocument().setText(
                     "num = float(input(\"Enter a number: \"))\r" +
                             "if num > 0:\n" +
@@ -227,35 +227,20 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         }
 
         @FXML
-        private MonacoFX addTab() {
-            int numTabs = dict.size();
-            Tab tab = new Tab("Yours " + numTabs);
-            tab.setId(String.valueOf(numTabs));
+        private MonacoFX addTab(String tabName) {
+            Tab tab = new Tab(tabName);
             var settedEditor = setEditor("python", "vs-dark");
             tab.setContent(settedEditor);
-            addToDict(tab.getText(), settedEditor);
-
-            if (numTabs >= 1) {
-                //TODO: set not editable editor
-
-            }
-
             editorPane.getTabs().add(tab);
             tab.setClosable(false);
             return settedEditor;
         }
 
-        @FXML
-        private void addToDict(String tabName, MonacoFX editorName) {
-            // Inserting values into the Dictionary
-            dict.put(tabName, editorName);
-            System.out.println(dict);
-        }
 
         @FXML
         private File runEditorCode(TerminalTab terminal) throws IOException {
-            var currentTabName = editorPane.getSelectionModel().getSelectedItem().getText();
-            MonacoFX currentEditor = dict.get(currentTabName);
+            var currentTabIndex = editorPane.getSelectionModel().getSelectedIndex();
+            MonacoFX currentEditor = (MonacoFX) editorPane.getTabs().get(currentTabIndex).getContent();
 
             var currentEditorContent = currentEditor.getEditor().getDocument().getText();
             System.out.println(currentEditorContent);
@@ -322,9 +307,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @Override
         public void onStart() {
 
-            addTab();
-            addTab();
-            addTab();
             createBox();
 
             //        Dark Config
@@ -400,7 +382,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             var chatMessage = (ChatMessage) payload;
                             Ctx.getInstance().imageService.take(chatMessage.getFrom(), result -> {
                                 if (result.status().isSuccess()) {
-                                    chatMessageComponentCollection.add(new ChatMessageComponent(chatMessage, result.entity().get()));
+                                    chatMessageComponentCollection.add(new ChatMessageComponent(chatMessage, result.response().get()));
                                 } else {
                                     log.warn("Profile image cannot be taken");
                                 }
@@ -411,7 +393,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             liveSessionInfo.getParticipants().parallelStream().forEach(p -> {
                                 Ctx.getInstance().imageService.take(p, result -> {
                                     if (result.status().isSuccess()) {
-                                        attendeeComponentMap.add(p, new AttendeeComponent(p, result.entity().get()));
+                                        attendeeComponentMap.add(p, new AttendeeComponent(p, result.response().get()));
                                     } else {
                                         log.warn("Profile image cannot be taken");
                                     }
@@ -422,7 +404,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             if (participationNotification.isJoined()) {
                                 Ctx.getInstance().imageService.take(participationNotification.getParticipant(), result -> {
                                     if (result.status().isSuccess()) {
-                                        attendeeComponentMap.add(participationNotification.getParticipant(), new AttendeeComponent(participationNotification.getParticipant(), result.entity().get()));
+                                        attendeeComponentMap.add(participationNotification.getParticipant(), new AttendeeComponent(participationNotification.getParticipant(), result.response().get()));
                                     } else {
                                         log.warn("Profile image cannot be taken");
                                     }

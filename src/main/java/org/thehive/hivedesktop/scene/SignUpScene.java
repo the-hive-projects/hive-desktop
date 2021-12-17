@@ -103,8 +103,8 @@ public class SignUpScene extends FxmlSingleLoadedScene {
                 if (result.status().isSuccess()) {
                     ExecutionUtils.runOnUiThread(() -> infoLabelHandler.setSuccessText("Signed-up successfully"));
                     ExecutionUtils.scheduleOnUiThread(() -> {
-                        if (result.entity().isPresent()) {
-                            var dataMap = Map.<String, Object>of(Consts.SIGNED_UP_USERNAME_SESSION_DATA_KEY, result.entity().get().getUsername());
+                        if (result.response().isPresent()) {
+                            var dataMap = Map.<String, Object>of(Consts.SIGNED_UP_USERNAME_SESSION_DATA_KEY, result.response().get().getUsername());
                             Ctx.getInstance().sceneManager.load(SignInScene.class, dataMap);
                         } else
                             Ctx.getInstance().sceneManager.load(SignInScene.class);
