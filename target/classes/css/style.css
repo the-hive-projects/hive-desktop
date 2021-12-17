@@ -12,6 +12,10 @@
     -fx-border: 1px solid black;
 }
 
+.mainSessionLabelColor{
+    -fx-text-fill: #ffffff;
+}
+
 
 .text-area .content {
     -fx-background-color: text-area-background ;
