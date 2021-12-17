@@ -2,8 +2,8 @@ package org.thehive.hivedesktop.scene;
 
 import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXFilterComboBox;
-import io.github.palexdev.materialfx.controls.MFXLabel;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -24,6 +24,7 @@ import org.thehive.hivedesktop.util.ExecutionUtils;
 import org.thehive.hivedesktop.util.ImageUtils;
 import org.thehive.hivedesktop.util.WebSocketLoggingListener;
 import org.thehive.hiveserverclient.Authentication;
+import org.thehive.hiveserverclient.model.Session;
 import org.thehive.hiveserverclient.service.ResponseStatus;
 
 import java.io.ByteArrayInputStream;
@@ -47,7 +48,7 @@ public class MainScene extends FxmlSingleLoadedScene {
         private Button btnCopyClipboard;
 
         @FXML
-        private MFXFilterComboBox<?> cmbSessionDuration;
+        private MFXFilterComboBox<String> cmbSessionDuration;
 
         @FXML
         private MFXButton createSessionButton;
@@ -99,34 +100,15 @@ public class MainScene extends FxmlSingleLoadedScene {
 
         }
 
-        public void handle(ActionEvent event){
+        public void handle(ActionEvent event) {
             copyToClipboardText(txSessionLabel.getText());
         }
-
-//        public  void start(Stage stage){
-//            try {
-//
-//                Parent root = FXMLLoader.load(getClass().getResource("Scene.fxml"));
-//                Scene scene = new Scene(root);
-//                stage.setScene(scene);
-//                stage.show();
-//
-//                stage.setOnCloseRequest(event -> {
-//                    event.consume();
-//                    logout(stage);
-//                });
-//
-//            } catch(Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
 
         public void logout(ActionEvent event) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Logout");
             alert.setHeaderText("You're about to logout!");
             alert.setContentText("Do you want to save before exiting?");
-
             if (alert.showAndWait().get() == ButtonType.OK) {
                 stage = (Stage) mainPane.getScene().getWindow();
                 System.out.println("You successfully logged out!");
@@ -138,6 +120,7 @@ public class MainScene extends FxmlSingleLoadedScene {
         @Override
         public void onStart() {
             log.info("MainScene#onStart");
+            cmbSessionDuration.setItems(FXCollections.observableArrayList("20", "30", "40", "50", "60", "70", "80", "90"));
         }
 
         @Override
@@ -177,6 +160,25 @@ public class MainScene extends FxmlSingleLoadedScene {
         @FXML
         void onCreateSessionButtonClick(MouseEvent event) {
             log.info("Button clicked, #onCreateSessionButtonClick");
+            var sessionName = txtSessionName.getText();
+            var duration = Integer.parseInt(cmbSessionDuration.getSelectedValue()) * 1000L;
+            var session = new Session();
+            session.setName(sessionName);
+            session.setDuration(duration);
+            createSessionButton.setDisable(true);
+            Ctx.getInstance().sessionService.create(session, appResponse -> {
+                if (appResponse.status().isSuccess()) {
+                    ExecutionUtils.runOnUiThread(() -> {
+                        txSessionLabel.setText(appResponse.response().get().getLiveId());
+                        createSessionButton.setDisable(false);
+                    });
+                } else {
+                    ExecutionUtils.runOnUiThread(() -> {
+                        txSessionLabel.setText("Something wrong");
+                        createSessionButton.setDisable(false);
+                    });
+                }
+            });
         }
 
         @FXML
@@ -195,6 +197,7 @@ public class MainScene extends FxmlSingleLoadedScene {
                 if (result.status().isSuccess()) {
                     ExecutionUtils.runOnUiThread(() -> {
                         joinInfoLabel.setText("Joined, name: " + result.response().get().getName());
+                        joinSessionButton.setDisable(false);
                         var dataMap = Map.of(
                                 Consts.JOINED_SESSION_SCENE_DATA_KEY, result.response().get(),
                                 Consts.JOINED_SESSION_LIVE_ID_SCENE_DATA_KEY, liveId);

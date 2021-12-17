@@ -2,7 +2,6 @@ package org.thehive.hivedesktop.component;
 
 import com.jfoenix.controls.JFXListCell;
 import javafx.event.EventHandler;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -22,7 +21,7 @@ public class AttendeeComponent implements Component<Pane> {
     public AttendeeComponent(String username, Image image) {
         this.username = username;
         var scaledContent = ImageUtils.scaleImageContent(image.getContent(), 20, 20);
-        var attendeeLabel = createAttendenceItem(username,scaledContent);
+        var attendeeLabel = createAttendenceItem(username, scaledContent);
 
         pane = new Pane();
 
@@ -44,8 +43,6 @@ public class AttendeeComponent implements Component<Pane> {
         listCell.setMinWidth(100);
 
 
-
-
         listCell.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -58,7 +55,6 @@ public class AttendeeComponent implements Component<Pane> {
 
         return listCell;
     }
-
 
 
 }

@@ -18,6 +18,6 @@ public interface ObservableMap<K, V> extends Observable<Map<K, V>>, Iterable<Map
 
     boolean containsValue(V v);
 
-    Map<K,V> getMap();
+    Map<K, V> getMap();
 
 }

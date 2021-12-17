@@ -1,18 +1,13 @@
 package org.thehive.hivedesktop.scene;
 
-import com.jfoenix.controls.JFXListCell;
 import com.kodedu.terminalfx.TerminalBuilder;
 import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
 import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
@@ -201,8 +196,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         }
 
 
-
-
         @FXML
         private MonacoFX addTab(String tabName) {
             Tab tab = new Tab(tabName);
@@ -246,31 +239,20 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @Override
         public void onStart() {
 
-            //        Dark Config
             TerminalConfig darkConfig = new TerminalConfig();
             darkConfig.setBackgroundColor(Color.web("#1e1e1e"));
             darkConfig.setForegroundColor(Color.rgb(240, 240, 240));
             darkConfig.setCursorColor(Color.web("#ffc107"));
 
-//        CygWin Config
+            /*
             TerminalConfig cygwinConfig = new TerminalConfig();
             cygwinConfig.setWindowsTerminalStarter("C:\\cygwin64\\bin\\bash -i");
             cygwinConfig.setFontSize(14);
+            */
 
-//        Default Config
-            TerminalConfig defaultConfig = new TerminalConfig();
             TerminalBuilder terminalBuilder = new TerminalBuilder(darkConfig);
             TerminalTab terminal = terminalBuilder.newTerminal();
-//        terminal.onTerminalFxReady(() -> {
-//            terminal.getTerminal().command("java -version\r");
-//        });
-
             terminalPane.getTabs().add(terminal);
-
-
-            /*btnAddNewTab.setOnMouseClicked(mouseEvent -> {
-                    addTab();
-            });*/
 
             btnSaveCode.setOnMouseClicked(mouseEvent -> {
                 try {
@@ -289,9 +271,11 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             });
 
             btnLeaveSession.setOnMouseClicked(event -> {
-                //TODO load sessionview
+                if (Ctx.getInstance().webSocketService.getConnection().isPresent() &&
+                        Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().isPresent()) {
+                    Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().unsubscribe();
+                }
                 Ctx.getInstance().sceneManager.load(MainScene.class);
-                //TODO disconnect session connection
             });
             btnSendMessage.setOnMouseClicked(mouseEvent -> sendMessage());
         }
@@ -319,7 +303,11 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             var chatMessage = (ChatMessage) payload;
                             Ctx.getInstance().imageService.take(chatMessage.getFrom(), result -> {
                                 if (result.status().isSuccess()) {
-                                    chatMessageComponentCollection.add(new ChatMessageComponent(chatMessage, result.response().get()));
+                                    try {
+                                        chatMessageComponentCollection.add(new ChatMessageComponent(chatMessage, result.response().get()));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 } else {
                                     log.warn("Profile image cannot be taken");
                                 }

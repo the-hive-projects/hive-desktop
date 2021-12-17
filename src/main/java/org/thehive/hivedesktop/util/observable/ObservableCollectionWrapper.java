@@ -46,7 +46,7 @@ public class ObservableCollectionWrapper<E> extends AbstractObservable<Collectio
 
     @Override
     public void clear() {
-        var copyCollection=new ArrayList<>(collection);
+        var copyCollection = new ArrayList<>(collection);
         collection.clear();
         observerIterator()
                 .forEachRemaining(o -> {
