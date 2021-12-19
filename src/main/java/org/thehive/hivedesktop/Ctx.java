@@ -26,11 +26,12 @@ public class Ctx {
     private static Ctx instance;
 
     public final AppSceneManager sceneManager;
+    public final ExecutorService executorService;
     public final UserService userService;
     public final SessionService sessionService;
     public final ImageService imageService;
     public final WebSocketSingleConnService webSocketService;
-    public final ExecutorService executorService;
+    public final SubmissionService submissionService;
 
     public Ctx() {
         this.sceneManager = new AppSceneManagerImpl();
@@ -50,6 +51,8 @@ public class Ctx {
         wsStompClient.setMessageConverter(new MappingJackson2MessageConverter());
         WebSocketClient webSocketClient = new WebSocketClientImpl(Consts.SERVER_WS_STOMP_URI, urlEndpointResolver, wsStompClient, executorService);
         this.webSocketService = new WebSocketSingleConnServiceImpl(webSocketClient);
+        var submissionClient = new SubmissionClientImpl(Consts.SERVER_SUBMISSION_HTTP_URI, objectMapper, httpClient, executorService);
+        this.submissionService = new SubmissionServiceImpl(submissionClient);
     }
 
     public static Ctx getInstance() {

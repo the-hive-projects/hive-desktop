@@ -31,7 +31,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Map;
 
-public class MainScene extends FxmlSingleLoadedScene {
+public class MainScene extends FxmlMultipleLoadedScene {
 
     private static final String FXML_FILENAME = "main.fxml";
 

@@ -8,6 +8,7 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,9 @@ import org.thehive.hivedesktop.component.AttendeeComponent;
 import org.thehive.hivedesktop.component.ChatMessageComponent;
 import org.thehive.hivedesktop.util.ExecutionUtils;
 import org.thehive.hivedesktop.util.observable.*;
+import org.thehive.hiveserverclient.Authentication;
 import org.thehive.hiveserverclient.model.Session;
+import org.thehive.hiveserverclient.model.Submission;
 import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
 import org.thehive.hiveserverclient.net.websocket.header.PayloadType;
 import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription;
@@ -44,6 +47,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         private static final Class<? extends AppScene> SCENE_TYPE = EditorScene.class;
         private final ObservableCollection<ChatMessageComponent> chatMessageComponentCollection;
         private final ObservableMap<String, AttendeeComponent> attendeeComponentMap;
+        private final Map<String, Tab> usernameTabMap;
 
         Timer timer = new Timer();
 
@@ -55,6 +59,9 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         @FXML
         MFXButton btnSaveCode;
+
+        @FXML
+        MFXButton btnSubmit;
 
         @FXML
         SplitPane mainPane;
@@ -118,6 +125,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                     ExecutionUtils.runOnUiThread(() -> attendeeList.getChildren().clear());
                 }
             });
+            this.usernameTabMap = new HashMap<>();
         }
 
         @FXML
@@ -205,10 +213,13 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             tab.setContent(settedEditor);
             editorPane.getTabs().add(tab);
             tab.setClosable(false);
+            usernameTabMap.put(tabName, tab);
         }
 
         private void removeTab(String tabName) {
-            editorPane.getTabs().removeIf(tab -> tab.getId().equals(tabName));
+            var tab = usernameTabMap.remove(tabName);
+            if (tab != null)
+                editorPane.getTabs().remove(tab);
         }
 
         @FXML
@@ -240,9 +251,28 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(chatMessage);
         }
 
+        @FXML
+        void onBtnSubmitClick(MouseEvent event) {
+            var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
+            var content = tab.getText();
+            var submission = new Submission();
+            submission.setContent(content);
+            btnSubmit.setDisable(true);
+            Ctx.getInstance().submissionService.submit(submission, appResponse -> {
+                if (appResponse.status().isSuccess()) {
+                    log.info("Successfully submitted");
+                } else if (appResponse.status().isError()) {
+                    log.info("Error while submitting, message: {}", appResponse.message().get());
+                    btnSubmit.setDisable(false);
+                } else {
+                    log.warn("Submission got failed", appResponse.exception().get());
+                    btnSubmit.setDisable(false);
+                }
+            });
+        }
+
         @Override
         public void onStart() {
-
             TerminalConfig darkConfig = new TerminalConfig();
             darkConfig.setBackgroundColor(Color.web("#1e1e1e"));
             darkConfig.setForegroundColor(Color.rgb(240, 240, 240));
@@ -282,6 +312,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 Ctx.getInstance().sceneManager.load(MainScene.class);
             });
             btnSendMessage.setOnMouseClicked(mouseEvent -> sendMessage());
+            btnSubmit.setDisable(true);
         }
 
         @Override
@@ -293,7 +324,14 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 connection.subscribeToSession(id, new SubscriptionListener() {
                     @Override
                     public void onSubscribe(StompSubscription stompSubscription) {
-
+                        Ctx.getInstance().submissionService.takeThis(appResponse -> {
+                            if (appResponse.status().isSuccess()) {
+                                if (appResponse.response().get() == Submission.EMPTY) {
+                                    ExecutionUtils.runOnUiThread(() -> btnSubmit.setDisable(false));
+                                }
+                                // TODO: 12/20/2021 show submission on ui
+                            }
+                        });
                     }
 
                     @Override
