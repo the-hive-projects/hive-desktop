@@ -48,24 +48,17 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         private final ObservableCollection<ChatMessageComponent> chatMessageComponentCollection;
         private final ObservableMap<String, AttendeeComponent> attendeeComponentMap;
         private final Map<String, Tab> usernameTabMap;
-
         Timer timer = new Timer();
-
         @FXML
         ScrollPane chatScroll;
-
         @FXML
         VBox chatBox;
-
         @FXML
         MFXButton btnSaveCode;
-
         @FXML
         MFXButton btnSubmit;
-
         @FXML
         SplitPane mainPane;
-
         @FXML
         TextArea messageArea;
 
@@ -206,14 +199,18 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             return monacoFXeditor;
         }
 
-        private void addTab(String tabName) {
-            Tab tab = new Tab(tabName);
+        private Tab addTab(String tabName) {
+            var tab = usernameTabMap.get(tabName);
+            if (tab != null)
+                return tab;
+            tab = new Tab(tabName);
             tab.setId(tabName);
             var settedEditor = setEditor("python", "vs-dark");
             tab.setContent(settedEditor);
             editorPane.getTabs().add(tab);
             tab.setClosable(false);
             usernameTabMap.put(tabName, tab);
+            return tab;
         }
 
         private void removeTab(String tabName) {
@@ -254,7 +251,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @FXML
         void onBtnSubmitClick(MouseEvent event) {
             var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
-            var content = tab.getText();
+            var content = ((MonacoFX) tab.getContent()).getEditor().getDocument().getText();
             var submission = new Submission();
             submission.setContent(content);
             btnSubmit.setDisable(true);
@@ -328,6 +325,13 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             if (appResponse.status().isSuccess()) {
                                 if (appResponse.response().get() == Submission.EMPTY) {
                                     ExecutionUtils.runOnUiThread(() -> btnSubmit.setDisable(false));
+                                } else {
+                                    ExecutionUtils.runOnUiThread(() -> {
+                                        var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
+                                        if (tab == null)
+                                            tab = addTab(Authentication.INSTANCE.getUsername());
+                                        ((MonacoFX) tab.getContent()).getEditor().getDocument().setText(appResponse.response().get().getContent());
+                                    });
                                 }
                                 // TODO: 12/20/2021 show submission on ui
                             }

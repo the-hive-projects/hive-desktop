@@ -63,6 +63,9 @@ public class MainScene extends FxmlMultipleLoadedScene {
         private MFXButton joinSessionButton;
 
         @FXML
+        private MFXButton btnInbox;
+
+        @FXML
         private MFXTextField joinSessionIdTextField;
 
         @FXML
@@ -155,6 +158,12 @@ public class MainScene extends FxmlMultipleLoadedScene {
         @Override
         public void onUnload() {
             log.info("MainScene#onUnload");
+        }
+
+        @FXML
+        void onInboxButtonClick(MouseEvent event) {
+            log.info("Button clicked, #onInboxButtonClick");
+            Ctx.getInstance().sceneManager.load(InboxScene.class);
         }
 
         @FXML

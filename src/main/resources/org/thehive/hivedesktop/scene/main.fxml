@@ -65,7 +65,7 @@
                 <Pane prefHeight="40.0" prefWidth="300.0" />
             <AnchorPane prefHeight="59.0" prefWidth="300.0">
                <children>
-                  <MFXButton fx:id="btnInbox" layoutX="32.0" layoutY="45.0" onMouseClicked="#onJoinSessionButtonClick" prefHeight="40.0" prefWidth="79.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Inbox" textFill="WHITE">
+                  <MFXButton fx:id="btnInbox" layoutX="32.0" layoutY="45.0" onMouseClicked="#onInboxButtonClick" prefHeight="40.0" prefWidth="79.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Inbox" textFill="WHITE">
                      <font>
                         <Font name="Arial Black" size="15.0" />
                      </font>
