@@ -6,8 +6,11 @@ import com.kodedu.terminalfx.config.TerminalConfig;
 import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -241,8 +244,10 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         @FXML
         private void sendMessage() {
-            var chatMessage = new ChatMessage();
             String message = messageArea.getText();
+            if(message.isEmpty())
+                return;
+            var chatMessage = new ChatMessage();
             messageArea.clear();
             chatMessage.setText(message);
             Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(chatMessage);
@@ -391,6 +396,11 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
                     }
                 });
+            });
+            messageArea.setWrapText(true);
+            messageArea.setOnKeyPressed(ke -> {
+                if (ke.getCode().equals(KeyCode.ENTER))
+                    sendMessage();
             });
         }
 

@@ -116,6 +116,8 @@ public class MainScene extends FxmlMultipleLoadedScene {
                 stage = (Stage) mainPane.getScene().getWindow();
                 System.out.println("You successfully logged out!");
                 Authentication.INSTANCE.unauthenticate();
+                if (Ctx.getInstance().webSocketService.hasConnection())
+                    Ctx.getInstance().webSocketService.getConnection().get().disconnect();
                 Ctx.getInstance().sceneManager.load(SignInScene.class);
             }
         }

@@ -14,6 +14,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -27,12 +28,10 @@ import org.thehive.hivedesktop.util.ExecutionUtils;
 import org.thehive.hiveserverclient.model.Session;
 import org.thehive.hiveserverclient.model.Submission;
 import org.thehive.hiveserverclient.payload.ChatMessage;
-import org.thehive.hiveserverclient.service.AppResponse;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.function.Consumer;
 
 public class InboxScene extends FxmlMultipleLoadedScene {
 
@@ -60,10 +59,10 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         private TabPane terminalTab;
 
         @FXML
-        private VBox attendedList;
+        private VBox submissionListBox;
 
         @FXML
-        private VBox createdListVBox;
+        private VBox sessionListBox;
 
         @FXML
         private MonacoFX codeEditor;
@@ -147,31 +146,23 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         }
 
 
-        public JFXListCell<Label> addSubmissionOnJoinedPane(Submission submission) {
+        public JFXListCell<Label> addSubmissionInPane(Pane pane, Submission submission) {
 
             JFXListCell<Label> listCell = new JFXListCell<>();
             listCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px;");
-
             Image img = new Image("https://avatars.githubusercontent.com/u/93194123?s=200&v=4");
-
             ImageView view = new ImageView(img);
             view.setFitHeight(20);
             view.setFitWidth(20);
-
             Label sessionCode = new Label();
-
             //TODO add session code from db
             sessionCode.setText(submission.getSession().getName());
             sessionCode.setGraphic(view);
             sessionCode.setGraphicTextGap(3);
-
             listCell.setGraphic(sessionCode);
             listCell.setMinWidth(165);
             listCell.setMinHeight(44);
-
-
-            attendedList.getChildren().addAll(listCell);
-
+            pane.getChildren().addAll(listCell);
             listCell.setOnMouseClicked(mouseEvent -> {
                 rightSplitPane.setVisible(true);
                 setCode(codeEditor, "python", "vs-dark", submission.getContent());
@@ -183,8 +174,7 @@ public class InboxScene extends FxmlMultipleLoadedScene {
             return listCell;
         }
 
-        public JFXListCell<Label> addSessionOnCreatedPane(Session session) {
-
+        public JFXListCell<Label> addSessionInPane(Pane pane, Session session) {
             JFXListCell<Label> listCell = new JFXListCell<>();
             listCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px;");
             // TODO: 12/20/2021 only load once in static context
@@ -196,16 +186,13 @@ public class InboxScene extends FxmlMultipleLoadedScene {
             sessionCode.setText(session.getName());
             sessionCode.setGraphic(view);
             sessionCode.setGraphicTextGap(3);
-
             listCell.setGraphic(sessionCode);
             listCell.setMinWidth(165);
             listCell.setMinHeight(44);
-
-            createdListVBox.getChildren().addAll(listCell);
-
+            pane.getChildren().addAll(listCell);
             listCell.setOnMouseClicked(mouseEvent -> {
-            });
 
+            });
             return listCell;
         }
 
@@ -255,26 +242,21 @@ public class InboxScene extends FxmlMultipleLoadedScene {
                             .parallel()
                             .forEach(s ->
                                     ExecutionUtils.runOnUiThread(() ->
-                                            addSubmissionOnJoinedPane(s)));
+                                            addSubmissionInPane(submissionListBox, s)));
                 }
             });
-            Ctx.getInstance().sessionService.takeAll(new Consumer<AppResponse<? extends Session[]>>() {
-                @Override
-                public void accept(AppResponse<? extends Session[]> appResponse) {
+            Ctx.getInstance().sessionService.takeAll(appResponse ->
                     Arrays.stream(appResponse.response().get())
                             .parallel()
-                            .forEach(s ->
-                                    ExecutionUtils.runOnUiThread(() ->
-                                            addSessionOnCreatedPane(s)));
-                }
-            });
+                            .forEach(s -> {
+
+                            }));
         }
 
         @Override
         public void onUnload() {
 
         }
-
 
     }
 }

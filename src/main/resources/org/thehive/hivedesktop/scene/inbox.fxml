@@ -28,7 +28,7 @@
                                     <children>
                               <ScrollPane prefHeight="448.0" prefWidth="198.4" style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <content>
-                                    <VBox fx:id="attendedList" minHeight="1000.0" prefHeight="216.0" prefWidth="199.0" style="-fx-background-color: #373737; -fx-alignment: top-center;" />
+                                    <VBox fx:id="submissionListBox" minHeight="1000.0" prefHeight="216.0" prefWidth="199.0" style="-fx-background-color: #373737; -fx-alignment: top-center;" />
                                  </content>
                               </ScrollPane>
                                     </children>
