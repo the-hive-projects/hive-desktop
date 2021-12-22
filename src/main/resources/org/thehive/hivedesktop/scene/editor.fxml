@@ -1,76 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import io.github.palexdev.materialfx.controls.*?>
+<?import io.github.palexdev.materialfx.controls.MFXButton?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<SplitPane xmlns:fx="http://javafx.com/fxml/1" fx:id="mainPane" dividerPositions="0.7256016042780747" maxHeight="-Infinity"
-           maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800"
-           prefWidth="1200" style="-fx-background-color: #373737; -fx-box-border: 0;"
-           xmlns="http://javafx.com/javafx/11.0.1" fx:controller="org.thehive.hivedesktop.scene.EditorScene$Controller">
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0"
-                style="-fx-background-color: #373737;">
-        <SplitPane dividerPositions="0.6557459677419355" layoutX="31.0" layoutY="24.0" orientation="VERTICAL"
-                   prefHeight="398.4" prefWidth="175.2" style="-fx-background-color: #373737; -fx-box-border: 0000;"
-                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                   AnchorPane.topAnchor="0.0">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="389.0" prefWidth="598.0"
-                        style="-fx-background-color: #373737;">
-                <VBox prefHeight="386.4" prefWidth="632.8" style="-fx-background-color: #373737;"
-                      AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                      AnchorPane.topAnchor="0.0">
+
+<SplitPane fx:id="mainPane" dividerPositions="0.7256016042780747" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" style="-fx-background-color: #373737; -fx-box-border: 0;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.EditorScene$Controller">
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" style="-fx-background-color: #373737;">
+        <SplitPane dividerPositions="0.6557459677419355" layoutX="31.0" layoutY="24.0" orientation="VERTICAL" prefHeight="398.4" prefWidth="175.2" style="-fx-background-color: #373737; -fx-box-border: 0000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="389.0" prefWidth="598.0" style="-fx-background-color: #373737;">
+                <VBox prefHeight="386.4" prefWidth="632.8" style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <ButtonBar fx:id="btnBar" prefHeight="40.0" prefWidth="200.0">
                         <buttons>
-                            <MFXButton fx:id="btnSubmit" onMouseClicked="#onBtnSubmitClick"
-                                       style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;"
-                                       text="Submit">
+                     <Label fx:id="labelUserName" alignment="CENTER" minWidth="100.0" text="İsim - Soyisim" textFill="#ffc107" ButtonBar.buttonData="LEFT">
+                        <padding>
+                           <Insets left="25.0" right="25.0" />
+                        </padding></Label>
+                     <Label fx:id="labelTimer" alignment="CENTER" graphicTextGap="0.0" minHeight="25.0" minWidth="100.0" style="-fx-background-color: #ffc107; -fx-background-radius: 15;" text="00:00:00" textAlignment="CENTER" textFill="#373737" ButtonBar.buttonData="LEFT" />
+                     <Label fx:id="labelSessionName" alignment="CENTER" minWidth="100.0" text="Session Name" textFill="#ffc107">
+                        <padding>
+                           <Insets left="25.0" right="25.0" />
+                        </padding>
+                     </Label>
+                     <MFXButton fx:id="btnSubmit1" onMouseClicked="#onBtnSubmitClick" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Undo">
+                        <graphic>
+                           <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../../../../img/undo.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                     </MFXButton>
+                            <MFXButton fx:id="btnSubmit" onMouseClicked="#onBtnSubmitClick" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Submit">
                                 <graphic>
-                                    <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true"
-                                               preserveRatio="true">
+                                    <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                         <image>
-                                            <Image url="@../../../../img/submitCode.png"/>
+                                            <Image url="@../../../../img/submitCode.png" />
                                         </image>
                                     </ImageView>
                                 </graphic>
                             </MFXButton>
-                            <MFXButton fx:id="btnSaveCode"
-                                       style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;"
-                                       text="Save">
+                            <MFXButton fx:id="btnSaveCode" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Save">
                                 <graphic>
-                                    <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../../../../img/saveCode.png"/>
+                                    <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@../../../../img/saveCode.png" />
                                     </ImageView>
                                 </graphic>
                             </MFXButton>
-                            <MFXButton fx:id="btnRunCode"
-                                       style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;"
-                                       text=" Run ">
+                            <MFXButton fx:id="btnRunCode" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text=" Run ">
                                 <graphic>
-                                    <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../../../../img/runCode.png"/>
+                                    <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@../../../../img/runCode.png" />
                                     </ImageView>
                                 </graphic>
                             </MFXButton>
-                            <MFXButton fx:id="btnLeaveSession"
-                                       style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;"
-                                       text="Leave">
+                            <MFXButton fx:id="btnLeaveSession" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Leave">
                                 <graphic>
-                                    <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <Image url="@../../../../img/leaveSession.png"/>
+                                    <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                        <Image url="@../../../../img/leaveSession.png" />
                                     </ImageView>
                                 </graphic>
                             </MFXButton>
                         </buttons>
                     </ButtonBar>
-                    <TabPane fx:id="editorPane" prefHeight="493.0" prefWidth="633.0"
-                             style="-fx-background-color: #373737; -fx-inner-border: #373737; -fx-border-color: #373737;"
-                             styleClass="tabselected" stylesheets="@../../../../css/style.css"
-                             tabClosingPolicy="ALL_TABS">
+                    <TabPane fx:id="editorPane" prefHeight="493.0" prefWidth="633.0" style="-fx-background-color: #373737; -fx-inner-border: #373737; -fx-border-color: #373737;" styleClass="tabselected" stylesheets="@../../../../css/style.css" tabClosingPolicy="ALL_TABS">
 
 
                     </TabPane>
@@ -78,69 +81,37 @@
 
             </AnchorPane>
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="129.0" prefWidth="430.0">
-                <VBox prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #373737;"
-                      AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                      AnchorPane.topAnchor="0.0">
-                    <TabPane fx:id="terminalPane" prefHeight="200.0" prefWidth="200.0" style="-fx-box-border: 0000;"
-                             styleClass="floating" tabClosingPolicy="ALL_TABS" VBox.vgrow="ALWAYS"/>
+                <VBox prefHeight="500.0" prefWidth="800.0" style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <TabPane fx:id="terminalPane" prefHeight="200.0" prefWidth="200.0" style="-fx-box-border: 0000;" styleClass="floating" tabClosingPolicy="ALL_TABS" VBox.vgrow="ALWAYS" />
                 </VBox>
             </AnchorPane>
         </SplitPane>
     </AnchorPane>
     <AnchorPane maxWidth="300.0" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="300.0">
-        <TabPane fx:id="editorPane1" prefHeight="594.0" prefWidth="238.0"
-                 style="-fx-background-color: #373737; -fx-inner-border: #373737; -fx-border-color: #373737;"
-                 styleClass="tabselected" stylesheets="@../../../../css/style.css" tabClosingPolicy="ALL_TABS"
-                 AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                 AnchorPane.topAnchor="0.0">
+        <TabPane fx:id="editorPane1" prefHeight="594.0" prefWidth="238.0" style="-fx-background-color: #373737; -fx-inner-border: #373737; -fx-border-color: #373737;" styleClass="tabselected" stylesheets="@../../../../css/style.css" tabClosingPolicy="ALL_TABS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <Tab closable="false" style="-fx-background-color: #373737; -fx-text-base-color: #FFC107;" text="Message">
-                <SplitPane dividerPositions="0.7842741935483871" orientation="VERTICAL" prefHeight="398.4"
-                           prefWidth="161.6" style="-fx-background-color: #373737; -fx-box-border: 0000;">
+                <SplitPane dividerPositions="0.7842741935483871" orientation="VERTICAL" prefHeight="398.4" prefWidth="161.6" style="-fx-background-color: #373737; -fx-box-border: 0000;">
                     <ScrollPane fx:id="chatScroll" style="-fx-background-color: #373737; -fx-box-border: 0000;">
                         <AnchorPane minHeight="700.0" minWidth="300.0" style="-fx-background-color: #373737;">
-                            <VBox fx:id="chatBox" prefHeight="0.0" prefWidth="0.0"
-                                  style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0"
-                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                            <VBox fx:id="chatBox" prefHeight="0.0" prefWidth="0.0" style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         </AnchorPane>
                     </ScrollPane>
-                    <AnchorPane maxHeight="225.0" minHeight="225.0" minWidth="0.0" prefHeight="225.0" prefWidth="160.0"
-                                style="-fx-background-color: #373737; -fx-border-color: #343434;">
-                        <VBox layoutX="30.0" layoutY="-66.0" prefHeight="82.4" prefWidth="160.0"
-                              style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0"
-                              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <TextArea fx:id="messageArea" prefHeight="187.0" prefWidth="236.0"
-                                      promptText="Write your message"
-                                      style="-fx-text-fill: #ffc107; text-area-background: #373737; -fx-text-area-background: #343434; -fx-box-border: 0000;"
-                                      stylesheets="@../../../../css/style.css">
+                    <AnchorPane maxHeight="225.0" minHeight="225.0" minWidth="0.0" prefHeight="225.0" prefWidth="160.0" style="-fx-background-color: #373737; -fx-border-color: #343434;">
+                        <VBox layoutX="30.0" layoutY="-66.0" prefHeight="82.4" prefWidth="160.0" style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <TextArea fx:id="messageArea" prefHeight="187.0" prefWidth="236.0" promptText="Write your message" style="-fx-text-fill: #ffc107; text-area-background: #373737; -fx-text-area-background: #343434; -fx-box-border: 0000;" stylesheets="@../../../../css/style.css">
                                 <VBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                 </VBox.margin>
                             </TextArea>
                             <ButtonBar buttonMinWidth="25.0" minWidth="50.0" prefHeight="40.0" prefWidth="100.0">
                                 <buttons>
-                                    <MFXButton prefHeight="30.0" prefWidth="163.0"
-                                               style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;"
-                                               text="Close Chat">
+                                    <MFXButton fx:id="btnSendMessage" alignment="CENTER_RIGHT" minWidth="75.0" prefWidth="75.0" rippleColor="#ffc107" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Send">
                                         <font>
-                                            <Font size="14.0"/>
+                                            <Font size="14.0" />
                                         </font>
                                         <graphic>
-                                            <ImageView fitHeight="16.0" fitWidth="21.0" pickOnBounds="true"
-                                                       preserveRatio="true">
-                                                <Image url="@../../../../img/closeChat.png"/>
-                                            </ImageView>
-                                        </graphic>
-                                    </MFXButton>
-                                    <MFXButton fx:id="btnSendMessage" prefWidth="52.0" rippleColor="#ffc107"
-                                               style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;"
-                                               text="Send">
-                                        <font>
-                                            <Font size="14.0"/>
-                                        </font>
-                                        <graphic>
-                                            <ImageView fitHeight="21.0" fitWidth="32.0" pickOnBounds="true"
-                                                       preserveRatio="true">
-                                                <Image url="@../../../../img/sendMessage.png"/>
+                                            <ImageView fitHeight="21.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                                                <Image url="@../../../../img/sendMessage.png" />
                                             </ImageView>
                                         </graphic>
                                     </MFXButton>
@@ -151,12 +122,8 @@
                 </SplitPane>
             </Tab>
             <Tab closable="false" text="Attendees">
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
-                            style="-fx-background-color: #373737;">
-                    <VBox fx:id="attendeeList" prefHeight="534.0" prefWidth="236.0"
-                          style="-fx-background-color: #373737; -fx-alignment: top-center;"
-                          AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                          AnchorPane.topAnchor="0.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" style="-fx-background-color: #373737;">
+                    <VBox fx:id="attendeeList" prefHeight="534.0" prefWidth="236.0" style="-fx-background-color: #373737; -fx-alignment: top-center;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
                     </VBox>
                 </AnchorPane>
