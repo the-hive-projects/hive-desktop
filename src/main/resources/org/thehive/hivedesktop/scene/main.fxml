@@ -11,9 +11,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="876.0" style="-fx-background-color: #373737;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.MainScene$Controller">
@@ -65,14 +65,14 @@
                 <Pane prefHeight="40.0" prefWidth="300.0" />
             <AnchorPane prefHeight="59.0" prefWidth="300.0">
                <children>
-                  <MFXButton fx:id="btnInbox" layoutX="32.0" layoutY="45.0" onMouseClicked="#onInboxButtonClick" prefHeight="40.0" prefWidth="79.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Inbox" textFill="WHITE">
+                  <MFXButton fx:id="btnInbox" layoutX="32.0" layoutY="45.0" onMouseClicked="#onJoinSessionButtonClick" prefHeight="40.0" prefWidth="79.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Inbox" textFill="WHITE">
                      <font>
-                        <Font name="Arial Black" size="15.0" />
+                        <Font name="Arial Black" size="13.0" />
                      </font>
                   </MFXButton>
                   <MFXButton fx:id="logoutButton" layoutX="182.0" layoutY="49.0" onAction="#logout" onMouseClicked="#onCreateSessionButtonClick" prefHeight="36.0" prefWidth="73.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 30;" text="Logout" textFill="WHITE">
                      <font>
-                        <Font name="Arial Black" size="15.0" />
+                        <Font name="Arial Black" size="13.0" />
                      </font>
                   </MFXButton>
                </children>
@@ -82,54 +82,112 @@
     </left>
     <center>
         <SplitPane dividerPositions="0.5" minHeight="200.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" style="-fx-box-border: 0;" BorderPane.alignment="CENTER">
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-text-fill: #ffffff;">
-                <MFXButton fx:id="createSessionButton" layoutX="400.0" layoutY="299.0" onMouseClicked="#onCreateSessionButtonClick" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Create Session" textFill="WHITE">
-                    <font>
-                        <Font name="Arial Black" size="15.0" />
-                    </font>
-                </MFXButton>
-            <MFXTextField fx:id="txtSessionName" layoutX="171.0" layoutY="78.0" prefHeight="26.0" prefWidth="181.0" style="-fx-text-fill: #ffffff;" stylesheets="@../../../../css/style.css" unfocusedLineColor="#9f9f9f">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font></MFXTextField>
-            <MFXFilterComboBox fx:id="cmbSessionDuration" layoutX="171.0" layoutY="154.0" prefHeight="27.0" prefWidth="186.0" style="-fx-text-fill: #ffffff;" stylesheets="@../../../../css/style.css" />
-            <Label layoutX="30.0" layoutY="222.0" prefHeight="32.0" prefWidth="117.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css" text="Session Number">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font></Label>
-            <Button fx:id="btnCopyClipboard" layoutX="357.0" layoutY="223.0" mnemonicParsing="false" onAction="#handle">
-               <graphic>
-                  <ImageView fitHeight="17.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../../../img/icons8-copy-30.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Label layoutX="30.0" layoutY="152.0" prefHeight="32.0" prefWidth="117.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css" text="Session Duration">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font></Label>
-            <Label fx:id="txSessionLabel" layoutX="171.0" layoutY="229.0" prefHeight="18.0" prefWidth="165.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css" text="Label">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font></Label>
-            <Label layoutX="30.0" layoutY="75.0" prefHeight="32.0" prefWidth="117.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css" text="Session Name">
-               <font>
-                  <Font name="Arial" size="14.0" />
-               </font>
-            </Label>
-            </AnchorPane>
-            <AnchorPane maxHeight="200.0" minHeight="200.0" minWidth="0.0" prefHeight="242.0" prefWidth="554.0">
-                <MFXTextField fx:id="joinSessionIdTextField" layoutX="116.0" layoutY="88.0" prefHeight="25.0" prefWidth="236.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css" unfocusedLineColor="#9f9f9f" />
-                <MFXButton fx:id="joinSessionButton" layoutX="370.0" layoutY="80.0" onMouseClicked="#onJoinSessionButtonClick" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Join Session" textFill="WHITE">
-                    <font>
-                        <Font name="Arial Black" size="15.0" />
-                    </font>
-                </MFXButton>
-            <Label fx:id="joinInfoLabel" layoutX="129.0" layoutY="210.0" prefHeight="17.0" prefWidth="241.0" />
-            <Line endX="453.0" layoutX="101.0" startX="-100.0" stroke="WHITE" />
-            </AnchorPane>
+         <VBox alignment="CENTER">
+            <children>
+               <HBox alignment="CENTER">
+                  <children>
+                     <VBox alignment="CENTER" maxWidth="238.0" prefHeight="100.0" prefWidth="238.0">
+                        <children>
+                           <Label prefHeight="32.0" prefWidth="142.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css" text="Session Name">
+                              <font>
+                                 <Font name="Arial Black" size="14.0" />
+                              </font>
+                              <VBox.margin>
+                                 <Insets bottom="10.0" />
+                              </VBox.margin>
+                           </Label>
+                           <Label prefHeight="32.0" prefWidth="148.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css" text="Session Duration">
+                              <font>
+                                 <Font name="Arial Black" size="14.0" />
+                              </font>
+                              <VBox.margin>
+                                 <Insets bottom="10.0" top="10.0" />
+                              </VBox.margin>
+                           </Label>
+                           <Label prefHeight="32.0" prefWidth="148.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css" text="Session Number">
+                              <font>
+                                 <Font name="Arial Black" size="14.0" />
+                              </font>
+                              <VBox.margin>
+                                 <Insets top="20.0" />
+                              </VBox.margin>
+                           </Label>
+                        </children>
+                     </VBox>
+                     <VBox alignment="CENTER" maxWidth="200.0" prefHeight="190.0" prefWidth="176.0">
+                        <children>
+                           <MFXTextField fx:id="txtSessionName" prefHeight="26.0" prefWidth="181.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css" unfocusedLineColor="#9f9f9f">
+                              <font>
+                                 <Font name="Arial" size="14.0" />
+                              </font>
+                              <VBox.margin>
+                                 <Insets />
+                              </VBox.margin>
+                           </MFXTextField>
+                           <MFXFilterComboBox fx:id="cmbSessionDuration" prefHeight="27.0" prefWidth="186.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css">
+                              <VBox.margin>
+                                 <Insets top="15.0" />
+                              </VBox.margin>
+                           </MFXFilterComboBox>
+                           <Label fx:id="txSessionLabel" prefHeight="18.0" prefWidth="165.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css">
+                              <font>
+                                 <Font name="Arial" size="14.0" />
+                              </font>
+                              <VBox.margin>
+                                 <Insets top="45.0" />
+                              </VBox.margin>
+                           </Label>
+                        </children>
+                     </VBox>
+                     <Button fx:id="btnCopyClipboard" mnemonicParsing="false" onAction="#handle">
+                        <graphic>
+                           <ImageView fitHeight="17.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../../../../img/icons8-copy-30.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                           <Insets top="100.0" />
+                        </HBox.margin>
+                     </Button>
+                  </children>
+               </HBox>
+               <MFXButton fx:id="createSessionButton" onMouseClicked="#onCreateSessionButtonClick" prefHeight="35.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Create Session" textFill="WHITE">
+                  <font>
+                     <Font name="Arial Black" size="13.0" />
+                  </font>
+                  <VBox.margin>
+                     <Insets top="50.0" />
+                  </VBox.margin>
+               </MFXButton>
+            </children>
+         </VBox>
+         <VBox alignment="CENTER" maxHeight="200.0">
+            <children>
+               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="223.0">
+                  <children>
+                     <MFXTextField fx:id="joinSessionIdTextField" prefHeight="25.0" prefWidth="236.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css" unfocusedLineColor="#9f9f9f">
+                        <font>
+                           <Font name="Arial" size="12.0" />
+                        </font>
+                     </MFXTextField>
+                     <MFXButton fx:id="joinSessionButton" onMouseClicked="#onJoinSessionButtonClick" prefHeight="40.0" prefWidth="140.0" rippleColor="#ffc00e" style="-fx-background-color: #f89c0e; -fx-background-radius: 50;" text="Join Session" textFill="WHITE">
+                        <font>
+                           <Font name="Arial Black" size="13.0" />
+                        </font>
+                        <HBox.margin>
+                           <Insets left="30.0" />
+                        </HBox.margin>
+                     </MFXButton>
+                  </children>
+               </HBox>
+               <Label fx:id="joinInfoLabel" prefHeight="17.0" prefWidth="241.0" />
+            </children>
+         </VBox>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
         </SplitPane>
     </center>
 </BorderPane>
