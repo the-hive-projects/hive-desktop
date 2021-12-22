@@ -116,7 +116,7 @@
                      </VBox>
                      <VBox alignment="CENTER" maxWidth="200.0" prefHeight="190.0" prefWidth="176.0">
                         <children>
-                           <MFXTextField fx:id="txtSessionName" prefHeight="26.0" prefWidth="181.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css" unfocusedLineColor="#9f9f9f">
+                           <MFXTextField fx:id="txtSessionName" lineColor="#ffdd08" prefHeight="26.0" prefWidth="181.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css" unfocusedLineColor="#9f9f9f">
                               <font>
                                  <Font name="Arial" size="14.0" />
                               </font>
@@ -124,7 +124,7 @@
                                  <Insets />
                               </VBox.margin>
                            </MFXTextField>
-                           <MFXFilterComboBox fx:id="cmbSessionDuration" prefHeight="27.0" prefWidth="186.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css">
+                           <MFXFilterComboBox fx:id="cmbSessionDuration" lineColor="#ffdd08" prefHeight="27.0" prefWidth="186.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css">
                               <VBox.margin>
                                  <Insets top="15.0" />
                               </VBox.margin>
