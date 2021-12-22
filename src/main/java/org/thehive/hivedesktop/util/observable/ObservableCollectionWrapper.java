@@ -29,6 +29,19 @@ public class ObservableCollectionWrapper<E> extends AbstractObservable<Collectio
 
     @SuppressWarnings("unchecked")
     @Override
+    public void addAll(Collection<? extends E> c) {
+        collection.addAll(c);
+        c.forEach((e ->
+                observerIterator()
+                        .forEachRemaining(o -> {
+                            o.onChanged(collection);
+                            if (o instanceof CollectionObserver)
+                                ((CollectionObserver) o).onAdded(e);
+                        })));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public void remove(E e) {
         collection.remove(e);
         observerIterator()
@@ -39,11 +52,7 @@ public class ObservableCollectionWrapper<E> extends AbstractObservable<Collectio
                 });
     }
 
-    @Override
-    public int size() {
-        return collection.size();
-    }
-
+    @SuppressWarnings("unchecked")
     @Override
     public void clear() {
         var copyCollection = new ArrayList<>(collection);
@@ -54,6 +63,11 @@ public class ObservableCollectionWrapper<E> extends AbstractObservable<Collectio
                     if (o instanceof CollectionObserver)
                         ((CollectionObserver) o).onCleared(copyCollection);
                 });
+    }
+
+    @Override
+    public int size() {
+        return collection.size();
     }
 
     @Override

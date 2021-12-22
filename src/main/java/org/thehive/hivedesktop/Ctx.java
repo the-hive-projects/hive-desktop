@@ -15,6 +15,8 @@ import org.thehive.hiveserverclient.net.websocket.UrlEndpointResolverImpl;
 import org.thehive.hiveserverclient.net.websocket.WebSocketClient;
 import org.thehive.hiveserverclient.net.websocket.WebSocketClientImpl;
 import org.thehive.hiveserverclient.payload.ChatMessage;
+import org.thehive.hiveserverclient.payload.CodeBroadcastingInformation;
+import org.thehive.hiveserverclient.payload.CodeReceivingRequest;
 import org.thehive.hiveserverclient.service.*;
 
 import java.util.concurrent.ExecutorService;
@@ -43,9 +45,11 @@ public class Ctx {
         SessionClient sessionClient = new SessionClientImpl(Consts.SERVER_SESSION_HTTP_URI, objectMapper, httpClient, executorService);
         this.sessionService = new SessionServiceImpl(sessionClient);
         ImageClient imageClient = new ImageClientImpl(Consts.SERVER_IMAGE_HTTP_URI, objectMapper, httpClient, executorService);
-        this.imageService = new ImageServiceImpl(imageClient);
+        this.imageService = new CachedImageService(imageClient, executorService);
         UrlEndpointResolver urlEndpointResolver = new UrlEndpointResolverImpl(Consts.SERVER_SESSION_WS_STOMP_SUBSCRIPTION_ENDPOINT, Consts.SERVER_WS_STOMP_DESTINATION_PREFIX);
         urlEndpointResolver.addDestinationUrlEndpoint(ChatMessage.class, Consts.SERVER_SESSION_WS_STOMP_CHAT_MESSAGE_PAYLOAD_ENDPOINT);
+        urlEndpointResolver.addDestinationUrlEndpoint(CodeReceivingRequest.class, Consts.SERVER_SESSION_WS_STOMP_CODE_RECEIVING_REQUEST_PAYLOAD_ENDPOINT);
+        urlEndpointResolver.addDestinationUrlEndpoint(CodeBroadcastingInformation.class, Consts.SERVER_SESSION_WS_STOMP_CODE_BROADCASTING_INFORMATION_PAYLOAD_ENDPOINT);
         var wsClient = new StandardWebSocketClient();
         var wsStompClient = new WebSocketStompClient(wsClient);
         wsStompClient.setMessageConverter(new MappingJackson2MessageConverter());

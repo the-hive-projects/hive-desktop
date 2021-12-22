@@ -5,12 +5,11 @@ import com.kodedu.terminalfx.TerminalTab;
 import com.kodedu.terminalfx.config.TerminalConfig;
 import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
+import javafx.event.Event;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -28,10 +27,7 @@ import org.thehive.hiveserverclient.net.websocket.header.AppStompHeaders;
 import org.thehive.hiveserverclient.net.websocket.header.PayloadType;
 import org.thehive.hiveserverclient.net.websocket.subscription.StompSubscription;
 import org.thehive.hiveserverclient.net.websocket.subscription.SubscriptionListener;
-import org.thehive.hiveserverclient.payload.ChatMessage;
-import org.thehive.hiveserverclient.payload.LiveSessionInformation;
-import org.thehive.hiveserverclient.payload.ParticipationNotification;
-import org.thehive.hiveserverclient.payload.Payload;
+import org.thehive.hiveserverclient.payload.*;
 
 import java.io.*;
 import java.util.*;
@@ -49,8 +45,10 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         private static final Class<? extends AppScene> SCENE_TYPE = EditorScene.class;
         private final ObservableCollection<ChatMessageComponent> chatMessageComponentCollection;
+        private final ObservableCollection<String> receiverCollection;
         private final ObservableMap<String, AttendeeComponent> attendeeComponentMap;
         private final Map<String, Tab> usernameTabMap;
+
         Timer timer = new Timer();
         @FXML
         ScrollPane chatScroll;
@@ -98,6 +96,10 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                     ExecutionUtils.runOnUiThread(() -> chatBox.getChildren().add(chatMessageComponent.getParentNode()));
                 }
             });
+            this.receiverCollection = new ObservableCollectionWrapper<>(Collections.synchronizedList(new ArrayList<>()));
+            receiverCollection.registerObserver(receivers -> {
+                // TODO: 12/22/2021 update receiver list
+            });
             this.attendeeComponentMap = new ObservableMapWrapper<>(new HashMap<>());
             attendeeComponentMap.registerObserver(new MapObserverAdapter<>() {
                 @Override
@@ -143,13 +145,11 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Python Files", "*.py"));
             fileChooser.setInitialFileName("code");
             fileChooser.setInitialDirectory(file);7*/
-
             // fileChooser.showSaveDialog(this.messageArea.getScene().getWindow());
             var currentTabIndex = editorPane.getSelectionModel().getSelectedIndex();
             MonacoFX currentEditor = (MonacoFX) editorPane.getTabs().get(currentTabIndex).getContent();
 
             var currentEditorContent = currentEditor.getEditor().getDocument().getText();
-            //System.out.println(currentEditorContent);
 
             var codeDoc = currentEditor.getEditor().getDocument();
             codeDoc.setLanguage("python");
@@ -165,20 +165,13 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             btnSaveCode.setMinWidth(300);
             btnSaveCode.setText("code.py Saved Succesfully to Desktop!");
 
-
             timer.schedule(new TimerTask() {
-
                 @Override
                 public void run() {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            btnSaveCode.setText("Save");
-                            btnSaveCode.setMinWidth(0);
-
-                        }
+                    ExecutionUtils.runOnUiThread(() -> {
+                        btnSaveCode.setText("Save");
+                        btnSaveCode.setMinWidth(0);
                     });
-
                 }
             }, 5000);
 
@@ -186,8 +179,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
         @FXML
         private MonacoFX setEditor(String language, String theme) {
-            MonacoFX monacoFXeditor = new MonacoFX();
-            monacoFXeditor.getEditor().getDocument().setText(
+            MonacoFX monacoFxEditor = new MonacoFX();
+            monacoFxEditor.getEditor().getDocument().setText(
                     "num = float(input(\"Enter a number: \"))\r" +
                             "if num > 0:\n" +
                             "   print(\"Positive number\")\n" +
@@ -196,10 +189,9 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             "else:\n" +
                             "   print(\"Negative number\")\n");
             // use a predefined language like 'c'
-            monacoFXeditor.getEditor().setCurrentLanguage(language);
-            monacoFXeditor.getEditor().setCurrentTheme(theme);
-
-            return monacoFXeditor;
+            monacoFxEditor.getEditor().setCurrentLanguage(language);
+            monacoFxEditor.getEditor().setCurrentTheme(theme);
+            return monacoFxEditor;
         }
 
         private Tab addTab(String tabName) {
@@ -208,11 +200,28 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 return tab;
             tab = new Tab(tabName);
             tab.setId(tabName);
-            var settedEditor = setEditor("python", "vs-dark");
-            tab.setContent(settedEditor);
-            editorPane.getTabs().add(tab);
+            var editor = setEditor("python", "vs-dark");
+            tab.setContent(editor);
             tab.setClosable(false);
             usernameTabMap.put(tabName, tab);
+            var userTab = tabName.equals(Authentication.INSTANCE.getUsername());
+            if (!userTab)
+                tab.getContent().addEventFilter(EventType.ROOT, Event::consume);
+            else
+                ((MonacoFX) tab.getContent()).getEditor().getDocument().textProperty()
+                        .addListener((observableValue, s, t1) -> {
+                            if (receiverCollection.size() > 0) {
+                                var payload = new CodeBroadcastingInformation();
+                                payload.setText(t1);
+                                Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(payload);
+                            }
+                        });
+            if (userTab) {
+                editorPane.getTabs().add(0, tab);
+                if (editorPane.getSelectionModel().getSelectedIndex() != 0)
+                    editorPane.getSelectionModel().select(0);
+            } else
+                editorPane.getTabs().add(tab);
             return tab;
         }
 
@@ -245,7 +254,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @FXML
         private void sendMessage() {
             String message = messageArea.getText();
-            if(message.isEmpty())
+            if (message.isEmpty())
                 return;
             var chatMessage = new ChatMessage();
             messageArea.clear();
@@ -315,6 +324,31 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             });
             btnSendMessage.setOnMouseClicked(mouseEvent -> sendMessage());
             btnSubmit.setDisable(true);
+
+            editorPane.getSelectionModel().selectedItemProperty().addListener(
+                    (ov, t, t1) -> {
+                        if (t == null)
+                            return;
+                        var preTabId = t.getId();
+                        var newTabId = t1.getId();
+                        var username = Authentication.INSTANCE.getUsername();
+                        if (!preTabId.equals(username)) {
+                            var payload = new CodeReceivingRequest();
+                            payload.setBroadcaster(preTabId);
+                            payload.setStart(false);
+                            Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get()
+                                    .send(payload);
+                        }
+                        if (!newTabId.equals(username)) {
+                            var payload = new CodeReceivingRequest();
+                            payload.setBroadcaster(newTabId);
+                            payload.setStart(true);
+                            Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get()
+                                    .send(payload);
+                        }
+                    }
+            );
+
         }
 
         @Override
@@ -388,6 +422,21 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             } else {
                                 attendeeComponentMap.remove(participationNotification.getParticipant());
                             }
+                        } else if (appStompHeaders.getPayloadType() == PayloadType.CODE_BROADCASTING_NOTIFICATION) {
+                            var codeBroadcastingNotification = (CodeBroadcastingNotification) payload;
+                            receiverCollection.clear();
+                            receiverCollection.addAll(codeBroadcastingNotification.getReceivers());
+                            if (codeBroadcastingNotification.getReceivers().size() > 0) {
+                                var sendPayload = new CodeBroadcastingInformation();
+                                var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
+                                var text = ((MonacoFX) tab.getContent()).getEditor().getDocument().getText();
+                                sendPayload.setText(text);
+                                Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(sendPayload);
+                            }
+                        } else if (appStompHeaders.getPayloadType() == PayloadType.CODE_BROADCASTING_INFORMATION) {
+                            var codeBroadcastingInformation = (CodeBroadcastingInformation) payload;
+                            var tab = usernameTabMap.get(codeBroadcastingInformation.getBroadcaster());
+                            ExecutionUtils.runOnUiThread(() -> ((MonacoFX) tab.getContent()).getEditor().getDocument().setText(codeBroadcastingInformation.getText()));
                         }
                     }
 
