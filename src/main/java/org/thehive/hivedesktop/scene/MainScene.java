@@ -31,7 +31,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Map;
 
-public class MainScene extends FxmlSingleLoadedScene {
+public class MainScene extends FxmlMultipleLoadedScene {
 
     private static final String FXML_FILENAME = "main.fxml";
 
@@ -61,6 +61,9 @@ public class MainScene extends FxmlSingleLoadedScene {
 
         @FXML
         private MFXButton joinSessionButton;
+
+        @FXML
+        private MFXButton btnInbox;
 
         @FXML
         private MFXTextField joinSessionIdTextField;
@@ -113,6 +116,8 @@ public class MainScene extends FxmlSingleLoadedScene {
                 stage = (Stage) mainPane.getScene().getWindow();
                 System.out.println("You successfully logged out!");
                 Authentication.INSTANCE.unauthenticate();
+                if (Ctx.getInstance().webSocketService.hasConnection())
+                    Ctx.getInstance().webSocketService.getConnection().get().disconnect();
                 Ctx.getInstance().sceneManager.load(SignInScene.class);
             }
         }
@@ -155,6 +160,12 @@ public class MainScene extends FxmlSingleLoadedScene {
         @Override
         public void onUnload() {
             log.info("MainScene#onUnload");
+        }
+
+        @FXML
+        void onInboxButtonClick(MouseEvent event) {
+            log.info("Button clicked, #onInboxButtonClick");
+            Ctx.getInstance().sceneManager.load(InboxScene.class);
         }
 
         @FXML

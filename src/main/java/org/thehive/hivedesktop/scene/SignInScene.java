@@ -22,7 +22,6 @@ import java.io.File;
 import java.util.Map;
 import java.util.StringJoiner;
 import java.util.Timer;
-import java.util.TimerTask;
 
 public class SignInScene extends FxmlSingleLoadedScene {
 
@@ -102,52 +101,39 @@ public class SignInScene extends FxmlSingleLoadedScene {
             lblLoading.setGraphic(view);
             lblLoading.setVisible(true);
 
-            timer.schedule(new TimerTask() {
-
-                @Override
-                public void run() {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            Ctx.getInstance().userService.signIn(username, password, result -> {
-                                if (result.status().isSuccess()) {
-                                    ExecutionUtils.runOnUiThread(() -> infoLabelHandler.setSuccessText("Signed-in successfully"));
-                                    ExecutionUtils.scheduleOnUiThread(() -> {
-                                        Ctx.getInstance().sceneManager.load(MainScene.class);
-                                        signInButton.setDisable(false);
-                                    }, Consts.INFO_DELAY_MILLIS);
-                                    lblLoading.setVisible(false);
-                                } else if (result.status().isError()) {
-                                    lblLoading.setVisible(false);
-                                    if (result.message().isPresent()) {
-                                        var warningTextStringJoiner = new StringJoiner(".\n");
-                                        MessageUtils.parseMessageList(result.message().get(), ",")
-                                                .forEach(warningTextStringJoiner::add);
-                                        ExecutionUtils.runOnUiThread(() -> {
-                                            infoLabelHandler.setWaringText(warningTextStringJoiner.toString());
-                                            signInButton.setDisable(false);
-                                        });
-                                    } else {
-                                        ExecutionUtils.runOnUiThread(() -> {
-                                            infoLabelHandler.setWaringText("Unknown error");
-                                            signInButton.setDisable(false);
-                                        });
-                                    }
-                                } else {
-                                    ExecutionUtils.runOnUiThread(() -> {
-                                        infoLabelHandler.setWaringText(result.message().isPresent() ? result.message().get() : "Unknown fail");
-                                        signInButton.setDisable(false);
-                                    });
-                                }
-
+            Platform.runLater(() ->
+                    Ctx.getInstance().userService.signIn(username, password, result -> {
+                        if (result.status().isSuccess()) {
+                            ExecutionUtils.runOnUiThread(() -> infoLabelHandler.setSuccessText("Signed-in successfully"));
+                            ExecutionUtils.scheduleOnUiThread(() -> {
+                                Ctx.getInstance().sceneManager.load(MainScene.class);
+                                signInButton.setDisable(false);
+                            }, Consts.INFO_DELAY_MILLIS);
+                            lblLoading.setVisible(false);
+                        } else if (result.status().isError()) {
+                            lblLoading.setVisible(false);
+                            if (result.message().isPresent()) {
+                                var warningTextStringJoiner = new StringJoiner(".\n");
+                                MessageUtils.parseMessageList(result.message().get(), ",")
+                                        .forEach(warningTextStringJoiner::add);
+                                ExecutionUtils.runOnUiThread(() -> {
+                                    infoLabelHandler.setWaringText(warningTextStringJoiner.toString());
+                                    signInButton.setDisable(false);
+                                });
+                            } else {
+                                ExecutionUtils.runOnUiThread(() -> {
+                                    infoLabelHandler.setWaringText("Unknown error");
+                                    signInButton.setDisable(false);
+                                });
+                            }
+                        } else {
+                            ExecutionUtils.runOnUiThread(() -> {
+                                infoLabelHandler.setWaringText(result.message().isPresent() ? result.message().get() : "Unknown fail");
+                                signInButton.setDisable(false);
                             });
-
-
                         }
-                    });
 
-                }
-            }, 3000);
+                    }));
 
 
         }

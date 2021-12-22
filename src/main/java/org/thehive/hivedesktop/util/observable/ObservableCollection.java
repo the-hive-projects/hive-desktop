@@ -6,11 +6,13 @@ public interface ObservableCollection<E> extends Observable<Collection<E>>, Iter
 
     void add(E e);
 
+    void addAll(Collection<? extends E> c);
+
     void remove(E e);
 
-    int size();
-
     void clear();
+
+    int size();
 
     boolean contains(E e);
 
