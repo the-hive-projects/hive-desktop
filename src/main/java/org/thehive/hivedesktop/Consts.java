@@ -28,7 +28,7 @@ public class Consts {
     public static final Color INFO_LABEL_SUCCESS_COLOR = Color.GREEN;
     public static final Color INFO_LABEL_ERROR_COLOR = Color.RED;
 
-    public static final long INFO_DELAY_MILLIS = 4000L;
+    public static final long SCENE_DELAY_MILLIS = 4000L;
 
     public static final String EMPTY_STRING = "";
 

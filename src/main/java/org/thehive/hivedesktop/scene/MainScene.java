@@ -159,7 +159,7 @@ public class MainScene extends FxmlMultipleLoadedScene {
                     });
                 }
             });
-            if(!Ctx.getInstance().webSocketService.hasConnection())
+            if (!Ctx.getInstance().webSocketService.hasConnection())
                 Ctx.getInstance().webSocketService.connect(new WebSocketLoggingListener(log));
         }
 

@@ -17,8 +17,10 @@ import org.thehive.hivedesktop.util.ExecutionUtils;
 import org.thehive.hivedesktop.util.InfoLabelHandler;
 import org.thehive.hiveserverclient.model.User;
 import org.thehive.hiveserverclient.model.UserInfo;
+import org.thehive.hiveserverclient.util.MessageUtils;
 
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SignUpScene extends FxmlSingleLoadedScene {
 
@@ -104,7 +106,7 @@ public class SignUpScene extends FxmlSingleLoadedScene {
             var lastname = surnameTextField.getText();
             var userInfo = new UserInfo();
 
-            if(username.isEmpty() || password.isEmpty() || email.isEmpty() || firstname.isEmpty()|| lastname.isEmpty()){
+            if (username.isEmpty() || password.isEmpty() || email.isEmpty() || firstname.isEmpty() || lastname.isEmpty()) {
                 infoLabelHandler.setWaringText("Empty field");
                 return;
             }
@@ -133,10 +135,18 @@ public class SignUpScene extends FxmlSingleLoadedScene {
                         nameTextField.clear();
                         surnameTextField.clear();
                         signUpButton.setDisable(false);
-                    }, Consts.INFO_DELAY_MILLIS);
+                    }, Consts.SCENE_DELAY_MILLIS);
                 } else if (result.status().isError()) {
+                    final String errorMessage;
+                    if (result.message().isPresent()) {
+                        var pairs = MessageUtils.parsePairedMessageList(result.message().get(), ",", ":", "[", "]");
+                        errorMessage = pairs.stream()
+                                .map(s -> s.value + "\n")
+                                .collect(Collectors.joining());
+                    } else
+                        errorMessage = "Unknown error";
                     ExecutionUtils.runOnUiThread(() -> {
-                        infoLabelHandler.setWaringText(result.message().isPresent() ? result.message().get() : "Unknown error");
+                        infoLabelHandler.setWaringText(errorMessage);
                         signUpButton.setDisable(false);
                     });
                 } else {

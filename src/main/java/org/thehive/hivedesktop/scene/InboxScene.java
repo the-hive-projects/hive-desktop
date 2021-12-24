@@ -150,7 +150,6 @@ public class InboxScene extends FxmlMultipleLoadedScene {
 
 
         public JFXListCell<Label> addSubmissionInPane(Pane pane, Submission submission) {
-
             JFXListCell<Label> listCell = new JFXListCell<>();
             listCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px;");
             Image img = new Image("https://avatars.githubusercontent.com/u/93194123?s=200&v=4");
@@ -180,7 +179,6 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         public JFXListCell<Label> addSessionInPane(Pane pane, Session session) {
             JFXListCell<Label> listCell = new JFXListCell<>();
             listCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px;");
-            // TODO: 12/20/2021 only load once in static context
             Image img = new Image("https://avatars.githubusercontent.com/u/93194123?s=200&v=4");
             ImageView view = new ImageView(img);
             view.setFitHeight(20);
@@ -201,7 +199,6 @@ public class InboxScene extends FxmlMultipleLoadedScene {
 
         @Override
         public void onStart() {
-
 
             TerminalConfig darkConfig = new TerminalConfig();
             darkConfig.setBackgroundColor(Color.web("#1e1e1e"));

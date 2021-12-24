@@ -12,7 +12,6 @@ import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -157,7 +156,7 @@ public class SignInScene extends FxmlSingleLoadedScene {
                         Ctx.getInstance().sceneManager.load(MainScene.class);
                         signInButton.setDisable(false);
                         lblLoading.setVisible(false);
-                    }, Consts.INFO_DELAY_MILLIS);
+                    }, Consts.SCENE_DELAY_MILLIS);
 
                 } else if (result.status().isError()) {
                     lblLoading.setVisible(false);
