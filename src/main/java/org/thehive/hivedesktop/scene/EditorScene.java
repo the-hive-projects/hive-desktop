@@ -18,6 +18,7 @@ import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.component.AttendeeComponent;
 import org.thehive.hivedesktop.component.ChatMessageComponent;
+import org.thehive.hivedesktop.util.CountdownTimer;
 import org.thehive.hivedesktop.util.ExecutionUtils;
 import org.thehive.hivedesktop.util.observable.*;
 import org.thehive.hiveserverclient.Authentication;
@@ -43,7 +44,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
     @Slf4j
     public static class Controller extends AbstractController {
 
-        private static final String DEFAULT_CODE="num = float(input(\"Enter a number: \"))\r" +
+        private static final String DEFAULT_CODE = "num = float(input(\"Enter a number: \"))\r" +
                 "if num > 0:\n" +
                 "   print(\"Positive number\")\n" +
                 "elif num == 0:\n" +
@@ -58,8 +59,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         private final ObservableUnit<Session> session;
         private final ObservableUnit<Submission> submission;
         private final Map<String, Tab> usernameTabMap;
-
-        Timer timer = new Timer();
+        private final CountdownTimer countdownTimer;
+        private final Timer timer = new Timer();
 
         @FXML
         ScrollPane chatScroll;
@@ -154,13 +155,24 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 }
             });
 
+            this.countdownTimer=new CountdownTimer(1000L, r -> {
+                ExecutionUtils.runOnUiThread(() ->{
+                    var h = r / 3600;
+                    var m = (r / 60) % 60;
+                    var s = r % 60;
+                    labelTimer.setText(String.format("%02d",h) + ":" + String.format("%02d",m) + ":" +String.format("%02d",s));
+                });
+            },null);
+
             this.session = new ObservableUnit<>();
             session.registerObserver(s -> {
                 ExecutionUtils.runOnUiThread(() -> {
                     if (s == null)
                         Ctx.getInstance().sceneManager.load(MainScene.class);
-                    else
+                    else{
                         labelSessionName.setText(s.getName());
+                        countdownTimer.start(s.getCreationTime()+s.getDuration());
+                    }
                 });
             });
 
@@ -178,6 +190,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                         btnUndo.setDisable(false);
                     });
             });
+
+
 
         }
 
@@ -261,7 +275,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             return tab;
         }
 
-        private void setTabContent(String content){
+        private void setTabContent(String content) {
             var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
             if (tab == null)
                 tab = addTab(Authentication.INSTANCE.getUsername());
@@ -331,39 +345,12 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @FXML
         void onBtnUndoClick(MouseEvent event) {
             log.info("onBtnUndoClick button clicked");
-            var s=submission.get();
-            if(s==null)
+            var s = submission.get();
+            if (s == null)
                 return;
             var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
             var content = s.getContent();
             ((MonacoFX) tab.getContent()).getEditor().getDocument().setText(content);
-        }
-
-        private void startTimer(long creationTime, long duration) {
-            new Thread(new Runnable() {
-
-                long timeMs;
-
-                @Override
-                public void run() {
-                    this.timeMs = (creationTime + duration - System.currentTimeMillis()) / 1000L;
-                    while (true) {
-                        try {
-                            Thread.sleep(1000L);
-                            timeMs--;
-                            var h = timeMs / 3600;
-                            System.out.println(timeMs + " / " + 3600 + "=" + h);
-                            var m = (timeMs / 60) % 60;
-                            var s = timeMs % 60;
-                            ExecutionUtils.runOnUiThread(() -> {
-                                labelTimer.setText(h + ":" + m + ":" + s);
-                            });
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }).start();
         }
 
         @Override
@@ -451,6 +438,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
                     }
 
+                    @SuppressWarnings("OptionalGetWithoutIsPresent")
                     @Override
                     public void onReceive(AppStompHeaders appStompHeaders, Payload payload) {
                         if (appStompHeaders.getPayloadType() == PayloadType.CHAT_MESSAGE) {
@@ -469,22 +457,18 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                         } else if (appStompHeaders.getPayloadType() == PayloadType.LIVE_SESSION_INFORMATION) {
                             var liveSessionInfo = (LiveSessionInformation) payload;
                             attendeeComponentMap.clear();
-                            liveSessionInfo.getParticipants().parallelStream().forEach(p -> {
-                                Ctx.getInstance().imageService.take(p, result -> {
-                                    if (result.status().isSuccess()) {
-                                        attendeeComponentMap.add(p, new AttendeeComponent(p, result.response().get()));
-                                    } else {
-                                        log.warn("Profile image cannot be taken");
-                                    }
-                                });
-                            });
-                            startTimer(liveSessionInfo.getCreatedAt(), liveSessionInfo.getDuration());
+                            liveSessionInfo.getParticipants().parallelStream().forEach(p ->
+                                    Ctx.getInstance().imageService.take(p, result -> attendeeComponentMap.add(p,
+                                            new AttendeeComponent(p, result.response().get(), session.getUser().getUsername().equals(p)))));
                         } else if (appStompHeaders.getPayloadType() == PayloadType.PARTICIPATION_NOTIFICATION) {
                             var participationNotification = (ParticipationNotification) payload;
                             if (participationNotification.isJoined()) {
                                 Ctx.getInstance().imageService.take(participationNotification.getParticipant(), result -> {
                                     if (result.status().isSuccess()) {
-                                        attendeeComponentMap.add(participationNotification.getParticipant(), new AttendeeComponent(participationNotification.getParticipant(), result.response().get()));
+                                        attendeeComponentMap.add(
+                                                participationNotification.getParticipant(),
+                                                new AttendeeComponent(participationNotification.getParticipant(), result.response().get(),
+                                                        session.getUser().getUsername().equals(participationNotification.getParticipant())));
                                     } else {
                                         log.warn("Profile image cannot be taken");
                                     }
