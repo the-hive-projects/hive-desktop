@@ -31,13 +31,17 @@ public class ObservableCollectionWrapper<E> extends AbstractObservable<Collectio
     @Override
     public void addAll(Collection<? extends E> c) {
         collection.addAll(c);
-        c.forEach((e ->
-                observerIterator()
-                        .forEachRemaining(o -> {
-                            o.onChanged(collection);
-                            if (o instanceof CollectionObserver)
-                                ((CollectionObserver) o).onAdded(e);
-                        })));
+        if(c.isEmpty())
+            observerIterator()
+                    .forEachRemaining(o -> o.onChanged(collection));
+        else
+            c.forEach((e ->
+                    observerIterator()
+                            .forEachRemaining(o -> {
+                                o.onChanged(collection);
+                                if (o instanceof CollectionObserver)
+                                    ((CollectionObserver) o).onAdded(e);
+                            })));
     }
 
     @SuppressWarnings("unchecked")

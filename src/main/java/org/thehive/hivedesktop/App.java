@@ -27,6 +27,8 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
 
+        stage.getIcons().add(Consts.LOGO);
+
         Ctx.getInstance().sceneManager.setStage(stage);
         Ctx.getInstance().sceneManager.add(new SignInScene());
         Ctx.getInstance().sceneManager.add(new SignUpScene());
@@ -35,6 +37,9 @@ public class App extends Application {
         Ctx.getInstance().sceneManager.add(new InboxScene());
         Ctx.getInstance().sceneManager.load(SignInScene.class);
         stage.show();
+
+
+
     }
 
 }

@@ -42,7 +42,7 @@
                            <children>
                               <ScrollPane prefHeight="448.0" prefWidth="198.4" style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <content>
-                                    <VBox fx:id="createdListVBox" minHeight="1000.0" prefHeight="216.0" prefWidth="199.0" style="-fx-background-color: #373737; -fx-alignment: top-center;" />
+                                    <VBox fx:id="sessionListBox" minHeight="1000.0" prefHeight="216.0" prefWidth="199.0" style="-fx-background-color: #373737; -fx-alignment: top-center;" />
                                  </content>
                               </ScrollPane>
                            </children>
@@ -78,7 +78,7 @@
                   </MFXButton>
                </top>
             </BorderPane>
-            <SplitPane fx:id="rightSplitPane" dividerPositions="0.5" orientation="VERTICAL" prefHeight="585.6" prefWidth="767.2" style="-fx-scale-shape: center; -fx-background-color: #373737; -fx-box-border: 0000;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <SplitPane fx:id="rightSplitPane" dividerPositions="0.5" orientation="VERTICAL" prefHeight="585.6" prefWidth="767.2" style="-fx-scale-shape: center; -fx-background-color: #373737; -fx-box-border: 0000;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <items>
                 <AnchorPane minHeight="300.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                      <children>

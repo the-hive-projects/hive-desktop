@@ -131,8 +131,10 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
             this.receiverCollection = new ObservableCollectionWrapper<>(Collections.synchronizedList(new ArrayList<>()));
             receiverCollection.registerObserver(receivers -> {
-                // TODO: 12/22/2021 update receiver list
-            });
+                        ExecutionUtils.runOnUiThread(() ->
+                                labelNumberofViewers.setText(String.valueOf(receivers.size())));
+                    }
+            );
 
             this.attendeeComponentMap = new ObservableMapWrapper<>(new HashMap<>());
             attendeeComponentMap.registerObserver(new MapObserverAdapter<>() {

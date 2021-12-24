@@ -1,6 +1,9 @@
 package org.thehive.hivedesktop;
 
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+
+import java.io.File;
 
 public class Consts {
 
@@ -31,5 +34,7 @@ public class Consts {
     public static final long SCENE_DELAY_MILLIS = 4000L;
 
     public static final String EMPTY_STRING = "";
+
+    public static final Image LOGO=new Image(new File("src/main/resources/img/logo2.png").toURI().toString());
 
 }

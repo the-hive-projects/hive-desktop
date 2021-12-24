@@ -8,10 +8,7 @@ import eu.mihosoft.monacofx.MonacoFX;
 import io.github.palexdev.materialfx.controls.MFXButton;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.Label;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -22,6 +19,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
 import org.thehive.hivedesktop.ProfileDialogView;
 import org.thehive.hivedesktop.util.ExecutionUtils;
@@ -30,7 +28,10 @@ import org.thehive.hiveserverclient.model.Submission;
 import org.thehive.hiveserverclient.payload.ChatMessage;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
 public class InboxScene extends FxmlMultipleLoadedScene {
@@ -39,8 +40,6 @@ public class InboxScene extends FxmlMultipleLoadedScene {
 
     public InboxScene() {
         super(FXML_FILENAME);
-
-
     }
 
     @Slf4j
@@ -75,6 +74,15 @@ public class InboxScene extends FxmlMultipleLoadedScene {
 
         @FXML
         private Hyperlink profileTab;
+
+        @FXML
+        private Label labelSessionName;
+
+        @FXML
+        private Label labelSessionTime;
+
+        @FXML
+        private Label labelSessionOwner;
 
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
@@ -152,13 +160,11 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         public JFXListCell<Label> addSubmissionInPane(Pane pane, Submission submission) {
             JFXListCell<Label> listCell = new JFXListCell<>();
             listCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px;");
-            Image img = new Image("https://avatars.githubusercontent.com/u/93194123?s=200&v=4");
-            ImageView view = new ImageView(img);
+            ImageView view = new ImageView(Consts.LOGO);
             view.setFitHeight(20);
             view.setFitWidth(20);
             Label sessionCode = new Label();
-            //TODO add session code from db
-            sessionCode.setText(submission.getSession().getName());
+            sessionCode.setText(!submission.getSession().getName().isEmpty() ? submission.getSession().getName() : "[none]");
             sessionCode.setGraphic(view);
             sessionCode.setGraphicTextGap(3);
             listCell.setGraphic(sessionCode);
@@ -166,35 +172,82 @@ public class InboxScene extends FxmlMultipleLoadedScene {
             listCell.setMinHeight(44);
             pane.getChildren().addAll(listCell);
             listCell.setOnMouseClicked(mouseEvent -> {
-                rightSplitPane.setVisible(true);
                 setCode(codeEditor, "python", "vs-dark", submission.getContent());
-                //TODO user info
-                // profileTab = createUser();
-
+                setSessionLabels(submission.getSession());
+                setSubmissionLabels(submission);
+                rightSplitPane.setVisible(true);
             });
 
             return listCell;
         }
 
-        public JFXListCell<Label> addSessionInPane(Pane pane, Session session) {
-            JFXListCell<Label> listCell = new JFXListCell<>();
-            listCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px;");
-            Image img = new Image("https://avatars.githubusercontent.com/u/93194123?s=200&v=4");
-            ImageView view = new ImageView(img);
+        public Accordion createAccordionBox(Session session) {
+            Accordion accordionCell = new Accordion();
+            accordionCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px; -fx-margin-left:15px;");
+            ImageView view = new ImageView(Consts.LOGO);
             view.setFitHeight(20);
             view.setFitWidth(20);
+            accordionCell.setMinWidth(165);
+            accordionCell.setMaxWidth(165);
+            VBox insideAccordion = new VBox(5);
+            insideAccordion.setStyle("-fx-background-color:#373737;");
+            TitledPane p1 = new TitledPane();
+            p1.setText(!session.getName().isEmpty()? session.getName():"[none]");
+            p1.setGraphic(view);
+            Ctx.getInstance().submissionService.takeAllBySession(session.getId(), appResponse -> {
+                if (appResponse.status().isSuccess()) {
+                    var list = new ArrayList<JFXListCell<Label>>();
+                    for (var s : appResponse.response().get())
+                        list.add(createBox(s));
+                    ExecutionUtils.runOnUiThread(() ->
+                            insideAccordion.getChildren().addAll(list.toArray(new JFXListCell[0])));
+                }
+            });
+            p1.setContent(insideAccordion);
+            p1.setGraphicTextGap(3);
+            accordionCell.getPanes().addAll(p1);
+            sessionListBox.getChildren().addAll(accordionCell);
+            accordionCell.setOnMouseClicked(event -> setSessionLabels(session));
+            return accordionCell;
+        }
+
+        public JFXListCell<Label> createBox(Submission submission) {
+
+            JFXListCell<Label> listCell = new JFXListCell<>();
+            listCell.setStyle("-fx-background-color:#ffc107; -fx-background-radius:15; -fx-margin: 15px;");
+            ImageView view = new ImageView(Consts.LOGO);
+            view.setFitHeight(20);
+            view.setFitWidth(20);
+
             Label sessionCode = new Label();
-            sessionCode.setText(session.getName());
+
+            //TODO add session code from db
+            sessionCode.setText(submission.getUser().getUsername());
             sessionCode.setGraphic(view);
             sessionCode.setGraphicTextGap(3);
+
             listCell.setGraphic(sessionCode);
             listCell.setMinWidth(165);
             listCell.setMinHeight(44);
-            pane.getChildren().addAll(listCell);
-            listCell.setOnMouseClicked(mouseEvent -> {
 
+            listCell.setOnMouseClicked(mouseEvent -> {
+                setCode(codeEditor, "python", "vs-dark", submission.getContent());
+                setSessionLabels(submission.getSession());
+                setSubmissionLabels(submission);
+                rightSplitPane.setVisible(true);
             });
+
             return listCell;
+        }
+
+        private void setSessionLabels(Session session) {
+            labelSessionName.setText(!session.getName().isEmpty() ? session.getName() : "[none]");
+            labelSessionOwner.setText(session.getUser().getUsername());
+            labelSessionTime.setText(DateFormat.getDateInstance().format(new Date(session.getCreationTime())) + " - " + session.getDuration() / 60000 + " min");
+        }
+
+        private void setSubmissionLabels(Submission submission) {
+            profileTab.setText(submission.getUser().getUsername());
         }
 
         @Override
@@ -250,9 +303,7 @@ public class InboxScene extends FxmlMultipleLoadedScene {
             Ctx.getInstance().sessionService.takeAll(appResponse ->
                     Arrays.stream(appResponse.response().get())
                             .parallel()
-                            .forEach(s -> {
-
-                            }));
+                            .forEach(s -> ExecutionUtils.runOnUiThread(() -> createAccordionBox(s))));
         }
 
         @Override
