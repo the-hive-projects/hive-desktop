@@ -39,12 +39,16 @@ public class InboxScene extends FxmlMultipleLoadedScene {
 
     public InboxScene() {
         super(FXML_FILENAME);
+
+
     }
 
     @Slf4j
     public static class Controller extends AbstractController {
 
         private static final Class<? extends AppScene> SCENE_TYPE = InboxScene.class;
+
+
 
         @FXML
         private MFXButton btnRunCode;
@@ -199,6 +203,8 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         @Override
         public void onStart() {
 
+
+
             TerminalConfig darkConfig = new TerminalConfig();
             darkConfig.setBackgroundColor(Color.web("#1e1e1e"));
             darkConfig.setForegroundColor(Color.rgb(240, 240, 240));
@@ -236,6 +242,7 @@ public class InboxScene extends FxmlMultipleLoadedScene {
 
         @Override
         public void onLoad(Map<String, Object> data) {
+
             Ctx.getInstance().submissionService.takeAll(appResponse -> {
                 if (appResponse.status().isSuccess()) {
                     Arrays.stream(appResponse.response().get())

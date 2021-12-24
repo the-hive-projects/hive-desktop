@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 
-<SplitPane dividerPositions="0.39471925133689834" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" style="-fx-background-color: #373737; -fx-box-border: 0000;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.InboxScene$Controller">
+<SplitPane dividerPositions="0.39471925133689834" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600" prefWidth="1200" style="-fx-background-color: #373737; -fx-box-border: 0000;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.thehive.hivedesktop.scene.InboxScene$Controller">
     <items>
         <AnchorPane maxWidth="200.0" minHeight="0.0" minWidth="10.0" prefHeight="398.0" prefWidth="294.0" style="-fx-background-color: #373737;">
             <children>
