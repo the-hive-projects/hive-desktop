@@ -4,6 +4,7 @@ import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXLabel;
 import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
+import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Hyperlink;
@@ -13,7 +14,13 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
+import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
@@ -113,6 +120,34 @@ public class SignInScene extends FxmlSingleLoadedScene {
             lblLoading.setGraphic(view);
             lblLoading.setVisible(true);
 
+
+            Circle cir = new Circle(0,50,50);
+            cir.setFill(Color.web("#373737"));
+            cir.setStroke(Color.BLACK);
+
+
+
+
+
+            Text text = new Text("LOADING");
+            text.setBoundsType(TextBoundsType.VISUAL);
+            text.setFill(Color.web("#ffc107"));
+
+            StackPane stackPane = new StackPane();
+            stackPane.getChildren().addAll(cir,text);
+
+            TranslateTransition translate = new TranslateTransition();
+            translate.setByX(100);
+            translate.setDuration(Duration.millis(1000));
+            translate.setCycleCount(500);
+            translate.setAutoReverse(true);
+            translate.setNode(stackPane);
+            translate.play();
+            lblLoading.setGraphic(stackPane);
+
+
+
+
             Platform.runLater(() ->
                     Ctx.getInstance().userService.signIn(username, password, result -> {
                         if (result.status().isSuccess()) {
@@ -120,8 +155,9 @@ public class SignInScene extends FxmlSingleLoadedScene {
                             ExecutionUtils.scheduleOnUiThread(() -> {
                                 Ctx.getInstance().sceneManager.load(MainScene.class);
                                 signInButton.setDisable(false);
+                                lblLoading.setVisible(false);
                             }, Consts.INFO_DELAY_MILLIS);
-                            lblLoading.setVisible(false);
+
                         } else if (result.status().isError()) {
                             lblLoading.setVisible(false);
                             if (result.message().isPresent()) {

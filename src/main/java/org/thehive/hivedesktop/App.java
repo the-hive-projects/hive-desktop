@@ -26,6 +26,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) {
+
         Ctx.getInstance().sceneManager.setStage(stage);
         Ctx.getInstance().sceneManager.add(new SignInScene());
         Ctx.getInstance().sceneManager.add(new SignUpScene());

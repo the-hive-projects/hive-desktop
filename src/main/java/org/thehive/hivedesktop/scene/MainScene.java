@@ -132,6 +132,10 @@ public class MainScene extends FxmlMultipleLoadedScene {
         @SuppressWarnings("OptionalGetWithoutIsPresent")
         public void onLoad(Map<String, Object> dataMap) {
             log.info("MainScene#onLoad");
+
+            btnInbox.setOnMouseClicked(mouseEvent -> {
+                Ctx.getInstance().sceneManager.load(InboxScene.class);
+            });
             Ctx.getInstance().userService.profile(profileResult -> {
                 if (profileResult.status().isSuccess()) {
                     var user = profileResult.response().get();
