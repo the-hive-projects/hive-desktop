@@ -32,7 +32,7 @@
                <Insets bottom="25.0" />
             </VBox.margin>
          </Label>
-           <MFXTextField fx:id="usernameTextField" lineColor="#ffdd08" prefHeight="30.0" prefWidth="300.0" promptText="Username" text="user">
+           <MFXTextField fx:id="usernameTextField" lineColor="#ffdd08" prefHeight="30.0" prefWidth="300.0" promptText="Username">
                <VBox.margin>
                    <Insets top="10.0" />
                </VBox.margin>
@@ -40,7 +40,7 @@
                    <Font name="Arial" size="15.0" />
                </font>
            </MFXTextField>
-           <MFXPasswordField fx:id="passwordTextField" lineColor="#ffc107" prefHeight="30.0" prefWidth="300.0" promptText="Password" text="password">
+           <MFXPasswordField fx:id="passwordTextField" lineColor="#ffc107" prefHeight="30.0" prefWidth="300.0" promptText="Password">
                <VBox.margin>
                    <Insets top="20.0" />
                </VBox.margin>

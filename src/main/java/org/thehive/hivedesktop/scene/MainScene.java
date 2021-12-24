@@ -107,6 +107,7 @@ public class MainScene extends FxmlMultipleLoadedScene {
             copyToClipboardText(txSessionLabel.getText());
         }
 
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
         public void logout(ActionEvent event) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Logout");
@@ -125,7 +126,7 @@ public class MainScene extends FxmlMultipleLoadedScene {
         @Override
         public void onStart() {
             log.info("MainScene#onStart");
-            cmbSessionDuration.setItems(FXCollections.observableArrayList("20 sec", "30 sec", "40 sec", "50 sec", "60 sec", "70 sec", "80 sec", "90 sec"));
+            cmbSessionDuration.setItems(FXCollections.observableArrayList("20 min", "30 min", "40 min", "50 min", "60 min", "70 min", "80 min", "90 min"));
         }
 
         @Override
@@ -158,7 +159,8 @@ public class MainScene extends FxmlMultipleLoadedScene {
                     });
                 }
             });
-            Ctx.getInstance().webSocketService.connect(new WebSocketLoggingListener(log));
+            if(!Ctx.getInstance().webSocketService.hasConnection())
+                Ctx.getInstance().webSocketService.connect(new WebSocketLoggingListener(log));
         }
 
         @Override

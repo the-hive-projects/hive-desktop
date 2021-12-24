@@ -96,13 +96,21 @@ public class SignUpScene extends FxmlSingleLoadedScene {
         @FXML
         void onSignUpButtonClick(MouseEvent event) {
             log.info("Button clicked, #onSignUpButtonClick");
-            signUpButton.setDisable(true);
+
             var username = usernameTextField.getText();
             var password = passwordTextField.getPassword();
             var email = emailTextField.getText();
             var firstname = nameTextField.getText();
             var lastname = surnameTextField.getText();
             var userInfo = new UserInfo();
+
+            if(username.isEmpty() || password.isEmpty() || email.isEmpty() || firstname.isEmpty()|| lastname.isEmpty()){
+                infoLabelHandler.setWaringText("Empty field");
+                return;
+            }
+
+            signUpButton.setDisable(true);
+
             userInfo.setFirstname(firstname);
             userInfo.setLastname(lastname);
             var user = new User();

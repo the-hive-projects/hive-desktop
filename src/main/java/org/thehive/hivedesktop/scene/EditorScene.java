@@ -239,6 +239,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             return monacoFxEditor;
         }
 
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
         private Tab addTab(String tabName) {
             var tab = usernameTabMap.get(tabName);
             if (tab != null)
@@ -258,7 +259,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             if (receiverCollection.size() > 0) {
                                 var payload = new CodeBroadcastingInformation();
                                 payload.setText(t1);
-                                Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(payload);
+                                if (Ctx.getInstance().webSocketService.hasConnection() && Ctx.getInstance().webSocketService.getConnection().get().hasSessionSubscription())
+                                    Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(payload);
                             }
                         });
             if (userTab) {
@@ -307,7 +309,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             var chatMessage = new ChatMessage();
             messageArea.clear();
             chatMessage.setText(message);
-            Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(chatMessage);
+            if (Ctx.getInstance().webSocketService.hasConnection() && Ctx.getInstance().webSocketService.getConnection().get().hasSessionSubscription())
+                Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(chatMessage);
         }
 
         @SuppressWarnings("OptionalGetWithoutIsPresent")
@@ -359,6 +362,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             return Authentication.INSTANCE.getUsername();
         }
 
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
         @Override
         public void onStart() {
 
@@ -386,10 +390,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             });
 
             btnLeaveSession.setOnMouseClicked(event -> {
-                if (Ctx.getInstance().webSocketService.getConnection().isPresent() &&
-                        Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().isPresent()) {
+                if (Ctx.getInstance().webSocketService.hasConnection() && Ctx.getInstance().webSocketService.getConnection().get().hasSessionSubscription())
                     Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().unsubscribe();
-                }
                 Ctx.getInstance().sceneManager.load(MainScene.class);
             });
 
@@ -405,21 +407,22 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             var payload = new CodeReceivingRequest();
                             payload.setBroadcaster(preTabId);
                             payload.setStart(false);
-                            Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get()
-                                    .send(payload);
+                            if (Ctx.getInstance().webSocketService.hasConnection() && Ctx.getInstance().webSocketService.getConnection().get().hasSessionSubscription())
+                                Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(payload);
                         }
                         if (!newTabId.equals(username)) {
                             var payload = new CodeReceivingRequest();
                             payload.setBroadcaster(newTabId);
                             payload.setStart(true);
-                            Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get()
-                                    .send(payload);
+                            if (Ctx.getInstance().webSocketService.hasConnection() && Ctx.getInstance().webSocketService.getConnection().get().hasSessionSubscription())
+                                Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(payload);
                         }
                     }
             );
 
         }
 
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
         @Override
         public void onLoad(Map<String, Object> dataMap) {
             log.info("onLoad Editor");
@@ -429,8 +432,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             var session = (Session) dataMap.get(Consts.JOINED_SESSION_SCENE_DATA_KEY);
             var liveId = (String) dataMap.get(Consts.JOINED_SESSION_LIVE_ID_SCENE_DATA_KEY);
             this.session.setValue(session);
-            Ctx.getInstance().webSocketService.getConnection().ifPresent(connection -> {
-                connection.subscribeToSession(liveId, new SubscriptionListener() {
+            if (Ctx.getInstance().webSocketService.hasConnection()) {
+                Ctx.getInstance().webSocketService.getConnection().get().subscribeToSession(liveId, new SubscriptionListener() {
                     @SuppressWarnings("OptionalGetWithoutIsPresent")
                     @Override
                     public void onSubscribe(StompSubscription stompSubscription) {
@@ -506,7 +509,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
 
                     }
                 });
-            });
+            } else
+                Ctx.getInstance().sceneManager.load(MainScene.class);
             messageArea.setWrapText(true);
             messageArea.setOnKeyPressed(ke -> {
                 if (ke.getCode().equals(KeyCode.ENTER))
