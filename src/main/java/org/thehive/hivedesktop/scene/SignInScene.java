@@ -8,9 +8,12 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
@@ -64,10 +67,19 @@ public class SignInScene extends FxmlSingleLoadedScene {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
         }
 
+
         @Override
         public void onStart() {
             log.info("SignInScene #onStart");
             this.infoLabelHandler = new InfoLabelHandler(infoLabel);
+
+            DropShadow drop = new DropShadow();
+            drop.setBlurType(BlurType.TWO_PASS_BOX);
+            drop.setColor(Color.BLACK);
+            drop.setHeight(50);
+            drop.setWidth(100);
+
+            signInButton.setEffect(drop);
         }
 
         @Override

@@ -6,7 +6,10 @@ import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import javafx.fxml.FXML;
 import javafx.scene.control.Hyperlink;
+import javafx.scene.effect.BlurType;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
 import org.thehive.hivedesktop.Consts;
 import org.thehive.hivedesktop.Ctx;
@@ -64,6 +67,14 @@ public class SignUpScene extends FxmlSingleLoadedScene {
         public void onStart() {
             log.info("SignUpScene #onStart");
             infoLabelHandler = new InfoLabelHandler(infoLabel);
+
+            DropShadow drop = new DropShadow();
+            drop.setBlurType(BlurType.TWO_PASS_BOX);
+            drop.setColor(Color.BLACK);
+            drop.setHeight(50);
+            drop.setWidth(100);
+
+            signUpButton.setEffect(drop);
         }
 
         @Override
