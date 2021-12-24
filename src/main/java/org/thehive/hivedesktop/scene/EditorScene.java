@@ -114,6 +114,9 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         private Label labelSessionName;
 
         @FXML
+        private Label labelNumberofViewers;
+
+        @FXML
         private Button btnUndo;
 
         public Controller() {
