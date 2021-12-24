@@ -22,7 +22,7 @@
                 <VBox prefHeight="386.4" prefWidth="632.8" style="-fx-background-color: #373737;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <ButtonBar fx:id="btnBar" prefHeight="40.0" prefWidth="200.0">
                         <buttons>
-                     <Label fx:id="labelUserName" alignment="CENTER" minWidth="100.0" text="İsim - Soyisim" textFill="#ffc107" ButtonBar.buttonData="LEFT">
+                     <Label fx:id="labelName" alignment="CENTER" minWidth="100.0" text="" textFill="#ffc107" ButtonBar.buttonData="LEFT">
                         <padding>
                            <Insets left="25.0" right="25.0" />
                         </padding></Label>
@@ -32,7 +32,7 @@
                            <Insets left="25.0" right="25.0" />
                         </padding>
                      </Label>
-                     <MFXButton fx:id="btnSubmit1" onMouseClicked="#onBtnSubmitClick" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Undo">
+                     <MFXButton fx:id="btnUndo" onMouseClicked="#onBtnUndoClick" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Undo">
                         <graphic>
                            <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                               <image>

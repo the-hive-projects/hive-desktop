@@ -43,23 +43,39 @@ public class EditorScene extends FxmlMultipleLoadedScene {
     @Slf4j
     public static class Controller extends AbstractController {
 
+        private static final String DEFAULT_CODE="num = float(input(\"Enter a number: \"))\r" +
+                "if num > 0:\n" +
+                "   print(\"Positive number\")\n" +
+                "elif num == 0:\n" +
+                "   print(\"Zero\")\n" +
+                "else:\n" +
+                "   print(\"Negative number\")\n";
+
         private static final Class<? extends AppScene> SCENE_TYPE = EditorScene.class;
         private final ObservableCollection<ChatMessageComponent> chatMessageComponentCollection;
         private final ObservableCollection<String> receiverCollection;
         private final ObservableMap<String, AttendeeComponent> attendeeComponentMap;
+        private final ObservableUnit<Session> session;
+        private final ObservableUnit<Submission> submission;
         private final Map<String, Tab> usernameTabMap;
 
         Timer timer = new Timer();
+
         @FXML
         ScrollPane chatScroll;
+
         @FXML
         VBox chatBox;
+
         @FXML
         MFXButton btnSaveCode;
+
         @FXML
         MFXButton btnSubmit;
+
         @FXML
         SplitPane mainPane;
+
         @FXML
         TextArea messageArea;
 
@@ -87,6 +103,18 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @FXML
         private TabPane terminalPane;
 
+        @FXML
+        private Label labelTimer;
+
+        @FXML
+        private Label labelName;
+
+        @FXML
+        private Label labelSessionName;
+
+        @FXML
+        private Button btnUndo;
+
         public Controller() {
             super(Ctx.getInstance().sceneManager, SCENE_TYPE);
             this.chatMessageComponentCollection = new ObservableCollectionWrapper<>(new LinkedList<>());
@@ -96,10 +124,12 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                     ExecutionUtils.runOnUiThread(() -> chatBox.getChildren().add(chatMessageComponent.getParentNode()));
                 }
             });
+
             this.receiverCollection = new ObservableCollectionWrapper<>(Collections.synchronizedList(new ArrayList<>()));
             receiverCollection.registerObserver(receivers -> {
                 // TODO: 12/22/2021 update receiver list
             });
+
             this.attendeeComponentMap = new ObservableMapWrapper<>(new HashMap<>());
             attendeeComponentMap.registerObserver(new MapObserverAdapter<>() {
                 @Override
@@ -123,19 +153,32 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                     ExecutionUtils.runOnUiThread(() -> attendeeList.getChildren().clear());
                 }
             });
-            this.usernameTabMap = new HashMap<>();
-        }
 
-        @FXML
-        private static void readFile1(File fin) throws IOException {
-            FileInputStream fis = new FileInputStream(fin);
-            //Construct BufferedReader from InputStreamReader
-            BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-            br.close();
+            this.session = new ObservableUnit<>();
+            session.registerObserver(s -> {
+                ExecutionUtils.runOnUiThread(() -> {
+                    if (s == null)
+                        Ctx.getInstance().sceneManager.load(MainScene.class);
+                    else
+                        labelSessionName.setText(s.getName());
+                });
+            });
+
+            this.usernameTabMap = new HashMap<>();
+
+            this.submission = new ObservableUnit<>();
+            submission.registerObserver(s -> {
+                if (s == Submission.EMPTY)
+                    ExecutionUtils.runOnUiThread(() -> {
+                        btnSubmit.setDisable(false);
+                    });
+                else
+                    ExecutionUtils.runOnUiThread(() -> {
+                        setTabContent(s.getContent());
+                        btnUndo.setDisable(false);
+                    });
+            });
+
         }
 
         @FXML
@@ -163,7 +206,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             bw.close();
 
             btnSaveCode.setMinWidth(300);
-            btnSaveCode.setText("code.py Saved Succesfully to Desktop!");
+            btnSaveCode.setText("code.py Saved Successfully to Desktop!");
 
             timer.schedule(new TimerTask() {
                 @Override
@@ -180,14 +223,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @FXML
         private MonacoFX setEditor(String language, String theme) {
             MonacoFX monacoFxEditor = new MonacoFX();
-            monacoFxEditor.getEditor().getDocument().setText(
-                    "num = float(input(\"Enter a number: \"))\r" +
-                            "if num > 0:\n" +
-                            "   print(\"Positive number\")\n" +
-                            "elif num == 0:\n" +
-                            "   print(\"Zero\")\n" +
-                            "else:\n" +
-                            "   print(\"Negative number\")\n");
+            monacoFxEditor.getEditor().getDocument().setText(DEFAULT_CODE);
             // use a predefined language like 'c'
             monacoFxEditor.getEditor().setCurrentLanguage(language);
             monacoFxEditor.getEditor().setCurrentTheme(theme);
@@ -223,6 +259,13 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             } else
                 editorPane.getTabs().add(tab);
             return tab;
+        }
+
+        private void setTabContent(String content){
+            var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
+            if (tab == null)
+                tab = addTab(Authentication.INSTANCE.getUsername());
+            ((MonacoFX) tab.getContent()).getEditor().getDocument().setText(content);
         }
 
         private void removeTab(String tabName) {
@@ -262,8 +305,10 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(chatMessage);
         }
 
+        @SuppressWarnings("OptionalGetWithoutIsPresent")
         @FXML
         void onBtnSubmitClick(MouseEvent event) {
+            log.info("onBtnSubmitClick button clicked");
             var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
             var content = ((MonacoFX) tab.getContent()).getEditor().getDocument().getText();
             var submission = new Submission();
@@ -272,6 +317,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             Ctx.getInstance().submissionService.submit(submission, appResponse -> {
                 if (appResponse.status().isSuccess()) {
                     log.info("Successfully submitted");
+                    this.submission.setValue(appResponse.response().get());
                 } else if (appResponse.status().isError()) {
                     log.info("Error while submitting, message: {}", appResponse.message().get());
                     btnSubmit.setDisable(false);
@@ -282,8 +328,47 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             });
         }
 
+        @FXML
+        void onBtnUndoClick(MouseEvent event) {
+            log.info("onBtnUndoClick button clicked");
+            var s=submission.get();
+            if(s==null)
+                return;
+            var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
+            var content = s.getContent();
+            ((MonacoFX) tab.getContent()).getEditor().getDocument().setText(content);
+        }
+
+        private void startTimer(long creationTime, long duration) {
+            new Thread(new Runnable() {
+
+                long timeMs;
+
+                @Override
+                public void run() {
+                    this.timeMs = (creationTime + duration - System.currentTimeMillis()) / 1000L;
+                    while (true) {
+                        try {
+                            Thread.sleep(1000L);
+                            timeMs--;
+                            var h = timeMs / 3600;
+                            System.out.println(timeMs + " / " + 3600 + "=" + h);
+                            var m = (timeMs / 60) % 60;
+                            var s = timeMs % 60;
+                            ExecutionUtils.runOnUiThread(() -> {
+                                labelTimer.setText(h + ":" + m + ":" + s);
+                            });
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }).start();
+        }
+
         @Override
         public void onStart() {
+
             TerminalConfig darkConfig = new TerminalConfig();
             darkConfig.setBackgroundColor(Color.web("#1e1e1e"));
             darkConfig.setForegroundColor(Color.rgb(240, 240, 240));
@@ -307,14 +392,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 }
             });
 
-            btnRunCode.setOnMouseClicked(mouseEvent -> {
-                try {
-                    readFile1(runEditorCode(terminal));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-
             btnLeaveSession.setOnMouseClicked(event -> {
                 if (Ctx.getInstance().webSocketService.getConnection().isPresent() &&
                         Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().isPresent()) {
@@ -322,8 +399,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 }
                 Ctx.getInstance().sceneManager.load(MainScene.class);
             });
+
             btnSendMessage.setOnMouseClicked(mouseEvent -> sendMessage());
-            btnSubmit.setDisable(true);
 
             editorPane.getSelectionModel().selectedItemProperty().addListener(
                     (ov, t, t1) -> {
@@ -354,27 +431,19 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @Override
         public void onLoad(Map<String, Object> dataMap) {
             log.info("onLoad Editor");
+            labelName.setText(Authentication.INSTANCE.getUsername());
+            btnUndo.setDisable(true);
+            btnSubmit.setDisable(true);
             var session = (Session) dataMap.get(Consts.JOINED_SESSION_SCENE_DATA_KEY);
-            var id = (String) dataMap.get(Consts.JOINED_SESSION_LIVE_ID_SCENE_DATA_KEY);
+            var liveId = (String) dataMap.get(Consts.JOINED_SESSION_LIVE_ID_SCENE_DATA_KEY);
+            this.session.setValue(session);
             Ctx.getInstance().webSocketService.getConnection().ifPresent(connection -> {
-                connection.subscribeToSession(id, new SubscriptionListener() {
+                connection.subscribeToSession(liveId, new SubscriptionListener() {
+                    @SuppressWarnings("OptionalGetWithoutIsPresent")
                     @Override
                     public void onSubscribe(StompSubscription stompSubscription) {
-                        Ctx.getInstance().submissionService.takeThis(appResponse -> {
-                            if (appResponse.status().isSuccess()) {
-                                if (appResponse.response().get() == Submission.EMPTY) {
-                                    ExecutionUtils.runOnUiThread(() -> btnSubmit.setDisable(false));
-                                } else {
-                                    ExecutionUtils.runOnUiThread(() -> {
-                                        var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
-                                        if (tab == null)
-                                            tab = addTab(Authentication.INSTANCE.getUsername());
-                                        ((MonacoFX) tab.getContent()).getEditor().getDocument().setText(appResponse.response().get().getContent());
-                                    });
-                                }
-                                // TODO: 12/20/2021 show submission on ui
-                            }
-                        });
+                        Ctx.getInstance().submissionService.takeThis(appResponse ->
+                                submission.setValue(appResponse.response().get()));
                     }
 
                     @Override
@@ -409,6 +478,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                                     }
                                 });
                             });
+                            startTimer(liveSessionInfo.getCreatedAt(), liveSessionInfo.getDuration());
                         } else if (appStompHeaders.getPayloadType() == PayloadType.PARTICIPATION_NOTIFICATION) {
                             var participationNotification = (ParticipationNotification) payload;
                             if (participationNotification.isJoined()) {
@@ -457,6 +527,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         public void onUnload() {
 
         }
+
 
     }
 }
