@@ -124,7 +124,7 @@
                                  <Insets />
                               </VBox.margin>
                            </MFXTextField>
-                           <MFXFilterComboBox fx:id="cmbSessionDuration" lineColor="#ffdd08" prefHeight="27.0" prefWidth="186.0" styleClass="mainSessionLabelColor" stylesheets="@../../../../css/style.css">
+                           <MFXFilterComboBox fx:id="cmbSessionDuration" forceFieldFocusOnShow="true" lineColor="#ffdd08" prefHeight="27.0" prefWidth="186.0" promptText="Please select duration" styleClass="label" stylesheets="@../../../../css/style.css">
                               <VBox.margin>
                                  <Insets top="15.0" />
                               </VBox.margin>

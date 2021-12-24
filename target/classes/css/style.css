@@ -16,6 +16,23 @@
     -fx-text-fill: #ffffff;
 }
 
+-jfx-focus-color: white;
+
+-jfx-unfocus-color: white;
+
+.jfx-combo-box {
+	-fx-background-color:  PINK;
+}
+
+.jfx-combo-box .label {
+	-fx-text-inner-color: #ffffff;
+}
+
+.combo-box .cell{
+    -fx-text-fill: #ffffff;
+    -fx-font: 16px "Arial";
+}
+
 
 .text-area .content {
     -fx-background-color: text-area-background ;
