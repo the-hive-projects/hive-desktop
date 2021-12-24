@@ -34,19 +34,16 @@
                      </Label>
                      <MFXButton fx:id="btnUndo" onMouseClicked="#onBtnUndoClick" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Undo">
                         <graphic>
-                           <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                              <image>
-                                 <Image url="@../../../../img/undo.png" />
-                              </image>
-                           </ImageView>
+                            <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                <Image url="@../../../../img/undo.png"/>
+                            </ImageView>
                         </graphic>
                      </MFXButton>
                             <MFXButton fx:id="btnSubmit" onMouseClicked="#onBtnSubmitClick" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Submit">
                                 <graphic>
-                                    <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                        <image>
-                                            <Image url="@../../../../img/submitCode.png" />
-                                        </image>
+                                    <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <Image url="@../../../../img/submitCode.png"/>
                                     </ImageView>
                                 </graphic>
                             </MFXButton>
@@ -57,7 +54,7 @@
                                     </ImageView>
                                 </graphic>
                             </MFXButton>
-                            <MFXButton fx:id="btnRunCode" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text=" Run ">
+                            <MFXButton fx:id="btnRunCode" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text=" Run " onMouseClicked="#onBtnRunClicked">
                                 <graphic>
                                     <ImageView fitHeight="21.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                         <Image url="@../../../../img/runCode.png" />
@@ -105,7 +102,7 @@
                             </TextArea>
                             <ButtonBar buttonMinWidth="25.0" minWidth="50.0" prefHeight="40.0" prefWidth="100.0">
                                 <buttons>
-                                    <MFXButton fx:id="btnSendMessage" alignment="CENTER_RIGHT" minWidth="75.0" prefWidth="75.0" rippleColor="#ffc107" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Send">
+                                    <MFXButton fx:id="btnSendMessage" alignment="CENTER_RIGHT" minWidth="75.0" prefWidth="75.0" rippleColor="#ffc107" style="-fx-background-color: #373737; -fx-text-fill: #FFC107; -fx-background-radius: 15;" text="Send" onMouseClicked="#onBtnSendMessageClicked">
                                         <font>
                                             <Font size="14.0" />
                                         </font>

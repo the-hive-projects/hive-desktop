@@ -155,23 +155,24 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 }
             });
 
-            this.countdownTimer=new CountdownTimer(1000L, r -> {
-                ExecutionUtils.runOnUiThread(() ->{
-                    var h = r / 3600;
-                    var m = (r / 60) % 60;
-                    var s = r % 60;
-                    labelTimer.setText(String.format("%02d",h) + ":" + String.format("%02d",m) + ":" +String.format("%02d",s));
+            this.countdownTimer = new CountdownTimer(1000L, r -> {
+                var ms = r /= 1000;
+                ExecutionUtils.runOnUiThread(() -> {
+                    var h = ms / 3600;
+                    var m = (ms / 60) % 60;
+                    var s = ms % 60;
+                    labelTimer.setText(String.format("%02d", h) + ":" + String.format("%02d", m) + ":" + String.format("%02d", s));
                 });
-            },null);
+            }, null);
 
             this.session = new ObservableUnit<>();
             session.registerObserver(s -> {
                 ExecutionUtils.runOnUiThread(() -> {
                     if (s == null)
                         Ctx.getInstance().sceneManager.load(MainScene.class);
-                    else{
+                    else {
                         labelSessionName.setText(s.getName());
-                        countdownTimer.start(s.getCreationTime()+s.getDuration());
+                        countdownTimer.start(s.getCreationTime() + s.getDuration());
                     }
                 });
             });
@@ -192,17 +193,11 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             });
 
 
-
         }
 
         @FXML
         private void saveCode() throws IOException {
-           /* FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Save");
-            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Python Files", "*.py"));
-            fileChooser.setInitialFileName("code");
-            fileChooser.setInitialDirectory(file);7*/
-            // fileChooser.showSaveDialog(this.messageArea.getScene().getWindow());
+
             var currentTabIndex = editorPane.getSelectionModel().getSelectedIndex();
             MonacoFX currentEditor = (MonacoFX) editorPane.getTabs().get(currentTabIndex).getContent();
 
@@ -254,7 +249,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             tab.setContent(editor);
             tab.setClosable(false);
             usernameTabMap.put(tabName, tab);
-            var userTab = tabName.equals(Authentication.INSTANCE.getUsername());
+            var userTab = tabName.equals(getUsername());
             if (!userTab)
                 tab.getContent().addEventFilter(EventType.ROOT, Event::consume);
             else
@@ -276,9 +271,9 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         }
 
         private void setTabContent(String content) {
-            var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
+            var tab = usernameTabMap.get(getUsername());
             if (tab == null)
-                tab = addTab(Authentication.INSTANCE.getUsername());
+                tab = addTab(getUsername());
             ((MonacoFX) tab.getContent()).getEditor().getDocument().setText(content);
         }
 
@@ -292,13 +287,9 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         private File runEditorCode(TerminalTab terminal) throws IOException {
             var currentTabIndex = editorPane.getSelectionModel().getSelectedIndex();
             MonacoFX currentEditor = (MonacoFX) editorPane.getTabs().get(currentTabIndex).getContent();
-
             var currentEditorContent = currentEditor.getEditor().getDocument().getText();
-            System.out.println(currentEditorContent);
-
             var codeDoc = currentEditor.getEditor().getDocument();
             codeDoc.setLanguage("python");
-
             File fout = new File("out.py");
             FileOutputStream fos = new FileOutputStream(fout);
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
@@ -309,7 +300,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         }
 
         @FXML
-        private void sendMessage() {
+        private void onBtnSendMessageClicked() {
             String message = messageArea.getText();
             if (message.isEmpty())
                 return;
@@ -323,7 +314,9 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @FXML
         void onBtnSubmitClick(MouseEvent event) {
             log.info("onBtnSubmitClick button clicked");
-            var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
+            var tab = usernameTabMap.get(getUsername());
+            editorPane.getSelectionModel().select(tab);
+            editorPane.getSelectionModel().select(tab);
             var content = ((MonacoFX) tab.getContent()).getEditor().getDocument().getText();
             var submission = new Submission();
             submission.setContent(content);
@@ -348,9 +341,22 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             var s = submission.get();
             if (s == null)
                 return;
-            var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
+            var tab = usernameTabMap.get(getUsername());
             var content = s.getContent();
             ((MonacoFX) tab.getContent()).getEditor().getDocument().setText(content);
+        }
+
+        @FXML
+        void onBtnRunClicked(MouseEvent event) {
+            try {
+                runEditorCode((TerminalTab) terminalPane.getSelectionModel().getSelectedItem());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private String getUsername() {
+            return Authentication.INSTANCE.getUsername();
         }
 
         @Override
@@ -387,7 +393,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                 Ctx.getInstance().sceneManager.load(MainScene.class);
             });
 
-            btnSendMessage.setOnMouseClicked(mouseEvent -> sendMessage());
 
             editorPane.getSelectionModel().selectedItemProperty().addListener(
                     (ov, t, t1) -> {
@@ -395,7 +400,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             return;
                         var preTabId = t.getId();
                         var newTabId = t1.getId();
-                        var username = Authentication.INSTANCE.getUsername();
+                        var username = getUsername();
                         if (!preTabId.equals(username)) {
                             var payload = new CodeReceivingRequest();
                             payload.setBroadcaster(preTabId);
@@ -418,7 +423,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         @Override
         public void onLoad(Map<String, Object> dataMap) {
             log.info("onLoad Editor");
-            labelName.setText(Authentication.INSTANCE.getUsername());
+            labelName.setText(getUsername());
             btnUndo.setDisable(true);
             btnSubmit.setDisable(true);
             var session = (Session) dataMap.get(Consts.JOINED_SESSION_SCENE_DATA_KEY);
@@ -482,7 +487,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             receiverCollection.addAll(codeBroadcastingNotification.getReceivers());
                             if (codeBroadcastingNotification.getReceivers().size() > 0) {
                                 var sendPayload = new CodeBroadcastingInformation();
-                                var tab = usernameTabMap.get(Authentication.INSTANCE.getUsername());
+                                var tab = usernameTabMap.get(getUsername());
                                 var text = ((MonacoFX) tab.getContent()).getEditor().getDocument().getText();
                                 sendPayload.setText(text);
                                 Ctx.getInstance().webSocketService.getConnection().get().getSessionSubscription().get().send(sendPayload);
@@ -491,6 +496,8 @@ public class EditorScene extends FxmlMultipleLoadedScene {
                             var codeBroadcastingInformation = (CodeBroadcastingInformation) payload;
                             var tab = usernameTabMap.get(codeBroadcastingInformation.getBroadcaster());
                             ExecutionUtils.runOnUiThread(() -> ((MonacoFX) tab.getContent()).getEditor().getDocument().setText(codeBroadcastingInformation.getText()));
+                        } else if (appStompHeaders.getPayloadType() == PayloadType.EXPIRATION_NOTIFICATION) {
+                            ExecutionUtils.runOnUiThread(() -> Ctx.getInstance().sceneManager.load(MainScene.class));
                         }
                     }
 
@@ -503,7 +510,7 @@ public class EditorScene extends FxmlMultipleLoadedScene {
             messageArea.setWrapText(true);
             messageArea.setOnKeyPressed(ke -> {
                 if (ke.getCode().equals(KeyCode.ENTER))
-                    sendMessage();
+                    onBtnSendMessageClicked();
             });
         }
 
@@ -511,7 +518,6 @@ public class EditorScene extends FxmlMultipleLoadedScene {
         public void onUnload() {
 
         }
-
 
     }
 }

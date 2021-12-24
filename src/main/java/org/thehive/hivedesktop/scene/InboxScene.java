@@ -49,7 +49,6 @@ public class InboxScene extends FxmlMultipleLoadedScene {
         private static final Class<? extends AppScene> SCENE_TYPE = InboxScene.class;
 
 
-
         @FXML
         private MFXButton btnRunCode;
 
@@ -202,7 +201,6 @@ public class InboxScene extends FxmlMultipleLoadedScene {
 
         @Override
         public void onStart() {
-
 
 
             TerminalConfig darkConfig = new TerminalConfig();

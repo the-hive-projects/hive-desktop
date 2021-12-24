@@ -15,7 +15,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
@@ -121,12 +120,9 @@ public class SignInScene extends FxmlSingleLoadedScene {
             lblLoading.setVisible(true);
 
 
-            Circle cir = new Circle(0,50,50);
+            Circle cir = new Circle(0, 50, 50);
             cir.setFill(Color.web("#373737"));
             cir.setStroke(Color.BLACK);
-
-
-
 
 
             Text text = new Text("LOADING");
@@ -134,7 +130,7 @@ public class SignInScene extends FxmlSingleLoadedScene {
             text.setFill(Color.web("#ffc107"));
 
             StackPane stackPane = new StackPane();
-            stackPane.getChildren().addAll(cir,text);
+            stackPane.getChildren().addAll(cir, text);
 
             TranslateTransition translate = new TranslateTransition();
             translate.setByX(100);
@@ -144,8 +140,6 @@ public class SignInScene extends FxmlSingleLoadedScene {
             translate.setNode(stackPane);
             translate.play();
             lblLoading.setGraphic(stackPane);
-
-
 
 
             Platform.runLater(() ->

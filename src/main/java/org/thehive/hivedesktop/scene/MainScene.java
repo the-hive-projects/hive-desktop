@@ -125,7 +125,7 @@ public class MainScene extends FxmlMultipleLoadedScene {
         @Override
         public void onStart() {
             log.info("MainScene#onStart");
-            cmbSessionDuration.setItems(FXCollections.observableArrayList("20", "30", "40", "50", "60", "70", "80", "90"));
+            cmbSessionDuration.setItems(FXCollections.observableArrayList("20 sec", "30 sec", "40 sec", "50 sec", "60 sec", "70 sec", "80 sec", "90 sec"));
         }
 
         @Override
@@ -176,7 +176,7 @@ public class MainScene extends FxmlMultipleLoadedScene {
         void onCreateSessionButtonClick(MouseEvent event) {
             log.info("Button clicked, #onCreateSessionButtonClick");
             var sessionName = txtSessionName.getText();
-            var duration = Integer.parseInt(cmbSessionDuration.getSelectedValue()) * 1000L;
+            var duration = Integer.parseInt(cmbSessionDuration.getSelectedValue().substring(0, 2)) * 1000L;
             var session = new Session();
             session.setName(sessionName);
             session.setDuration(duration);
