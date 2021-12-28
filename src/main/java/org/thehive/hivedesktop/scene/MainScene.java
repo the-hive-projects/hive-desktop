@@ -126,7 +126,7 @@ public class MainScene extends FxmlMultipleLoadedScene {
         @Override
         public void onStart() {
             log.info("MainScene#onStart");
-            cmbSessionDuration.setItems(FXCollections.observableArrayList("20 sec", "30 sec", "40 sec", "50 sec", "60 sec", "70 sec", "80 sec", "90 sec"));
+            cmbSessionDuration.setItems(FXCollections.observableArrayList("20 min", "30 min", "40 min", "50 min", "60 min", "70 min", "80 min", "90 min"));
             cmbSessionDuration.getSelectionModel().selectFirst();
             cmbSessionDuration.setStyle("-fx-text-fill:#ffffff");
         }
